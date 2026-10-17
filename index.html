@@ -5,7 +5,7 @@
 <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#7555dc">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-
+<meta name="theme-color" content="#f7f8fc">
 <title>DeutschTrainer</title>
 
 <style>
@@ -285,15 +285,16 @@ p { line-height: 1.5; }
         </div>
 
         <button class="button" onclick="continuePath()">▶ KONTYNUUJ NAUKĘ</button>
+        <button type="button" class="button secondary" style="margin-top:10px" onclick="openVoiceSettings()">🎙️ Ustaw głos</button>
         <button id="sound-toggle" class="button secondary" style="margin-top:10px" onclick="toggleSounds()">🔊 Dźwięki: WŁĄCZONE</button>
         <h2 class="section">Twoja ścieżka nauki</h2>
         <div class="card" style="background:#f0edff">
-            <div class="card-head"><strong>🇩🇪 Ścieżka A1 → A2 → B1</strong><strong id="path-count">0/28</strong></div>
+            <div class="card-head"><strong>🇩🇪 Ścieżka A1 → A2 → B1</strong><strong id="path-count">0/36</strong></div>
             <div class="progress"><div class="progress-fill" id="path-progress" style="background:var(--purple)"></div></div>
-            <p class="muted" style="margin-bottom:0">Zdobądź co najmniej 80% poprawnych odpowiedzi (80%), aby odblokować kolejną lekcję.</p>
+            <p class="muted" style="margin-bottom:0">Zdobądź 80% poprawnych odpowiedzi, zachowaj przynajmniej jedno z 5 żyć i zalicz test co 5 lekcji, aby przejść dalej.</p>
         </div>
         <div id="path-lessons"></div>
-        <div class="card"><strong>🎓 A2 i B1</strong><p class="muted">Nowe lekcje pojawią się na ścieżce po ukończeniu A1. Każda ma 10 zadań i próg 80%.</p></div>
+        <div class="card"><strong>🎓 A2 i B1</strong><p class="muted">Nowe lekcje pojawią się na ścieżce po ukończeniu A1. Nowe moduły utrwalające mają 15 zadań i próg 80%.</p></div>
 <h2 class="section">Nowe tryby nauki</h2>
         <div class="lesson-row" onclick="openFeature('dialog')"><div class="lesson-emoji">💬</div><div class="lesson-info"><strong>Rozmowy z klientem</strong><small>Interaktywne dialogi</small></div><div class="arrow">›</div></div>
         <div class="lesson-row" onclick="openFeature('review')"><div class="lesson-emoji">🧠</div><div class="lesson-info"><strong>Inteligentne powtórki</strong><small>Trudne zdania wracają częściej</small></div><div class="arrow">›</div></div>
@@ -327,6 +328,7 @@ p { line-height: 1.5; }
             <strong id="question-count">1/15</strong>
         </div>
 
+        <div id="heart-status" style="display:none;background:#fff0f3;color:#b21d46;padding:11px 15px;border-radius:12px;margin:8px 0 15px;font-weight:800;text-align:center" aria-live="polite"></div>
         <div id="quiz-content">
             <div class="question-tag" id="category">NIEMIECKI W PRACY</div>
             <h1 class="question" id="question">Jak powiesz po niemiecku?</h1>
@@ -3577,6 +3579,24 @@ lessonsA1.push(...[
 
 const advancedLessons = [{"id": "a2-1", "level": "A2", "title": "Czas przeszły Perfekt", "emoji": "🕒", "description": "10 zdań · A2", "questions": [{"pl": "Wczoraj pracowałem.", "de": "Ich habe gestern gearbeitet.", "options": ["Ich habe gestern gearbeitet.", "Wir haben das Tor montiert.", "Der Kunde hat angerufen."], "explain": "Ich habe gestern gearbeitet. = Wczoraj pracowałem."}, {"pl": "Zamontowaliśmy bramę.", "de": "Wir haben das Tor montiert.", "options": ["Wir haben das Tor montiert.", "Ich habe Schrauben gekauft.", "Ich bin im Lager gewesen."], "explain": "Wir haben das Tor montiert. = Zamontowaliśmy bramę."}, {"pl": "Kupiłem śruby.", "de": "Ich habe Schrauben gekauft.", "options": ["Ich habe Schrauben gekauft.", "Der Kunde hat angerufen.", "Wir sind früh angekommen."], "explain": "Ich habe Schrauben gekauft. = Kupiłem śruby."}, {"pl": "Klient zadzwonił.", "de": "Der Kunde hat angerufen.", "options": ["Der Kunde hat angerufen.", "Ich bin im Lager gewesen.", "Ich habe das Werkzeug gefunden."], "explain": "Der Kunde hat angerufen. = Klient zadzwonił."}, {"pl": "Byłem w magazynie.", "de": "Ich bin im Lager gewesen.", "options": ["Ich bin im Lager gewesen.", "Wir sind früh angekommen.", "Wir haben den Zaun repariert."], "explain": "Ich bin im Lager gewesen. = Byłem w magazynie."}, {"pl": "Przyjechaliśmy wcześnie.", "de": "Wir sind früh angekommen.", "options": ["Wir sind früh angekommen.", "Ich habe das Werkzeug gefunden.", "Ich habe die Frage nicht verstanden."], "explain": "Wir sind früh angekommen. = Przyjechaliśmy wcześnie."}, {"pl": "Znalazłem narzędzia.", "de": "Ich habe das Werkzeug gefunden.", "options": ["Ich habe das Werkzeug gefunden.", "Wir haben den Zaun repariert.", "Ich habe eine Nachricht geschickt."], "explain": "Ich habe das Werkzeug gefunden. = Znalazłem narzędzia."}, {"pl": "Naprawiliśmy ogrodzenie.", "de": "Wir haben den Zaun repariert.", "options": ["Wir haben den Zaun repariert.", "Ich habe die Frage nicht verstanden.", "Ich habe gestern gearbeitet."], "explain": "Wir haben den Zaun repariert. = Naprawiliśmy ogrodzenie."}, {"pl": "Nie zrozumiałem pytania.", "de": "Ich habe die Frage nicht verstanden.", "options": ["Ich habe die Frage nicht verstanden.", "Ich habe eine Nachricht geschickt.", "Wir haben das Tor montiert."], "explain": "Ich habe die Frage nicht verstanden. = Nie zrozumiałem pytania."}, {"pl": "Wysłałem wiadomość.", "de": "Ich habe eine Nachricht geschickt.", "options": ["Ich habe eine Nachricht geschickt.", "Ich habe gestern gearbeitet.", "Ich habe Schrauben gekauft."], "explain": "Ich habe eine Nachricht geschickt. = Wysłałem wiadomość."}]}, {"id": "a2-2", "level": "A2", "title": "Plany i przyszłość", "emoji": "📅", "description": "10 zdań · A2", "questions": [{"pl": "Jutro będziemy pracować.", "de": "Wir werden morgen arbeiten.", "options": ["Wir werden morgen arbeiten.", "Ich möchte Deutsch lernen.", "Nächste Woche habe ich Zeit."], "explain": "Wir werden morgen arbeiten. = Jutro będziemy pracować."}, {"pl": "Chcę nauczyć się niemieckiego.", "de": "Ich möchte Deutsch lernen.", "options": ["Ich möchte Deutsch lernen.", "Wir müssen das Material bestellen.", "Am Montag fangen wir an."], "explain": "Ich möchte Deutsch lernen. = Chcę nauczyć się niemieckiego."}, {"pl": "Musimy zamówić materiał.", "de": "Wir müssen das Material bestellen.", "options": ["Wir müssen das Material bestellen.", "Nächste Woche habe ich Zeit.", "Ich werde den Kunden anrufen."], "explain": "Wir müssen das Material bestellen. = Musimy zamówić materiał."}, {"pl": "W przyszłym tygodniu mam czas.", "de": "Nächste Woche habe ich Zeit.", "options": ["Nächste Woche habe ich Zeit.", "Am Montag fangen wir an.", "Kannst du morgen kommen?"], "explain": "Nächste Woche habe ich Zeit. = W przyszłym tygodniu mam czas."}, {"pl": "W poniedziałek zaczynamy.", "de": "Am Montag fangen wir an.", "options": ["Am Montag fangen wir an.", "Ich werde den Kunden anrufen.", "Wir planen ein neues Projekt."], "explain": "Am Montag fangen wir an. = W poniedziałek zaczynamy."}, {"pl": "Zadzwonię do klienta.", "de": "Ich werde den Kunden anrufen.", "options": ["Ich werde den Kunden anrufen.", "Kannst du morgen kommen?", "Ich möchte das heute fertig machen."], "explain": "Ich werde den Kunden anrufen. = Zadzwonię do klienta."}, {"pl": "Czy możesz przyjść jutro?", "de": "Kannst du morgen kommen?", "options": ["Kannst du morgen kommen?", "Wir planen ein neues Projekt.", "Ich werde bald das Angebot schicken."], "explain": "Kannst du morgen kommen? = Czy możesz przyjść jutro?"}, {"pl": "Planujemy nowy projekt.", "de": "Wir planen ein neues Projekt.", "options": ["Wir planen ein neues Projekt.", "Ich möchte das heute fertig machen.", "Wir werden morgen arbeiten."], "explain": "Wir planen ein neues Projekt. = Planujemy nowy projekt."}, {"pl": "Chcę to dzisiaj skończyć.", "de": "Ich möchte das heute fertig machen.", "options": ["Ich möchte das heute fertig machen.", "Ich werde bald das Angebot schicken.", "Ich möchte Deutsch lernen."], "explain": "Ich möchte das heute fertig machen. = Chcę to dzisiaj skończyć."}, {"pl": "Wkrótce wyślę ofertę.", "de": "Ich werde bald das Angebot schicken.", "options": ["Ich werde bald das Angebot schicken.", "Wir werden morgen arbeiten.", "Wir müssen das Material bestellen."], "explain": "Ich werde bald das Angebot schicken. = Wkrótce wyślę ofertę."}]}, {"id": "a2-3", "level": "A2", "title": "Zdania z weil i dass", "emoji": "🧠", "description": "10 zdań · A2", "questions": [{"pl": "Zostaję w domu, bo pada.", "de": "Ich bleibe zu Hause, weil es regnet.", "options": ["Ich bleibe zu Hause, weil es regnet.", "Ich denke, dass das gut ist.", "Ich weiß, dass du recht hast."], "explain": "Ich bleibe zu Hause, weil es regnet. = Zostaję w domu, bo pada."}, {"pl": "Myślę, że to jest dobre.", "de": "Ich denke, dass das gut ist.", "options": ["Ich denke, dass das gut ist.", "Wir arbeiten nicht, weil es kalt ist.", "Ich komme zu spät, weil es Stau gibt."], "explain": "Ich denke, dass das gut ist. = Myślę, że to jest dobre."}, {"pl": "Nie pracujemy, bo jest zimno.", "de": "Wir arbeiten nicht, weil es kalt ist.", "options": ["Wir arbeiten nicht, weil es kalt ist.", "Ich weiß, dass du recht hast.", "Er sagt, dass er morgen kommt."], "explain": "Wir arbeiten nicht, weil es kalt ist. = Nie pracujemy, bo jest zimno."}, {"pl": "Wiem, że masz rację.", "de": "Ich weiß, dass du recht hast.", "options": ["Ich weiß, dass du recht hast.", "Ich komme zu spät, weil es Stau gibt.", "Ich brauche Hilfe, weil das schwer ist."], "explain": "Ich weiß, dass du recht hast. = Wiem, że masz rację."}, {"pl": "Spóźniam się, bo jest korek.", "de": "Ich komme zu spät, weil es Stau gibt.", "options": ["Ich komme zu spät, weil es Stau gibt.", "Er sagt, dass er morgen kommt.", "Ich glaube, dass wir das schaffen."], "explain": "Ich komme zu spät, weil es Stau gibt. = Spóźniam się, bo jest korek."}, {"pl": "On mówi, że przyjdzie jutro.", "de": "Er sagt, dass er morgen kommt.", "options": ["Er sagt, dass er morgen kommt.", "Ich brauche Hilfe, weil das schwer ist.", "Ich warte, weil der Kunde nicht hier ist."], "explain": "Er sagt, dass er morgen kommt. = On mówi, że przyjdzie jutro."}, {"pl": "Potrzebuję pomocy, bo to jest ciężkie.", "de": "Ich brauche Hilfe, weil das schwer ist.", "options": ["Ich brauche Hilfe, weil das schwer ist.", "Ich glaube, dass wir das schaffen.", "Ich weiß, dass das mehr kostet."], "explain": "Ich brauche Hilfe, weil das schwer ist. = Potrzebuję pomocy, bo to jest ciężkie."}, {"pl": "Wierzę, że damy radę.", "de": "Ich glaube, dass wir das schaffen.", "options": ["Ich glaube, dass wir das schaffen.", "Ich warte, weil der Kunde nicht hier ist.", "Ich bleibe zu Hause, weil es regnet."], "explain": "Ich glaube, dass wir das schaffen. = Wierzę, że damy radę."}, {"pl": "Czekam, bo klient nie jest tutaj.", "de": "Ich warte, weil der Kunde nicht hier ist.", "options": ["Ich warte, weil der Kunde nicht hier ist.", "Ich weiß, dass das mehr kostet.", "Ich denke, dass das gut ist."], "explain": "Ich warte, weil der Kunde nicht hier ist. = Czekam, bo klient nie jest tutaj."}, {"pl": "Wiem, że to kosztuje więcej.", "de": "Ich weiß, dass das mehr kostet.", "options": ["Ich weiß, dass das mehr kostet.", "Ich bleibe zu Hause, weil es regnet.", "Wir arbeiten nicht, weil es kalt ist."], "explain": "Ich weiß, dass das mehr kostet. = Wiem, że to kosztuje więcej."}]}, {"id": "a2-4", "level": "A2", "title": "U klienta: ustalenia", "emoji": "🤝", "description": "10 zdań · A2", "questions": [{"pl": "Czy możemy przesunąć termin?", "de": "Können wir den Termin verschieben?", "options": ["Können wir den Termin verschieben?", "Wir brauchen die genauen Maße.", "Ich werde einen Kostenvoranschlag erstellen."], "explain": "Können wir den Termin verschieben? = Czy możemy przesunąć termin?"}, {"pl": "Potrzebujemy dokładnych wymiarów.", "de": "Wir brauchen die genauen Maße.", "options": ["Wir brauchen die genauen Maße.", "Haben Sie noch Fragen?", "Bitte unterschreiben Sie hier."], "explain": "Wir brauchen die genauen Maße. = Potrzebujemy dokładnych wymiarów."}, {"pl": "Czy ma pan jakieś pytania?", "de": "Haben Sie noch Fragen?", "options": ["Haben Sie noch Fragen?", "Ich werde einen Kostenvoranschlag erstellen.", "Das Material kommt morgen an."], "explain": "Haben Sie noch Fragen? = Czy ma pan jakieś pytania?"}, {"pl": "Przygotuję kosztorys.", "de": "Ich werde einen Kostenvoranschlag erstellen.", "options": ["Ich werde einen Kostenvoranschlag erstellen.", "Bitte unterschreiben Sie hier.", "Die Montage dauert zwei Tage."], "explain": "Ich werde einen Kostenvoranschlag erstellen. = Przygotuję kosztorys."}, {"pl": "Proszę podpisać tutaj.", "de": "Bitte unterschreiben Sie hier.", "options": ["Bitte unterschreiben Sie hier.", "Das Material kommt morgen an.", "Ist die Farbe in Ordnung?"], "explain": "Bitte unterschreiben Sie hier. = Proszę podpisać tutaj."}, {"pl": "Materiał dotrze jutro.", "de": "Das Material kommt morgen an.", "options": ["Das Material kommt morgen an.", "Die Montage dauert zwei Tage.", "Ich melde mich bei Ihnen."], "explain": "Das Material kommt morgen an. = Materiał dotrze jutro."}, {"pl": "Montaż potrwa dwa dni.", "de": "Die Montage dauert zwei Tage.", "options": ["Die Montage dauert zwei Tage.", "Ist die Farbe in Ordnung?", "Vielen Dank für Ihre Geduld."], "explain": "Die Montage dauert zwei Tage. = Montaż potrwa dwa dni."}, {"pl": "Czy kolor jest odpowiedni?", "de": "Ist die Farbe in Ordnung?", "options": ["Ist die Farbe in Ordnung?", "Ich melde mich bei Ihnen.", "Können wir den Termin verschieben?"], "explain": "Ist die Farbe in Ordnung? = Czy kolor jest odpowiedni?"}, {"pl": "Skontaktuję się z panem.", "de": "Ich melde mich bei Ihnen.", "options": ["Ich melde mich bei Ihnen.", "Vielen Dank für Ihre Geduld.", "Wir brauchen die genauen Maße."], "explain": "Ich melde mich bei Ihnen. = Skontaktuję się z panem."}, {"pl": "Dziękuję za cierpliwość.", "de": "Vielen Dank für Ihre Geduld.", "options": ["Vielen Dank für Ihre Geduld.", "Können wir den Termin verschieben?", "Haben Sie noch Fragen?"], "explain": "Vielen Dank für Ihre Geduld. = Dziękuję za cierpliwość."}]}, {"id": "b1-5", "level": "B1", "title": "Wyjaśnianie problemów", "emoji": "🔧", "description": "10 zdań · B1", "questions": [{"pl": "Musimy sprawdzić, dlaczego brama nie działa.", "de": "Wir müssen prüfen, warum das Tor nicht funktioniert.", "options": ["Wir müssen prüfen, warum das Tor nicht funktioniert.", "Das Problem ist, dass der Boden uneben ist.", "Leider fehlt ein Teil."], "explain": "Wir müssen prüfen, warum das Tor nicht funktioniert. = Musimy sprawdzić, dlaczego brama nie działa."}, {"pl": "Problem polega na tym, że podłoże jest nierówne.", "de": "Das Problem ist, dass der Boden uneben ist.", "options": ["Das Problem ist, dass der Boden uneben ist.", "Ich schlage eine andere Lösung vor.", "Könnten Sie mir das Problem zeigen?"], "explain": "Das Problem ist, dass der Boden uneben ist. = Problem polega na tym, że podłoże jest nierówne."}, {"pl": "Proponuję inne rozwiązanie.", "de": "Ich schlage eine andere Lösung vor.", "options": ["Ich schlage eine andere Lösung vor.", "Leider fehlt ein Teil.", "Die Reparatur dauert länger als geplant."], "explain": "Ich schlage eine andere Lösung vor. = Proponuję inne rozwiązanie."}, {"pl": "Niestety brakuje jednej części.", "de": "Leider fehlt ein Teil.", "options": ["Leider fehlt ein Teil.", "Könnten Sie mir das Problem zeigen?", "Wir müssen warten, bis der Beton trocken ist."], "explain": "Leider fehlt ein Teil. = Niestety brakuje jednej części."}, {"pl": "Czy mógłby pan pokazać mi problem?", "de": "Könnten Sie mir das Problem zeigen?", "options": ["Könnten Sie mir das Problem zeigen?", "Die Reparatur dauert länger als geplant.", "Das hängt vom Wetter ab."], "explain": "Könnten Sie mir das Problem zeigen? = Czy mógłby pan pokazać mi problem?"}, {"pl": "Naprawa zajmie więcej czasu niż planowaliśmy.", "de": "Die Reparatur dauert länger als geplant.", "options": ["Die Reparatur dauert länger als geplant.", "Wir müssen warten, bis der Beton trocken ist.", "Wir können diesen Termin nicht garantieren."], "explain": "Die Reparatur dauert länger als geplant. = Naprawa zajmie więcej czasu niż planowaliśmy."}, {"pl": "Musimy poczekać, aż beton wyschnie.", "de": "Wir müssen warten, bis der Beton trocken ist.", "options": ["Wir müssen warten, bis der Beton trocken ist.", "Das hängt vom Wetter ab.", "Wir werden eine Lösung finden."], "explain": "Wir müssen warten, bis der Beton trocken ist. = Musimy poczekać, aż beton wyschnie."}, {"pl": "To zależy od pogody.", "de": "Das hängt vom Wetter ab.", "options": ["Das hängt vom Wetter ab.", "Wir können diesen Termin nicht garantieren.", "Wir müssen prüfen, warum das Tor nicht funktioniert."], "explain": "Das hängt vom Wetter ab. = To zależy od pogody."}, {"pl": "Nie możemy zagwarantować tego terminu.", "de": "Wir können diesen Termin nicht garantieren.", "options": ["Wir können diesen Termin nicht garantieren.", "Wir werden eine Lösung finden.", "Das Problem ist, dass der Boden uneben ist."], "explain": "Wir können diesen Termin nicht garantieren. = Nie możemy zagwarantować tego terminu."}, {"pl": "Znajdziemy rozwiązanie.", "de": "Wir werden eine Lösung finden.", "options": ["Wir werden eine Lösung finden.", "Wir müssen prüfen, warum das Tor nicht funktioniert.", "Ich schlage eine andere Lösung vor."], "explain": "Wir werden eine Lösung finden. = Znajdziemy rozwiązanie."}]}, {"id": "b1-6", "level": "B1", "title": "Rozmowa telefoniczna", "emoji": "📞", "description": "10 zdań · B1", "questions": [{"pl": "Dzwonię w sprawie naszego terminu.", "de": "Ich rufe wegen unseres Termins an.", "options": ["Ich rufe wegen unseres Termins an.", "Könnte ich bitte mit dem Leiter sprechen?", "Ich rufe in einer halben Stunde zurück."], "explain": "Ich rufe wegen unseres Termins an. = Dzwonię w sprawie naszego terminu."}, {"pl": "Czy mógłbym rozmawiać z kierownikiem?", "de": "Könnte ich bitte mit dem Leiter sprechen?", "options": ["Könnte ich bitte mit dem Leiter sprechen?", "Leider kann ich gerade nicht sprechen.", "Könnten Sie die Nummer wiederholen?"], "explain": "Könnte ich bitte mit dem Leiter sprechen? = Czy mógłbym rozmawiać z kierownikiem?"}, {"pl": "Niestety nie mogę teraz rozmawiać.", "de": "Leider kann ich gerade nicht sprechen.", "options": ["Leider kann ich gerade nicht sprechen.", "Ich rufe in einer halben Stunde zurück.", "Ich möchte den Termin bestätigen."], "explain": "Leider kann ich gerade nicht sprechen. = Niestety nie mogę teraz rozmawiać."}, {"pl": "Oddzwonię za pół godziny.", "de": "Ich rufe in einer halben Stunde zurück.", "options": ["Ich rufe in einer halben Stunde zurück.", "Könnten Sie die Nummer wiederholen?", "Bitte schicken Sie mir die Adresse per E-Mail."], "explain": "Ich rufe in einer halben Stunde zurück. = Oddzwonię za pół godziny."}, {"pl": "Czy może pan powtórzyć numer?", "de": "Könnten Sie die Nummer wiederholen?", "options": ["Könnten Sie die Nummer wiederholen?", "Ich möchte den Termin bestätigen.", "Die Verbindung ist sehr schlecht."], "explain": "Könnten Sie die Nummer wiederholen? = Czy może pan powtórzyć numer?"}, {"pl": "Chciałbym potwierdzić spotkanie.", "de": "Ich möchte den Termin bestätigen.", "options": ["Ich möchte den Termin bestätigen.", "Bitte schicken Sie mir die Adresse per E-Mail.", "Ich habe den Namen nicht verstanden."], "explain": "Ich möchte den Termin bestätigen. = Chciałbym potwierdzić spotkanie."}, {"pl": "Proszę wysłać mi adres mailem.", "de": "Bitte schicken Sie mir die Adresse per E-Mail.", "options": ["Bitte schicken Sie mir die Adresse per E-Mail.", "Die Verbindung ist sehr schlecht.", "Vielen Dank für Ihren Anruf."], "explain": "Bitte schicken Sie mir die Adresse per E-Mail. = Proszę wysłać mi adres mailem."}, {"pl": "Połączenie jest bardzo słabe.", "de": "Die Verbindung ist sehr schlecht.", "options": ["Die Verbindung ist sehr schlecht.", "Ich habe den Namen nicht verstanden.", "Ich rufe wegen unseres Termins an."], "explain": "Die Verbindung ist sehr schlecht. = Połączenie jest bardzo słabe."}, {"pl": "Nie dosłyszałem nazwiska.", "de": "Ich habe den Namen nicht verstanden.", "options": ["Ich habe den Namen nicht verstanden.", "Vielen Dank für Ihren Anruf.", "Könnte ich bitte mit dem Leiter sprechen?"], "explain": "Ich habe den Namen nicht verstanden. = Nie dosłyszałem nazwiska."}, {"pl": "Dziękuję za telefon.", "de": "Vielen Dank für Ihren Anruf.", "options": ["Vielen Dank für Ihren Anruf.", "Ich rufe wegen unseres Termins an.", "Leider kann ich gerade nicht sprechen."], "explain": "Vielen Dank für Ihren Anruf. = Dziękuję za telefon."}]}, {"id": "b1-7", "level": "B1", "title": "Opinie i argumenty", "emoji": "💬", "description": "10 zdań · B1", "questions": [{"pl": "Moim zdaniem to lepsze rozwiązanie.", "de": "Meiner Meinung nach ist das die bessere Lösung.", "options": ["Meiner Meinung nach ist das die bessere Lösung.", "Einerseits ist es günstiger.", "Ich bin mit Ihrem Vorschlag einverstanden."], "explain": "Meiner Meinung nach ist das die bessere Lösung. = Moim zdaniem to lepsze rozwiązanie."}, {"pl": "Z jednej strony jest taniej.", "de": "Einerseits ist es günstiger.", "options": ["Einerseits ist es günstiger.", "Andererseits dauert es länger.", "Ich bin nicht ganz überzeugt."], "explain": "Einerseits ist es günstiger. = Z jednej strony jest taniej."}, {"pl": "Z drugiej strony trwa to dłużej.", "de": "Andererseits dauert es länger.", "options": ["Andererseits dauert es länger.", "Ich bin mit Ihrem Vorschlag einverstanden.", "Am wichtigsten ist die Sicherheit."], "explain": "Andererseits dauert es länger. = Z drugiej strony trwa to dłużej."}, {"pl": "Zgadzam się z pana propozycją.", "de": "Ich bin mit Ihrem Vorschlag einverstanden.", "options": ["Ich bin mit Ihrem Vorschlag einverstanden.", "Ich bin nicht ganz überzeugt.", "Das hat mehrere Vorteile."], "explain": "Ich bin mit Ihrem Vorschlag einverstanden. = Zgadzam się z pana propozycją."}, {"pl": "Nie jestem całkiem przekonany.", "de": "Ich bin nicht ganz überzeugt.", "options": ["Ich bin nicht ganz überzeugt.", "Am wichtigsten ist die Sicherheit.", "Ich würde einen anderen Termin bevorzugen."], "explain": "Ich bin nicht ganz überzeugt. = Nie jestem całkiem przekonany."}, {"pl": "Najważniejsze jest bezpieczeństwo.", "de": "Am wichtigsten ist die Sicherheit.", "options": ["Am wichtigsten ist die Sicherheit.", "Das hat mehrere Vorteile.", "Können wir einen Kompromiss finden?"], "explain": "Am wichtigsten ist die Sicherheit. = Najważniejsze jest bezpieczeństwo."}, {"pl": "To ma kilka zalet.", "de": "Das hat mehrere Vorteile.", "options": ["Das hat mehrere Vorteile.", "Ich würde einen anderen Termin bevorzugen.", "Ich verstehe Ihren Standpunkt."], "explain": "Das hat mehrere Vorteile. = To ma kilka zalet."}, {"pl": "Wolałbym inny termin.", "de": "Ich würde einen anderen Termin bevorzugen.", "options": ["Ich würde einen anderen Termin bevorzugen.", "Können wir einen Kompromiss finden?", "Meiner Meinung nach ist das die bessere Lösung."], "explain": "Ich würde einen anderen Termin bevorzugen. = Wolałbym inny termin."}, {"pl": "Czy możemy znaleźć kompromis?", "de": "Können wir einen Kompromiss finden?", "options": ["Können wir einen Kompromiss finden?", "Ich verstehe Ihren Standpunkt.", "Einerseits ist es günstiger."], "explain": "Können wir einen Kompromiss finden? = Czy możemy znaleźć kompromis?"}, {"pl": "Rozumiem pana punkt widzenia.", "de": "Ich verstehe Ihren Standpunkt.", "options": ["Ich verstehe Ihren Standpunkt.", "Meiner Meinung nach ist das die bessere Lösung.", "Andererseits dauert es länger."], "explain": "Ich verstehe Ihren Standpunkt. = Rozumiem pana punkt widzenia."}]}, {"id": "b1-8", "level": "B1", "title": "Sytuacje awaryjne", "emoji": "🚧", "description": "10 zdań · B1", "questions": [{"pl": "Proszę natychmiast wyłączyć maszynę.", "de": "Bitte schalten Sie die Maschine sofort aus.", "options": ["Bitte schalten Sie die Maschine sofort aus.", "Jemand braucht Hilfe.", "Bitte bleiben Sie ruhig."], "explain": "Bitte schalten Sie die Maschine sofort aus. = Proszę natychmiast wyłączyć maszynę."}, {"pl": "Ktoś potrzebuje pomocy.", "de": "Jemand braucht Hilfe.", "options": ["Jemand braucht Hilfe.", "Wir müssen den Bereich absichern.", "Ist jemand verletzt worden?"], "explain": "Jemand braucht Hilfe. = Ktoś potrzebuje pomocy."}, {"pl": "Musimy zabezpieczyć teren.", "de": "Wir müssen den Bereich absichern.", "options": ["Wir müssen den Bereich absichern.", "Bitte bleiben Sie ruhig.", "Man darf hier nicht hineingehen."], "explain": "Wir müssen den Bereich absichern. = Musimy zabezpieczyć teren."}, {"pl": "Proszę zachować spokój.", "de": "Bitte bleiben Sie ruhig.", "options": ["Bitte bleiben Sie ruhig.", "Ist jemand verletzt worden?", "Ich werde das meinem Vorgesetzten melden."], "explain": "Bitte bleiben Sie ruhig. = Proszę zachować spokój."}, {"pl": "Czy ktoś został ranny?", "de": "Ist jemand verletzt worden?", "options": ["Ist jemand verletzt worden?", "Man darf hier nicht hineingehen.", "Wir brauchen einen Verbandskasten."], "explain": "Ist jemand verletzt worden? = Czy ktoś został ranny?"}, {"pl": "Nie wolno tutaj wchodzić.", "de": "Man darf hier nicht hineingehen.", "options": ["Man darf hier nicht hineingehen.", "Ich werde das meinem Vorgesetzten melden.", "Dieses Gerät ist gefährlich."], "explain": "Man darf hier nicht hineingehen. = Nie wolno tutaj wchodzić."}, {"pl": "Zgłoszę to przełożonemu.", "de": "Ich werde das meinem Vorgesetzten melden.", "options": ["Ich werde das meinem Vorgesetzten melden.", "Wir brauchen einen Verbandskasten.", "Lassen Sie uns zuerst die Sicherungen prüfen."], "explain": "Ich werde das meinem Vorgesetzten melden. = Zgłoszę to przełożonemu."}, {"pl": "Potrzebujemy apteczki.", "de": "Wir brauchen einen Verbandskasten.", "options": ["Wir brauchen einen Verbandskasten.", "Dieses Gerät ist gefährlich.", "Bitte schalten Sie die Maschine sofort aus."], "explain": "Wir brauchen einen Verbandskasten. = Potrzebujemy apteczki."}, {"pl": "To urządzenie jest niebezpieczne.", "de": "Dieses Gerät ist gefährlich.", "options": ["Dieses Gerät ist gefährlich.", "Lassen Sie uns zuerst die Sicherungen prüfen.", "Jemand braucht Hilfe."], "explain": "Dieses Gerät ist gefährlich. = To urządzenie jest niebezpieczne."}, {"pl": "Najpierw sprawdźmy zabezpieczenia.", "de": "Lassen Sie uns zuerst die Sicherungen prüfen.", "options": ["Lassen Sie uns zuerst die Sicherungen prüfen.", "Bitte schalten Sie die Maschine sofort aus.", "Wir müssen den Bereich absichern."], "explain": "Lassen Sie uns zuerst die Sicherungen prüfen. = Najpierw sprawdźmy zabezpieczenia."}]}];
 lessonsA1.push(...advancedLessons);
+
+// Dodatkowe rozdziały utrwalające A2/B1 — po 15 zadań w każdej lekcji.
+const extendedModules = [
+ ['A2','Rozmowy o pracy i terminach','📆',[0,1,3]],
+ ['A2','Zdarzenia i opowiadanie','📚',[0,2,3]],
+ ['A2','Klient: pytania i odpowiedzi','🤝',[1,2,3]],
+ ['A2','Ćwiczenia mieszane A2','🧩',[0,1,2]],
+ ['B1','Rozmowy zawodowe B1','🗣️',[4,5,6]],
+ ['B1','Argumenty i uzasadnienia','💡',[4,6,7]],
+ ['B1','Problemy i bezpieczeństwo','🦺',[5,6,7]],
+ ['B1','Powtórka sytuacji B1','🏆',[4,5,7]]
+];
+// Umieszczamy nowe rozdziały po odpowiednich dotychczasowych poziomach.
+const moreA2=extendedModules.filter(x=>x[0]==='A2').map((spec,j)=>({id:'a2-extra-'+(j+1),level:'A2',title:spec[1],emoji:spec[2],description:'15 zdań · A2 · utrwalanie',questions:spec[3].flatMap(k=>advancedLessons[k].questions).filter((q,i,arr)=>arr.findIndex(t=>t.de===q.de)===i).slice(0,15)}));
+const moreB1=extendedModules.filter(x=>x[0]==='B1').map((spec,j)=>({id:'b1-extra-'+(j+1),level:'B1',title:spec[1],emoji:spec[2],description:'15 zdań · B1 · utrwalanie',questions:spec[3].flatMap(k=>advancedLessons[k].questions).filter((q,i,arr)=>arr.findIndex(t=>t.de===q.de)===i).slice(0,15)}));
+lessonsA1.splice(24,0,...moreA2);
+lessonsA1.push(...moreB1);
+
 const courses = {
     work: {
         title: "NIEMIECKI W PRACY",
@@ -3678,6 +3698,15 @@ let scrambleTokens = [];
 let selectedTokens = [];
 let scrambleWordCount = 0;
 let fillCorrectWord = "";
+let checkpointAfter = null;
+let heartsLeft = 5;
+let heartsEnabled = false;
+let sessionStopped = false;
+const checkpointKey = "deutschTrainerCheckpointsV1";
+let checkpointPassed = {};
+try {checkpointPassed = JSON.parse(localStorage.getItem(checkpointKey)||"{}");} catch(e) {}
+function saveCheckpoints(){try{localStorage.setItem(checkpointKey,JSON.stringify(checkpointPassed))}catch(e){}}
+function updateHearts(){const el=document.getElementById("heart-status");el.style.display=heartsEnabled?"block":"none";el.textContent="❤️ Życia: "+"❤️".repeat(heartsLeft)+"🖤".repeat(5-heartsLeft)+" ("+heartsLeft+"/5)";}
 if (!data.pathCompleted || typeof data.pathCompleted !== "object") data.pathCompleted = {};
 
 function shuffle(arr) {
@@ -3711,8 +3740,10 @@ function goHome() {
 
 function startLesson(course) {
     activePathIndex = null;
+    checkpointAfter=null;
     currentCourse = course;
     reviewMode = false;
+    checkpointAfter=null;
 
     const all = courses[course].questions;
 
@@ -3730,6 +3761,7 @@ function startLesson(course) {
 function startReview() {
     activePathIndex = null;
     reviewMode = true;
+    checkpointAfter=null;
     const all = [...Object.values(courses).flatMap(c=>c.questions),...lessonsA1.flatMap(l=>l.questions)];
     const pool = all.filter(q=>(data.mistakes[q.de]||0)>0);
     if(pool.length===0) {
@@ -3745,6 +3777,10 @@ function startReview() {
 
 function beginQuiz() {
     index = 0;
+    heartsLeft = 5;
+    sessionStopped = false;
+    heartsEnabled = activePathIndex !== null || checkpointAfter !== null;
+    updateHearts();
     score = 0;
     lessonCorrect = 0;
     document.getElementById("quiz-content").style.display="block";
@@ -3755,15 +3791,16 @@ function beginQuiz() {
 
 function renderQuestion() {
     answeredThisQuestion = false;
+    updateHearts();
     const q = questions[index];
-    document.getElementById("category").textContent=reviewMode?"POWTÓRKA BŁĘDÓW":activePathIndex!==null?(lessonsA1[activePathIndex].level || "A1")+" · LEKCJA "+(activePathIndex+1):courses[currentCourse].title;
+    document.getElementById("category").textContent=checkpointAfter!==null?"📝 TEST KONTROLNY · 25 PYTAŃ":reviewMode?"POWTÓRKA BŁĘDÓW":activePathIndex!==null?(lessonsA1[activePathIndex].level || "A1")+" · LEKCJA "+(activePathIndex+1):courses[currentCourse].title;
     document.getElementById("question").textContent=q.pl;
     document.getElementById("question-hint").textContent=q.hint || "Wybierz poprawne zdanie po niemiecku.";
     document.getElementById("question-count").textContent=(index+1)+"/"+questions.length;
     document.getElementById("quiz-progress").style.width=((index/questions.length)*100)+"%";
     document.getElementById("context").style.display="none";
-    const scrambled = activePathIndex !== null && (index === 2 || index === 4);
-    const fillBlank = activePathIndex !== null && (index === 1 || index === 3);
+    const scrambled = (activePathIndex !== null || checkpointAfter!==null) && (index % 5 === 2 || index % 5 === 4);
+    const fillBlank = (activePathIndex !== null || checkpointAfter!==null) && (index % 5 === 1 || index % 5 === 3);
     document.getElementById("fill-area").style.display = fillBlank ? "block" : "none";
     document.getElementById("scramble-area").style.display = scrambled ? "block" : "none";
     document.getElementById("question-hint").textContent = scrambled ? "🧩 Ułóż zdanie. Uwaga: niektóre słowa są zbędne!" : fillBlank ? "✍️ Uzupełnij brakujące niemieckie słowo." : (q.hint || "Wybierz poprawne zdanie po niemiecku.");
@@ -3965,6 +4002,7 @@ function checkAnswer(answer, button) {
     const q=questions[index];
     const isCorrect = answer === q.de;
     playAnswerSound(isCorrect);
+    if(!isCorrect && heartsEnabled){heartsLeft=Math.max(0,heartsLeft-1);updateHearts();}
     data.answered++;
     data.seen[q.de]=true;
 
@@ -4009,7 +4047,7 @@ function checkAnswer(answer, button) {
 
     document.getElementById("next-button").style.display="block";
     document.getElementById("next-button").textContent=
-        index===questions.length-1?"ZOBACZ WYNIK →":"NASTĘPNE PYTANIE →";
+        heartsEnabled && heartsLeft===0 ? "ZOBACZ WYNIK →" : index===questions.length-1?"ZOBACZ WYNIK →":"NASTĘPNE PYTANIE →";
     saveData();
     updateUI();
 }
@@ -4017,6 +4055,7 @@ function checkAnswer(answer, button) {
 function nextQuestion() {
     if(!answeredThisQuestion) return;
     if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    if(heartsEnabled && heartsLeft===0){sessionStopped=true;finishLesson();return;}
     index++;
     if(index<questions.length) renderQuestion();
     else finishLesson();
@@ -4024,7 +4063,8 @@ function nextQuestion() {
 
 function finishLesson() {
     data.completed++;
-    if (activePathIndex !== null && lessonCorrect >= Math.ceil(questions.length * 0.8)) {
+    if (checkpointAfter !== null && !sessionStopped && lessonCorrect >= Math.ceil(questions.length * 0.8)){checkpointPassed[checkpointAfter]=true;saveCheckpoints();}
+    if (activePathIndex !== null && !sessionStopped && lessonCorrect >= Math.ceil(questions.length * 0.8)) {
         data.pathCompleted[lessonsA1[activePathIndex].id] = true;
     }
     const today=new Date();
@@ -4049,7 +4089,7 @@ function finishLesson() {
     document.getElementById("result-title").textContent=
         lessonCorrect===questions.length?"Perfekcyjnie!":lessonCorrect>=Math.ceil(questions.length/2)?"Świetna robota!":"Nie poddawaj się!";
     document.getElementById("result-description").textContent=
-        activePathIndex !== null
+        sessionStopped ? "Skończyły się serduszka. Powtórz lekcję, aby spróbować ponownie. Wynik: "+lessonCorrect+"/"+questions.length+"." : checkpointAfter !== null ? (lessonCorrect>=Math.ceil(questions.length*.8)?"Test zaliczony! Możesz kontynuować naukę. ":"Test niezaliczony. Potrzebujesz 80%. ")+"Wynik: "+lessonCorrect+"/"+questions.length+"." : activePathIndex !== null
           ? (lessonCorrect >= Math.ceil(questions.length * 0.8) ? "Lekcja zaliczona! Odblokowano kolejną. " : "Do odblokowania kolejnej lekcji potrzebujesz 80% poprawnych odpowiedzi. ") + "Wynik: " + lessonCorrect + "/" + questions.length + "."
           : "Poprawne odpowiedzi: "+lessonCorrect+" z "+questions.length+". Każdy błąd to okazja do nauki.";
     document.getElementById("result-xp").textContent="+"+score+" XP";
@@ -4057,11 +4097,11 @@ function finishLesson() {
         "Ukończone sesje: "+data.completed+" · Seria: "+data.streak+" 🔥";
     const nextButton = document.getElementById("next-lesson-button");
     const repeatButton = document.getElementById("repeat-lesson-button");
-    const passed = activePathIndex !== null && lessonCorrect >= Math.ceil(questions.length * 0.8);
-    const hasNext = passed && activePathIndex + 1 < lessonsA1.length;
+    const passed = !sessionStopped && lessonCorrect >= Math.ceil(questions.length * 0.8);
+    const hasNext = (checkpointAfter !== null && passed && checkpointAfter < lessonsA1.length) || (activePathIndex !== null && passed && activePathIndex + 1 < lessonsA1.length);
     nextButton.style.display = hasNext ? "block" : "none";
-    repeatButton.textContent = activePathIndex !== null && !passed ? "SPRÓBUJ PONOWNIE ↻" : "POWTÓRZ LEKCJĘ";
-    if (activePathIndex !== null && passed && !hasNext) {
+    repeatButton.textContent = !passed ? "SPRÓBUJ PONOWNIE ↻" : "POWTÓRZ LEKCJĘ";
+    if (activePathIndex !== null && passed && !hasNext && activePathIndex===lessonsA1.length-1) {
         document.getElementById("result-description").textContent =
             "Gratulacje! Ukończono ścieżkę A1–B1! Wynik: " + lessonCorrect + "/" + questions.length + ".";
     }
@@ -4101,7 +4141,10 @@ function showProgress() {
 
 function unlockedPathCount() {
     let n = 0;
-    while (n < lessonsA1.length && data.pathCompleted[lessonsA1[n].id]) n++;
+    while (n < lessonsA1.length && data.pathCompleted[lessonsA1[n].id]) {
+        n++;
+        if(n%5===0 && n<lessonsA1.length && !checkpointPassed[n]) break;
+    }
     return n;
 }
 function renderPath() {
@@ -4112,6 +4155,12 @@ function renderPath() {
     const container = document.getElementById("path-lessons");
     container.innerHTML = "";
     lessonsA1.forEach((lesson,i)=>{
+        if(i>0 && i%5===0){
+            const passed=!!checkpointPassed[i];
+            const ready=lessonsA1.slice(0,i).every(l=>data.pathCompleted[l.id]);
+            const test=document.createElement("button");test.className="lesson-row";test.style.cssText="width:100%;text-align:left;color:inherit;border:2px solid #e4c6f5;background:#fff9ff;opacity:"+(ready?"1":".5");
+            test.disabled=!ready;test.innerHTML=`<div class="lesson-emoji">${passed?"🏆":"📝"}</div><div class="lesson-info"><strong>TEST KONTROLNY · lekcje ${i-4}–${i}</strong><small>25 pytań · 80% do zaliczenia · 5 żyć</small></div><div class="arrow">${passed?"✅":ready?"▶":"🔒"}</div>`;test.onclick=()=>startCheckpoint(i);container.appendChild(test);
+        }
         const done=!!data.pathCompleted[lesson.id], locked=i>unlocked;
         const btn=document.createElement("button");
         btn.className="lesson-row";
@@ -4130,23 +4179,36 @@ function renderPath() {
 }
 function continuePath() {
     const next=unlockedPathCount();
+    if(next>0 && next%5===0 && !checkpointPassed[next]){startCheckpoint(next);return;}
     startPathLesson(Math.min(next,lessonsA1.length-1));
 }
 function startPathLesson(i) {
-    if(i>unlockedPathCount()) return;
+    if(i>unlockedPathCount() || (i>0 && i%5===0 && !checkpointPassed[i])) return;
+    checkpointAfter=null;
     activePathIndex=i;
     currentCourse="work";
     reviewMode=false;
     questions=shuffle(lessonsA1[i].questions);
     beginQuiz();
 }
+function startCheckpoint(after){
+    if(after<5 || after%5!==0 || !lessonsA1.slice(0,after).every(l=>data.pathCompleted[l.id]))return;
+    checkpointAfter=after;activePathIndex=null;reviewMode=false;
+    const pool=lessonsA1.slice(after-5,after).flatMap(l=>l.questions);
+    questions=shuffle(pool).slice(0,25);
+    beginQuiz();
+}
 function goToNextLesson() {
-    if (activePathIndex === null || lessonCorrect < Math.ceil(questions.length * 0.8)) return;
-    const next = activePathIndex + 1;
-    if (next >= lessonsA1.length || next > unlockedPathCount()) return;
+    if(sessionStopped || lessonCorrect < Math.ceil(questions.length*.8))return;
+    if(checkpointAfter!==null){const n=checkpointAfter;if(checkpointPassed[n])startPathLesson(n);return;}
+    if(activePathIndex===null)return;
+    const next=activePathIndex+1;
+    if(next>=lessonsA1.length)return;
+    if(next%5===0){startCheckpoint(next);return;}
     startPathLesson(next);
 }
 function repeatLesson() {
+    if(checkpointAfter!==null){startCheckpoint(checkpointAfter);return;}
     if(activePathIndex!==null) startPathLesson(activePathIndex);
     else if(reviewMode) startReview();
     else startLesson(currentCourse);
@@ -4184,7 +4246,7 @@ function nextFeatureQuestion(){featureQuestion=shuffle(allTrainingQuestions)[0];
 function normalizeGerman(s){return s.toLocaleLowerCase('de-DE').replace(/[.!?,;:]/g,'').replace(/\s+/g,' ').trim()}
 function checkWriting(){const q=featureQuestion;const typed=document.getElementById('writing-input').value; if(!typed.trim())return;const good=normalizeGerman(typed)===normalizeGerman(q.de);recordFeatureAnswer(q,good);document.getElementById('feature-feedback').innerHTML=`<p>${good?'✅ Świetnie! +10 XP':'❌ Poprawne zdanie:'}<br><b>${esc(q.de)}</b></p>`;document.querySelectorAll('#feature-body button').forEach(b=>b.disabled=true);featureButton('🔊 ODSŁUCHAJ',()=>speakGerman(q.de));featureButton('NASTĘPNE ZDANIE →',nextFeatureQuestion)}
 function recordFeatureAnswer(q,good){data.answered++;data.seen[q.de]=true;if(good){data.correct++;data.xp+=10;if(data.mistakes[q.de])data.mistakes[q.de]=Math.max(0,data.mistakes[q.de]-1)}else data.mistakes[q.de]=(data.mistakes[q.de]||0)+1;playAnswerSound(good);saveData();updateUI()}
-function startSmartReview(){const now=Date.now();const pool=allTrainingQuestions.filter(q=>data.seen[q.de]||data.mistakes[q.de]);const ranked=pool.map(q=>({q,priority:(data.mistakes[q.de]||0)*100+(now-(data.reviewDates?.[q.de]||0))/86400000})).sort((a,b)=>b.priority-a.priority);const selected=ranked.slice(0,15).map(x=>x.q);if(!selected.length){setFeature('🧠 Inteligentne powtórki','<p>Najpierw wykonaj kilka lekcji. Tutaj pojawią się poznane słowa, a błędne odpowiedzi będą miały pierwszeństwo.</p>');return;}questions=shuffle(selected);activePathIndex=null;reviewMode=true;currentCourse='work';beginQuiz();}
+function startSmartReview(){const now=Date.now();const pool=allTrainingQuestions.filter(q=>data.seen[q.de]||data.mistakes[q.de]);const ranked=pool.map(q=>({q,priority:(data.mistakes[q.de]||0)*100+(now-(data.reviewDates?.[q.de]||0))/86400000})).sort((a,b)=>b.priority-a.priority);const selected=ranked.slice(0,15).map(x=>x.q);if(!selected.length){setFeature('🧠 Inteligentne powtórki','<p>Najpierw wykonaj kilka lekcji. Tutaj pojawią się poznane słowa, a błędne odpowiedzi będą miały pierwszeństwo.</p>');return;}questions=shuffle(selected);activePathIndex=null;checkpointAfter=null;reviewMode=true;currentCourse='work';beginQuiz();}
 function drawDictionary(){const known=allTrainingQuestions.filter(q=>data.seen[q.de]);setFeature('📖 Twój słownik',`<p>Poznane zwroty: <b>${known.length}</b>. Kliknij, aby odsłuchać wymowę.</p><input id="dict-search" placeholder="Szukaj po polsku lub niemiecku" style="width:100%;box-sizing:border-box;padding:13px;border-radius:10px;border:1px solid #ddd"><div id="dict-list" style="margin-top:12px"></div>`);const render=()=>{const query=document.getElementById('dict-search').value.toLowerCase();const list=document.getElementById('dict-list');list.innerHTML='';known.filter(q=>(q.de+' '+q.pl).toLowerCase().includes(query)).slice(0,100).forEach(q=>{const b=document.createElement('button');b.className='option';b.style.cssText='text-align:left;margin-bottom:8px;font-size:15px';b.textContent='🔊 '+q.de+' — '+q.pl;b.onclick=()=>speakGerman(q.de);list.appendChild(b)});if(!known.length)list.textContent='Ukończ pierwsze ćwiczenia, aby dodać słowa do słownika.'};document.getElementById('dict-search').oninput=render;render();}
 function drawMissions(){const today=new Date().toLocaleDateString('sv-SE');const stats=data.dailyStats?.[today]||{answered:0,correct:0,xp:0};const milestones=[['Odpowiedz na 10 pytań',stats.answered,10],['Odpowiedz 8 razy poprawnie',stats.correct,8],['Zdobądź 100 XP',stats.xp,100]];setFeature('🏆 Dzisiejsze misje',`<p>Postęp dzisiaj: <b>${today}</b></p>`+milestones.map(([label,value,target])=>`<p><b>${value>=target?'🏅':'🎯'} ${label}</b><br>${Math.min(value,target)}/${target}</p><div class="progress"><div class="progress-fill" style="width:${Math.min(100,value/target*100)}%"></div></div>`).join('')+`<p class="muted">Odznaki zdobywasz za realizację celów. Seria nauki: ${data.streak} dni 🔥</p>`)}
 // Licznik dzienny, także dla zwykłych lekcji.
@@ -4202,7 +4264,7 @@ updateSoundButton();
 </script>
 
 <!-- Ustawienia wymowy: dostępne z każdego ekranu aplikacji -->
-<button type="button" onclick="openVoiceSettings()" title="Ustawienia niemieckiego lektora" style="position:fixed;right:16px;bottom:18px;z-index:998;border:0;border-radius:30px;background:#183b78;color:white;padding:12px 17px;box-shadow:0 5px 18px #0003;cursor:pointer;font-weight:700">🎙️ Głos</button>
+
 <div id="voice-panel" role="dialog" aria-modal="true" aria-label="Ustawienia wymowy" onclick="if(event.target===this)this.style.display='none'" style="display:none;position:fixed;inset:0;z-index:999;background:#0009;align-items:center;justify-content:center;padding:16px">
   <div style="width:min(430px,100%);box-sizing:border-box;background:white;color:#152a43;border-radius:18px;padding:24px;box-shadow:0 10px 40px #0004">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><h2 style="margin:0;font-size:22px">🎙️ Niemiecki lektor</h2><button type="button" onclick="document.getElementById('voice-panel').style.display='none'" aria-label="Zamknij" style="background:transparent;border:0;font-size:26px;cursor:pointer">×</button></div>
