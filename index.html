@@ -372,6 +372,7 @@ p { line-height: 1.5; }
           <button onclick="openFeature('install')">📱 Instalacja / offline</button>
           <button onclick="openVoiceSettings()">🎙️ Ustaw głos</button>
           <button id="sound-toggle" onclick="toggleSounds()">🔊 Dźwięki: WŁĄCZONE</button>
+          <button onclick="openDeveloperMode()">🛠️ Tryb deweloperski 🔒</button>
         </div>
       </details>
     </section>
@@ -4411,7 +4412,35 @@ const petCatalog=[
 {id:'spider',name:'Spidi',kind:'Pajączek',color:'#a58bea',accent:'#d3bafa',ears:'spider',msg:'Wspaniale!'}
 ];
 function petState(){if(!data.pets||!Array.isArray(data.pets.unlocked))data.pets={unlocked:[],active:null};data.pets.unlocked=[...new Set(data.pets.unlocked.filter(id=>petCatalog.some(p=>p.id===id)))].slice(0,8);if(!data.pets.unlocked.includes(data.pets.active))data.pets.active=null;return data.pets;}
-function petAvailable(){return Math.max(0,Math.min(8,Math.floor(Math.max(0,Number(data.xp)||0)/2000))-petState().unlocked.length)}
+// Tryb testowy wlasciciela: wirtualny limit XP tylko dla odblokowywania pupili.
+// Prawdziwe XP, lekcje i statystyki nie sa zmieniane.
+// Tryb deweloperski: lokalna blokada haslem (nie jest to serwerowe uwierzytelnianie).
+// Dawny niezabezpieczony przelacznik v11 nie jest juz respektowany.
+const petAdminKey='deutschTrainerDeveloperV12';
+let petAdminMode=sessionStorage.getItem(petAdminKey)==='1';
+const developerPasswordHash='87617d3a05d40912e7dea9ab6f944ef6f1159307f55ea7e56a4b2c2ec089fdc6';
+async function developerHash(value){
+ const bytes=new TextEncoder().encode(value);
+ const digest=await crypto.subtle.digest('SHA-256',bytes);
+ return [...new Uint8Array(digest)].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+function petEffectiveXp(){return petAdminMode?Math.max(16000,Number(data.xp)||0):Math.max(0,Number(data.xp)||0)}
+async function openDeveloperMode(){
+ if(petAdminMode){
+  if(confirm('Tryb deweloperski jest wlaczony. Czy chcesz go wylaczyc?')){
+   petAdminMode=false;sessionStorage.removeItem(petAdminKey);updateUI();alert('Tryb deweloperski wylaczony.');
+  }
+  return;
+ }
+ const password=prompt('🛠️ Tryb deweloperski\nWpisz haslo, aby wlaczyc testowanie zwierzatek:');
+ if(password===null)return;
+ try{
+  if(await developerHash(password)===developerPasswordHash){
+   petAdminMode=true;sessionStorage.setItem(petAdminKey,'1');updateUI();alert('Tryb deweloperski wlaczony! Mozesz odblokowywac zwierzatka bez XP.');
+  }else{alert('Nieprawidlowe haslo.')}
+ }catch(e){alert('Nie mozna sprawdzic hasla na tym urzadzeniu. Otworz aplikacje przez HTTPS.')}
+}
+function petAvailable(){return Math.max(0,Math.min(8,Math.floor(petEffectiveXp()/2000))-petState().unlocked.length)}
 function petSvg(id){const p=petCatalog.find(x=>x.id===id);if(!p)return '';let ears='';if(p.ears==='cat'||p.ears==='fox')ears=`<path d="M30 46 L19 10 Q18 6 28 12 L48 29 M70 29 L91 10 Q98 6 91 48" fill="${p.color}" stroke="#4c4659" stroke-width="3" stroke-linejoin="round"/><path d="M30 35 L25 19 L41 32 M76 32 L87 19 L83 38" fill="#ffb3b8"/>`;
 if(p.ears==='dog')ears=`<path d="M31 31 Q4 14 9 56 Q16 73 32 54 M68 31 Q96 14 91 56 Q84 73 68 54" fill="#93613f" stroke="#664632" stroke-width="3"/>`;
 if(p.ears==='panda')ears=`<circle cx="25" cy="29" r="15" fill="#222b3d"/><circle cx="75" cy="29" r="15" fill="#222b3d"/>`;
@@ -4423,12 +4452,12 @@ let beak=p.ears==='parrot'?`<path d="M42 66 Q50 59 60 66 L51 80Z" fill="#f3a83b"
 let nose=p.ears==='snake'||p.ears==='spider'||p.ears==='parrot'?'':`<ellipse cx="50" cy="66" rx="6" ry="4" fill="#493a46"/>`;
 return `<span class="pet-avatar" role="img" aria-label="${p.kind} ${p.name}"><svg viewBox="0 0 100 112" xmlns="http://www.w3.org/2000/svg">${ears}<ellipse cx="50" cy="94" rx="31" ry="16" fill="${p.color}" stroke="#4c4659" stroke-width="2"/><path class="pet-arm" d="M76 83 Q96 79 92 58" fill="none" stroke="${p.color}" stroke-width="12" stroke-linecap="round"/><path d="M24 84 Q8 80 13 65" fill="none" stroke="${p.color}" stroke-width="10" stroke-linecap="round"/><ellipse cx="50" cy="55" rx="36" ry="36" fill="${p.color}" stroke="#4c4659" stroke-width="2.4"/><ellipse cx="50" cy="71" rx="23" ry="14" fill="${p.accent}" opacity=".65"/>${eyes}<ellipse class="pet-eye" cx="36" cy="54" rx="4.5" ry="7" fill="${p.ears==='panda'?'white':'#263248'}"/><ellipse class="pet-eye" cx="64" cy="54" rx="4.5" ry="7" fill="${p.ears==='panda'?'white':'#263248'}"/>${nose}${beak}<path d="M43 75 Q50 82 57 75" fill="none" stroke="#493a46" stroke-width="2.4" stroke-linecap="round"/><ellipse cx="25" cy="69" rx="6" ry="3.5" fill="#f39da7" opacity=".65"/><ellipse cx="75" cy="69" rx="6" ry="3.5" fill="#f39da7" opacity=".65"/></svg></span>`;}
 function petCard(id,where){const p=petCatalog.find(x=>x.id===id);return `<div class="pet-companion" id="pet-companion-${where}">${petSvg(id)}<span id="pet-speech-${where}">${p.name}: ${where==='home'?'Hallo! Miło Cię widzieć!':'Viel Erfolg! Dasz radę!'}</span></div>`;}
-function updatePetUI(){const st=petState(),xp=Math.max(0,Number(data.xp)||0),slots=Math.min(8,Math.floor(xp/2000)),next=Math.min(16000,(slots+1)*2000);const home=document.getElementById('pet-home-slot');if(home){home.innerHTML=st.active?`<div class="pet-home">${petSvg(st.active)}<div><strong>${petCatalog.find(p=>p.id===st.active).name} wita Cię! 👋</strong><p>Hallo! Gotowy na kolejną lekcję?</p><button class="pet-small-btn" onclick="openPetShop()">Zmień pupila</button></div></div>`:'';}
-const reward=document.getElementById('pet-home-reward');if(reward){const pct=slots>=8?100:Math.min(100,(xp%2000)/20);reward.innerHTML=`<div class="dt-progress-top"><span>${petAvailable()>0?'🎁 Możesz odblokować pupila!':'Następne zwierzątko'}</span><strong>${st.unlocked.length}/8</strong></div><div class="progress"><div class="progress-fill" style="width:${pct}%;background:#f59e0b"></div></div><p class="muted">${slots>=8?'Wszystkie progi XP osiągnięte!':`${xp} / ${next} XP · ${Math.max(0,next-xp)} XP do kolejnego progu`}</p><button class="pet-small-btn" onclick="openPetShop()">🐾 Otwórz kolekcję ${petAvailable()?'('+petAvailable()+' wybór)':''}</button>`;}
+function updatePetUI(){const st=petState(),xp=petEffectiveXp(),slots=Math.min(8,Math.floor(xp/2000)),next=Math.min(16000,(slots+1)*2000);const home=document.getElementById('pet-home-slot');if(home){home.innerHTML=st.active?`<div class="pet-home">${petSvg(st.active)}<div><strong>${petCatalog.find(p=>p.id===st.active).name} wita Cię! 👋</strong><p>Hallo! Gotowy na kolejną lekcję?</p><button class="pet-small-btn" onclick="openPetShop()">Zmień pupila</button></div></div>`:'';}
+const reward=document.getElementById('pet-home-reward');if(reward){const pct=slots>=8?100:Math.min(100,(xp%2000)/20);reward.innerHTML=`<div class="dt-progress-top"><span>${petAvailable()>0?'🎁 Możesz odblokować pupila!':'Następne zwierzątko'}</span><strong>${st.unlocked.length}/8</strong></div><div class="progress"><div class="progress-fill" style="width:${pct}%;background:#f59e0b"></div></div><p class="muted">${petAdminMode?'🧪 TRYB DEWELOPERSKI: wirtualne 16 000 XP · Twoje prawdziwe XP: '+(data.xp||0):slots>=8?'Wszystkie progi XP osiągnięte!':`${xp} / ${next} XP · ${Math.max(0,next-xp)} XP do kolejnego progu`}</p><button class="pet-small-btn" onclick="openPetShop()">🐾 Otwórz kolekcję ${petAvailable()?'('+petAvailable()+' wybór)':''}</button>`;}
 const quiz=document.getElementById('pet-quiz-slot');if(quiz && quiz.dataset.petId!==(st.active||'')){quiz.innerHTML=st.active?petCard(st.active,'quiz'):'';quiz.dataset.petId=st.active||'';}
 const feat=document.getElementById('pet-feature-slot');if(feat && feat.dataset.petId!==(st.active||'')){feat.innerHTML=st.active?petCard(st.active,'feature'):'';feat.dataset.petId=st.active||'';}}
 function petReact(good){const id=petState().active;if(!id)return;const p=petCatalog.find(x=>x.id===id);for(const where of ['quiz','feature']){const card=document.getElementById('pet-companion-'+where),label=document.getElementById('pet-speech-'+where);if(!card||!label)continue;card.querySelector('.pet-avatar')?.classList.remove('pet-good','pet-bad');void card.offsetWidth;card.querySelector('.pet-avatar')?.classList.add(good?'pet-good':'pet-bad');label.textContent=good?p.name+': '+p.msg:p.name+': Spróbuj jeszcze raz! 💪';}}
-function openPetShop(){const st=petState(),available=petAvailable();setFeature('🐾 Twoje zwierzątka',`<p>Co 2000 zdobytych XP wybierasz <b>jedno dowolne zwierzątko</b>. XP nie jest odejmowane. Masz <b>${Math.max(0,Number(data.xp)||0)} XP</b> i <b>${available}</b> ${available===1?'dostępny wybór':'dostępnych wyborów'}.</p><div class="pet-grid">${petCatalog.map(p=>{const owned=st.unlocked.includes(p.id),active=st.active===p.id;return `<div class="pet-tile">${petSvg(p.id)}<strong>${p.name}</strong><p>${p.kind}</p><button ${!owned&&!available?'disabled':''} onclick="${owned?`activatePet('${p.id}')`:`unlockPet('${p.id}')`}">${active?'✓ Aktywny':owned?'Wybierz':'🔓 Odblokuj'}</button></div>`}).join('')}</div>`);}
+function openPetShop(){const st=petState(),available=petAvailable();setFeature('🐾 Twoje zwierzątka',`<p>Co 2000 zdobytych XP wybierasz <b>jedno dowolne zwierzątko</b>. XP nie jest odejmowane. Masz <b>${Math.max(0,Number(data.xp)||0)} prawdziwego XP</b>${petAdminMode?' · <b>Tryb deweloperski: testowanie pupili</b>':''} i <b>${available}</b> ${available===1?'dostępny wybór':'dostępnych wyborów'}.</p><div class="pet-grid">${petCatalog.map(p=>{const owned=st.unlocked.includes(p.id),active=st.active===p.id;return `<div class="pet-tile">${petSvg(p.id)}<strong>${p.name}</strong><p>${p.kind}</p><button ${!owned&&!available?'disabled':''} onclick="${owned?`activatePet('${p.id}')`:`unlockPet('${p.id}')`}">${active?'✓ Aktywny':owned?'Wybierz':'🔓 Odblokuj'}</button></div>`}).join('')}</div>`);}
 function unlockPet(id){const st=petState();if(!petCatalog.some(p=>p.id===id)||st.unlocked.includes(id)||petAvailable()<1)return;st.unlocked.push(id);st.active=id;saveData();updateUI();openPetShop();}
 function activatePet(id){const st=petState();if(!st.unlocked.includes(id))return;st.active=id;saveData();updateUI();openPetShop();}
 
