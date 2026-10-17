@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<link rel="manifest" href="manifest.webmanifest?v=20261017-pets-v17">
+<link rel="manifest" href="manifest.webmanifest?v=20261017-pets-v20-panda">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="theme-color" content="#f7f8fc">
@@ -404,6 +404,14 @@ body{background:radial-gradient(circle at 90% 5%,var(--pet-glow) 0,transparent 3
 .pet-avatar.pet-3d.pet-good .pet-pose.good{animation:none!important}
 @media(prefers-reduced-motion:reduce){.pet-avatar.pet-3d{animation:none!important}}
 
+/* v20 panda: full-body transparent panda assets regenerated and integrated */
+.pet-avatar.pet-3d{overflow:visible!important;clip-path:none!important}
+.pet-avatar.pet-3d img{object-fit:contain!important;overflow:visible!important}
+.pet-avatar.pet-3d .pet-pose.wave{opacity:0}
+.pet-avatar.pet-3d.pet-wave .pet-idle{opacity:0}
+.pet-avatar.pet-3d.pet-wave .pet-pose.wave{opacity:1;animation:panda-wave-v20 .6s ease-in-out 3}
+@keyframes panda-wave-v20{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(6deg) translateY(-8px)}}
+@media(prefers-reduced-motion:reduce){.pet-avatar.pet-3d.pet-wave .pet-pose.wave{animation:none}}
 </style>
 </head>
 
@@ -4524,9 +4532,9 @@ async function openDeveloperMode(){
  }catch(e){alert('Nie mozna sprawdzic hasla na tym urzadzeniu. Otworz aplikacje przez HTTPS.')}
 }
 function petAvailable(){return Math.max(0,Math.min(8,Math.floor(petEffectiveXp()/2000))-petState().unlocked.length)}
-function petSvg(id){const p=petCatalog.find(x=>x.id===id);if(!p)return '';return `<span class="pet-avatar pet-3d" role="img" aria-label="${p.kind} ${p.name}" onclick="petTap(this)" title="Dotknij pupila"><img class="pet-idle" draggable="false" loading="lazy" alt="${p.kind} ${p.name}" src="pet-${p.id}-idle.png"><img class="pet-pose good" aria-hidden="true" draggable="false" loading="lazy" src="pet-${p.id}-good.png"><img class="pet-pose bad" aria-hidden="true" draggable="false" loading="lazy" src="pet-${p.id}-bad.png"><span class="pet-sparkles" aria-hidden="true">✦ ✨ ✦</span></span>`;}
+function petSvg(id){const p=petCatalog.find(x=>x.id===id);if(!p)return '';return `<span class="pet-avatar pet-3d" role="img" aria-label="${p.kind} ${p.name}" onclick="petTap(this)" title="Dotknij pupila"><img class="pet-idle" draggable="false" loading="lazy" alt="${p.kind} ${p.name}" src="pet-${p.id}-idle.png">${p.id==='panda'?'<img class="pet-pose wave" aria-hidden="true" draggable="false" src="pet-panda-wave.png">':''}<img class="pet-pose good" aria-hidden="true" draggable="false" loading="lazy" src="pet-${p.id}-good.png"><img class="pet-pose bad" aria-hidden="true" draggable="false" loading="lazy" src="pet-${p.id}-bad.png"><span class="pet-sparkles" aria-hidden="true">✦ ✨ ✦</span></span>`;}
 function petAnimate(el,kind,duration){if(!el)return;clearTimeout(el._petTimer);el.classList.remove('pet-good','pet-bad');void el.offsetWidth;el.classList.add(kind==='good'?'pet-good':'pet-bad');el._petTimer=setTimeout(()=>{if(el.isConnected)el.classList.remove('pet-good','pet-bad')},duration);}
-function petTap(el){petAnimate(el,'good',1450);}
+function petTap(el){ if(el && el.querySelector && el.querySelector('.pet-pose.wave')){el.classList.add('pet-wave');setTimeout(()=>el.classList.remove('pet-wave'),1900);} petAnimate(el,'good',1450);}
 function petCard(id,where){const p=petCatalog.find(x=>x.id===id);return `<div class="pet-companion" id="pet-companion-${where}">${petSvg(id)}<span id="pet-speech-${where}">${p.name}: ${where==='home'?'Hallo! Miło Cię widzieć!':'Viel Erfolg! Dasz radę!'}</span></div>`;}
 function updatePetUI(){const st=petState(),xp=petEffectiveXp(),slots=Math.min(8,Math.floor(xp/2000)),next=Math.min(16000,(slots+1)*2000);const home=document.getElementById('pet-home-slot');if(home){home.innerHTML=st.active?`<div class="pet-home">${petSvg(st.active)}<div><strong>${petCatalog.find(p=>p.id===st.active).name} wita Cię! 👋</strong><p>Hallo! Gotowy na kolejną lekcję?</p><button class="pet-small-btn" onclick="openPetShop()">Zmień pupila</button></div></div>`:'';}
 const reward=document.getElementById('pet-home-reward');if(reward){const pct=slots>=8?100:Math.min(100,(xp%2000)/20);reward.innerHTML=`<div class="dt-progress-top"><span>${petAvailable()>0?'🎁 Możesz odblokować pupila!':'Następne zwierzątko'}</span><strong>${st.unlocked.length}/8</strong></div><div class="progress"><div class="progress-fill" style="width:${pct}%;background:#f59e0b"></div></div><p class="muted">${petAdminMode?'🧪 TRYB DEWELOPERSKI: wirtualne 16 000 XP · Twoje prawdziwe XP: '+(data.xp||0):slots>=8?'Wszystkie progi XP osiągnięte!':`${xp} / ${next} XP · ${Math.max(0,next-xp)} XP do kolejnego progu`}</p><button class="pet-small-btn" onclick="openPetShop()">🐾 Otwórz kolekcję ${petAvailable()?'('+petAvailable()+' wybór)':''}</button>`;}
