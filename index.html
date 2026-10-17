@@ -250,6 +250,27 @@ p { line-height: 1.5; }
     body { padding: 20px 0; }
     .app { background: var(--bg); }
 }
+
+/* Ścieżka, fiszki, gramatyka i profil */
+#path-lessons{position:relative;padding:12px 0 18px;background:linear-gradient(180deg,#f8f4ff,#effbff);border-radius:24px}
+#path-lessons .lesson-row{max-width:94%;margin:12px auto;position:relative;border-radius:20px;box-shadow:0 5px 0 #e4e7f2;transition:transform .15s}
+#path-lessons .lesson-row:not(:disabled):active{transform:scale(.98)}
+#path-lessons .lesson-row:nth-child(3n+2){margin-left:3%;margin-right:auto}
+#path-lessons .lesson-row:nth-child(3n+3){margin-left:auto;margin-right:3%}
+#path-lessons .lesson-row:disabled{filter:grayscale(.35)}
+#path-lessons .lesson-row .lesson-emoji{border-radius:50%;min-width:55px;min-height:55px;display:grid;place-items:center;font-size:27px;background:#eee8ff}
+#path-lessons .lesson-row.path-done{background:#f0fff4!important;border-color:#91e1a3!important}
+#path-lessons .lesson-row.path-current{background:#fff9e6!important;border-color:#ffcb59!important;box-shadow:0 6px 0 #e5bd5a}
+.path-section{margin:16px 12px 8px;padding:10px 14px;background:#6245c9;color:white;border-radius:15px;font-weight:900;text-align:center}
+.dt-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}
+.dt-stat{background:#f2f6ff;border-radius:15px;padding:15px;text-align:center;font-weight:800}
+.dt-stat b{display:block;font-size:24px;color:#5141ae}
+.dt-flash{border:2px solid #d8d2ff;background:linear-gradient(145deg,#f9f8ff,#eef7ff);border-radius:20px;min-height:165px;padding:25px 15px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-size:22px;font-weight:800;cursor:pointer}
+.dt-flash small{font-size:14px;color:#667;margin-top:12px}
+.dt-help{padding:13px;border-radius:12px;background:#f1f5ff;margin:12px 0;line-height:1.65}
+.dt-badge{display:inline-block;background:#fff0c9;padding:7px 10px;border-radius:15px;margin:4px;font-weight:700}
+.dt-field{width:100%;box-sizing:border-box;padding:12px;border-radius:10px;border:1px solid #a9b3c7;font-size:16px}
+
 </style>
 </head>
 
@@ -289,13 +310,19 @@ p { line-height: 1.5; }
         <button id="sound-toggle" class="button secondary" style="margin-top:10px" onclick="toggleSounds()">🔊 Dźwięki: WŁĄCZONE</button>
         <h2 class="section">Twoja ścieżka nauki</h2>
         <div class="card" style="background:#f0edff">
-            <div class="card-head"><strong>🇩🇪 Ścieżka A1 → A2 → B1</strong><strong id="path-count">0/36</strong></div>
+            <div class="card-head"><strong>🗺️ Mapa A1 → A2 → B1</strong><strong id="path-count">0/36</strong></div>
             <div class="progress"><div class="progress-fill" id="path-progress" style="background:var(--purple)"></div></div>
             <p class="muted" style="margin-bottom:0">Zdobądź 80% poprawnych odpowiedzi, zachowaj przynajmniej jedno z 5 żyć i zalicz test co 5 lekcji, aby przejść dalej.</p>
         </div>
         <div id="path-lessons"></div>
         <div class="card"><strong>🎓 A2 i B1</strong><p class="muted">Nowe lekcje pojawią się na ścieżce po ukończeniu A1. Nowe moduły utrwalające mają 15 zadań i próg 80%.</p></div>
-<h2 class="section">Nowe tryby nauki</h2>
+<h2 class="section">Centrum nauki</h2>
+        <div class="lesson-row" onclick="openGrammar()"><div class="lesson-emoji">📘</div><div class="lesson-info"><strong>Gramatyka przed lekcją</strong><small>Polskie wyjaśnienia i przykłady A1–B1</small></div><div class="arrow">›</div></div>
+        <div class="lesson-row" onclick="openFlashcards()"><div class="lesson-emoji">🗂️</div><div class="lesson-info"><strong>Fiszki z powtórkami</strong><small>Powtórki po 1, 3 i 7 dniach</small></div><div class="arrow">›</div></div>
+        <div class="lesson-row" onclick="openExtendedDialogues()"><div class="lesson-emoji">🎭</div><div class="lesson-info"><strong>Scenki i dłuższe dialogi</strong><small>Klient, sklep, urząd i praca</small></div><div class="arrow">›</div></div>
+        <div class="lesson-row" onclick="openProfile()"><div class="lesson-emoji">🏅</div><div class="lesson-info"><strong>Mój profil i osiągnięcia</strong><small>Statystyki i odznaki</small></div><div class="arrow">›</div></div>
+        <div class="lesson-row" onclick="openBackup()"><div class="lesson-emoji">💾</div><div class="lesson-info"><strong>Kopia zapasowa</strong><small>Eksport i import postępów</small></div><div class="arrow">›</div></div>
+        <h2 class="section">Nowe tryby nauki</h2>
         <div class="lesson-row" onclick="openFeature('dialog')"><div class="lesson-emoji">💬</div><div class="lesson-info"><strong>Rozmowy z klientem</strong><small>Interaktywne dialogi</small></div><div class="arrow">›</div></div>
         <div class="lesson-row" onclick="openFeature('review')"><div class="lesson-emoji">🧠</div><div class="lesson-info"><strong>Inteligentne powtórki</strong><small>Trudne zdania wracają częściej</small></div><div class="arrow">›</div></div>
         <div class="lesson-row" onclick="openFeature('writing')"><div class="lesson-emoji">✍️</div><div class="lesson-info"><strong>Samodzielne pisanie</strong><small>Wpisz niemieckie zdanie</small></div><div class="arrow">›</div></div>
@@ -4155,6 +4182,9 @@ function renderPath() {
     const container = document.getElementById("path-lessons");
     container.innerHTML = "";
     lessonsA1.forEach((lesson,i)=>{
+        if(i===0 || (i>0 && lessonsA1[i].level!==lessonsA1[i-1].level)){
+          const hdr=document.createElement('div');hdr.className='path-section';hdr.textContent='🇩🇪 POZIOM '+(lesson.level|| (i<20?'A1':i<29?'A2':'B1'));container.appendChild(hdr);
+        }
         if(i>0 && i%5===0){
             const passed=!!checkpointPassed[i];
             const ready=lessonsA1.slice(0,i).every(l=>data.pathCompleted[l.id]);
@@ -4163,7 +4193,7 @@ function renderPath() {
         }
         const done=!!data.pathCompleted[lesson.id], locked=i>unlocked;
         const btn=document.createElement("button");
-        btn.className="lesson-row";
+        btn.className="lesson-row "+(done?"path-done":(!locked?"path-current":""));
         btn.style.cssText="width:100%;text-align:left;color:inherit;cursor:"+(locked?"not-allowed":"pointer")+";opacity:"+(locked?".52":"1")+";border:"+(!locked&&!done?"2px solid var(--purple)":"1px solid #edf0f6");
         btn.disabled=locked;
         const em=document.createElement("div"); em.className="lesson-emoji"; em.textContent=locked?"🔒":lesson.emoji;
@@ -4171,7 +4201,7 @@ function renderPath() {
         const strong=document.createElement("strong"); strong.textContent=(i+1)+". "+lesson.title;
         const small=document.createElement("small"); small.textContent=lesson.description;
         info.append(strong,small);
-        const state=document.createElement("div"); state.className="arrow"; state.textContent=done?"✅":locked?"🔒":"▶";
+        const state=document.createElement("div"); state.className="arrow"; state.textContent=done?"⭐⭐⭐":locked?"🔒":"▶";
         btn.append(em,info,state);
         btn.onclick=()=>startPathLesson(i);
         container.appendChild(btn);
@@ -4258,6 +4288,46 @@ recordFeatureAnswer=function(q,good){countDaily(good);originalRecordFeatureAnswe
 const originalDrawDialogue=drawDialogue;
 // PWA cache uruchamia się wyłącznie przez HTTPS lub localhost.
 if('serviceWorker' in navigator && (location.protocol==='https:'||location.hostname==='localhost')){navigator.serviceWorker.register('./sw.js').catch(()=>{})}
+
+
+// DeutschTrainer: centrum nauki v2; zachowuje dotychczasowy format zapisu danych.
+const grammarUnits=[
+ {level:'A1',title:'Rodzajniki der, die, das',rule:'Rzeczowniki mają rodzaj gramatyczny. Ucz się nowego słowa razem z rodzajnikiem: der (męski), die (żeński), das (nijaki).',examples:[['der Hammer','młotek'],['die Tür','drzwi'],['das Tor','brama']],task:['Który rodzajnik ma słowo „Hammer”?',['der','die','das'],0]},
+ {level:'A1',title:'Czasowniki sein i haben',rule:'Sein oznacza „być”, a haben „mieć”. Ich bin = jestem; du bist = jesteś; ich habe = mam; du hast = masz.',examples:[['Ich bin hier.','Jestem tutaj.'],['Ich habe Zeit.','Mam czas.']],task:['Uzupełnij: Ich ___ müde.',['bin','habe','ist'],0]},
+ {level:'A1',title:'Szyk zdania i pytania',rule:'W zwykłym zdaniu niemieckim czasownik stoi na drugim miejscu. W pytaniu tak/nie często jest na pierwszym.',examples:[['Heute arbeite ich.','Dzisiaj pracuję.'],['Arbeitest du heute?','Pracujesz dzisiaj?']],task:['Które zdanie jest poprawne?',['Heute ich arbeite.','Heute arbeite ich.','Heute ich arbeiten.'],1]},
+ {level:'A1',title:'Akkusativ: einen',rule:'Po wielu czasownikach, np. brauchen, rzeczownik męski otrzymuje einen zamiast ein. Rodzajniki die i das nie zmieniają się w ten sposób.',examples:[['Ich brauche einen Hammer.','Potrzebuję młotka.'],['Ich brauche eine Schraube.','Potrzebuję śruby.']],task:['Ich brauche ___ Hammer.',['ein','einen','eine'],1]},
+ {level:'A2',title:'Perfekt: przeszłość',rule:'Często mówimy o przeszłości używając haben/sein + Partizip II. Ich habe gearbeitet = pracowałem. Ich bin gefahren = pojechałem.',examples:[['Wir haben das Tor montiert.','Zamontowaliśmy bramę.'],['Ich bin nach Hause gefahren.','Pojechałem do domu.']],task:['Wir ___ gestern gearbeitet.',['sind','haben','hat'],1]},
+ {level:'A2',title:'Zdania z weil',rule:'Weil oznacza „ponieważ”. W zdaniu podrzędnym z weil czasownik w formie osobowej przesuwa się na koniec.',examples:[['Ich bleibe zu Hause, weil ich krank bin.','Zostaję w domu, ponieważ jestem chory.']],task:['Ich komme später, weil ich noch ___.',['arbeite','arbeiten','arbeitet'],0]},
+ {level:'B1',title:'Uprzejme prośby: Konjunktiv II',rule:'Könnten Sie…? i Würden Sie…? pozwalają uprzejmie prosić klientów o pomoc lub informacje.',examples:[['Könnten Sie das bitte wiederholen?','Czy mógłby pan to powtórzyć?'],['Würden Sie mir die Maße schicken?','Czy wysłałby mi pan wymiary?']],task:['Która prośba jest najbardziej uprzejma?',['Gib mir das!','Könnten Sie mir das geben?','Du gibst mir das.'],1]},
+ {level:'B1',title:'Argumentowanie: deshalb i trotzdem',rule:'Deshalb = dlatego, trotzdem = mimo to. Po obu słowach czasownik stoi zwykle zaraz po nich.',examples:[['Es regnet. Deshalb warten wir.','Pada deszcz. Dlatego czekamy.'],['Es regnet. Trotzdem arbeiten wir.','Pada deszcz. Mimo to pracujemy.']],task:['Es ist kalt. ___ arbeiten wir draußen.',['Trotzdem','Weil','Aber wir'],0]}
+];
+let grammarActive=0;
+function openGrammar(){setFeature('📘 Gramatyka po polsku',`<p>Wybierz temat. Każdy zawiera krótką zasadę, przykłady i pytanie kontrolne.</p><div id="grammar-list"></div>`);const el=document.getElementById('grammar-list');grammarUnits.forEach((u,i)=>{const b=document.createElement('button');b.className='option';b.style.marginBottom='8px';b.textContent=u.level+' · '+u.title;b.onclick=()=>showGrammar(i);el.appendChild(b)})}
+function showGrammar(i){grammarActive=i;const u=grammarUnits[i];setFeature('📘 '+u.title,`<span class="dt-badge">${u.level}</span><div class="dt-help">${esc(u.rule)}</div><h3>Przykłady</h3>${u.examples.map(([de,pl])=>`<p><b>${esc(de)}</b><br><span class="muted">${esc(pl)}</span></p>`).join('')}<h3>${esc(u.task[0])}</h3><div id="grammar-answers"></div><div id="grammar-feedback"></div>`);u.task[1].forEach((answer,n)=>{const b=document.createElement('button');b.className='option';b.textContent=answer;b.onclick=()=>{document.querySelectorAll('#grammar-answers button').forEach(x=>x.disabled=true);const good=n===u.task[2];document.getElementById('grammar-feedback').textContent=good?'✅ Dobrze!':'❌ Poprawna odpowiedź: '+u.task[1][u.task[2]];playAnswerSound(good);featureButton('KOLEJNY TEMAT →',()=>showGrammar((i+1)%grammarUnits.length))};document.getElementById('grammar-answers').appendChild(b)});featureButton('← WSZYSTKIE TEMATY',openGrammar)}
+// Powtórki spaced repetition, zapis per zdanie; pierwsze poznanie -> natychmiast dostępne.
+function getFlashState(){if(!data.flashcards||typeof data.flashcards!=='object')data.flashcards={};return data.flashcards}
+function flashDue(q){const s=getFlashState()[q.de];return !s||!s.next||s.next<=Date.now()}
+let flashPool=[],flashCurrent=null,flashFlipped=false;
+function openFlashcards(){const known=allTrainingQuestions.filter(q=>data.seen[q.de]);flashPool=shuffle(known.filter(flashDue));if(!known.length){setFeature('🗂️ Fiszki','<p>Najpierw rozwiąż kilka pytań. Poznane zdania trafią do fiszek.</p>');return}if(!flashPool.length){setFeature('🗂️ Fiszki','<p>🎉 Wszystkie zaplanowane fiszki są powtórzone! Wróć jutro albo ćwicz w zwykłych lekcjach.</p>');return}nextFlash()}
+function nextFlash(){if(!flashPool.length){setFeature('🗂️ Fiszki','<p>🏆 Sesja powtórek zakończona. Następne fiszki pojawią się w odpowiednim dniu.</p>');return}flashCurrent=flashPool.shift();flashFlipped=false;drawFlash()}
+function drawFlash(){const q=flashCurrent;const total=flashPool.length+1;setFeature('🗂️ Fiszki · pozostało '+total,`<p class="muted">Przeczytaj tłumaczenie i spróbuj powiedzieć zdanie po niemiecku.</p><div class="dt-flash" id="flash-face" onclick="flipFlash()">${flashFlipped?esc(q.de):esc(q.pl)}<small>${flashFlipped?'🔊 Kliknij poniżej, aby odsłuchać':'Dotknij karty, aby odkryć odpowiedź'}</small></div><div id="flash-actions"></div>`);if(flashFlipped){featureButton('🔊 ODSŁUCHAJ',()=>speakGerman(q.de));featureButton('❌ JESZCZE NIE UMIEM',()=>gradeFlash(false));featureButton('✅ UMIEM',()=>gradeFlash(true))}else featureButton('ODKRYJ ODPOWIEDŹ',flipFlash)}
+function flipFlash(){if(!flashFlipped){flashFlipped=true;drawFlash()}}
+function gradeFlash(good){const q=flashCurrent;const cards=getFlashState();const old=cards[q.de]||{step:0};const step=good?Math.min(3,(old.step||0)+1):0;const days=[0,1,3,7][step];cards[q.de]={step,next:Date.now()+(good?days*86400000:0),last:Date.now()};saveData();playAnswerSound(good);nextFlash()}
+// Scenki z odpowiedziami zależnymi od wcześniejszych wyborów.
+const scenarios=[
+ {title:'Montaż ogrodzenia u klienta',steps:[{who:'Klient',de:'Guten Tag! Können Sie den Zaun nächste Woche montieren?',pl:'Czy możecie zamontować ogrodzenie w przyszłym tygodniu?',choices:[['Ja, am Dienstag hätten wir Zeit.',true,'Klient: Dienstag passt mir gut!'],['Ich habe einen Hund.',false,'Klient: Entschuldigung, ich verstehe nicht.'],['Guten Appetit!',false,'Klient: Wie bitte?']]},{who:'Klient',de:'Wie lange dauert die Montage?',pl:'Ile potrwa montaż?',choices:[['Ungefähr zwei Tage.',true,'Klient: Sehr gut.'],['Ich bin 25 Jahre alt.',false,'Klient: Das war nicht meine Frage.'],['Der Kaffee ist heiß.',false,'Klient: Bitte antworten Sie zur Montage.']]},{who:'Klient',de:'Was brauchen Sie von mir?',pl:'Czego potrzebujecie ode mnie?',choices:[['Bitte schicken Sie uns die genauen Maße.',true,'Klient: Das mache ich.'],['Wir fahren morgen in Urlaub.',false,'Klient: Was hat das damit zu tun?'],['Die Tür ist blau.',false,'Klient: Ich verstehe nicht.']]},{who:'Klient',de:'Könnten Sie mir ein Angebot schicken?',pl:'Czy mogą mi państwo przesłać ofertę?',choices:[['Natürlich, wir schicken sie Ihnen per E-Mail.',true,'Klient: Vielen Dank!'],['Nein, ich habe Hunger.',false,'Klient: Schade.'],['Das ist mein Fahrrad.',false,'Klient: Wie bitte?']]}]},
+ {title:'Zakupy w sklepie budowlanym',steps:[{who:'Sprzedawca',de:'Guten Tag, was suchen Sie?',pl:'Czego pan szuka?',choices:[['Ich suche Schrauben für Metall.',true,'Sprzedawca: Welche Größe?'],['Ich bin aus Polen.',false,'Sprzedawca: Was brauchen Sie?'],['Ich schlafe.',false,'Sprzedawca: Wie bitte?']]},{who:'Sprzedawca',de:'Welche Größe brauchen Sie?',pl:'Jaki rozmiar jest potrzebny?',choices:[['Ich brauche sechs Millimeter.',true,'Sprzedawca: Einen Moment bitte.'],['Morgen ist Montag.',false,'Sprzedawca: Welche Größe?'],['Das Wetter ist schön.',false,'Sprzedawca: Wie bitte?']]},{who:'Sprzedawca',de:'Brauchen Sie noch etwas?',pl:'Czy potrzebuje pan czegoś jeszcze?',choices:[['Ja, einen Bohrer bitte.',true,'Sprzedawca: Natürlich.'],['Ich bin müde.',false,'Sprzedawca: Also nein?'],['Ich habe ein Auto.',false,'Sprzedawca: Wie bitte?']]},{who:'Sprzedawca',de:'Möchten Sie mit Karte bezahlen?',pl:'Czy chce pan zapłacić kartą?',choices:[['Ja, bitte mit Karte.',true,'Sprzedawca: Danke!'],['Ich habe einen Hammer.',false,'Sprzedawca: Karte oder bar?'],['Es regnet.',false,'Sprzedawca: Wie bitte?']]}]},
+ {title:'Termin w urzędzie',steps:[{who:'Urzędnik',de:'Guten Tag, haben Sie einen Termin?',pl:'Czy ma pan umówioną wizytę?',choices:[['Ja, um zehn Uhr.',true,'Urzędnik: Wie heißen Sie?'],['Ich brauche einen Zaun.',false,'Urzędnik: Haben Sie einen Termin?'],['Gute Nacht.',false,'Urzędnik: Wie bitte?']]},{who:'Urzędnik',de:'Wie ist Ihr Name?',pl:'Jak się pan nazywa?',choices:[['Mein Name ist Kowalski.',true,'Urzędnik: Danke.'],['Ich habe Durst.',false,'Urzędnik: Ihren Namen, bitte.'],['Das kostet zehn Euro.',false,'Urzędnik: Wie bitte?']]},{who:'Urzędnik',de:'Haben Sie Ihren Ausweis dabei?',pl:'Czy ma pan dowód osobisty?',choices:[['Ja, hier ist mein Ausweis.',true,'Urzędnik: Danke schön.'],['Ich esse Brot.',false,'Urzędnik: Ihren Ausweis, bitte.'],['Es ist kalt.',false,'Urzędnik: Wie bitte?']]},{who:'Urzędnik',de:'Bitte warten Sie einen Moment.',pl:'Proszę chwilę poczekać.',choices:[['Natürlich, vielen Dank.',true,'Urzędnik: Bitte schön.'],['Ich kann nicht schwimmen.',false,'Urzędnik: Wie bitte?'],['Das Fenster ist offen.',false,'Urzędnik: Bitte warten Sie.']]}]}
+];
+let scenarioIndex=0,scenarioStep=0,scenarioScore=0,scenarioLast='';
+function openExtendedDialogues(){setFeature('🎭 Scenki sytuacyjne','<p>Wybierz scenkę. Każda ma cztery kroki i różne reakcje rozmówcy na Twoją odpowiedź.</p><div id="scenario-menu"></div>');scenarios.forEach((sc,i)=>{const b=document.createElement('button');b.className='option';b.textContent=sc.title;b.onclick=()=>startScenario(i);document.getElementById('scenario-menu').appendChild(b)})}
+function startScenario(i){scenarioIndex=i;scenarioStep=0;scenarioScore=0;scenarioLast='';drawScenario()}
+function drawScenario(){const sc=scenarios[scenarioIndex];if(scenarioStep>=sc.steps.length){setFeature('🎭 Koniec rozmowy',`<h2>🏆 Wynik: ${scenarioScore}/${sc.steps.length}</h2><p>Wróć do rozmowy, aby poćwiczyć nowe odpowiedzi.</p>`);featureButton('INNA ROZMOWA',openExtendedDialogues);return}const st=sc.steps[scenarioStep];setFeature('🎭 '+sc.title,`<p><b>Krok ${scenarioStep+1}/${sc.steps.length}</b></p>${scenarioLast?`<div class="dt-help">${esc(scenarioLast)}</div>`:''}<div class="dt-help"><b>${esc(st.who)}:</b> ${esc(st.de)}<br><span class="muted">${esc(st.pl)}</span></div><div id="scenario-options"></div><div id="scenario-result"></div>`);featureButton('🔊 POSŁUCHAJ',()=>speakGerman(st.de));shuffle(st.choices).forEach(ch=>{const b=document.createElement('button');b.className='option';b.textContent=ch[0];b.onclick=()=>{document.querySelectorAll('#scenario-options button').forEach(x=>x.disabled=true);scenarioScore+=ch[1]?1:0;scenarioLast=ch[2];document.getElementById('scenario-result').innerHTML=`<p>${ch[1]?'✅':'❌'} ${esc(ch[2])}</p>`;playAnswerSound(ch[1]);featureButton('DALEJ →',()=>{scenarioStep++;drawScenario()})};document.getElementById('scenario-options').appendChild(b)})}
+function openProfile(){const completed=lessonsA1.filter(l=>data.pathCompleted[l.id]).length;const total=data.answered||0;const accuracy=Math.round(100*(data.correct||0)/Math.max(1,total));const achievements=[['Pierwsze kroki',total>=1],['100 pytań',total>=100],['500 XP',(data.xp||0)>=500],['5 lekcji',completed>=5],['20 lekcji',completed>=20],['7 dni nauki',(data.streak||0)>=7],['Mistrz A1',completed>=20]];const history=Object.entries(data.dailyStats||{}).sort((a,b)=>b[0].localeCompare(a[0])).slice(0,7);setFeature('🏅 Twój profil',`<div class="dt-grid"><div class="dt-stat"><b>${data.xp||0}</b>XP</div><div class="dt-stat"><b>${completed}/${lessonsA1.length}</b>Lekcje</div><div class="dt-stat"><b>${accuracy}%</b>Skuteczność</div><div class="dt-stat"><b>${data.streak||0}</b>Seria dni</div></div><h3>Odznaki</h3>${achievements.map(([name,earned])=>`<span class="dt-badge">${earned?'🏅':'🔒'} ${esc(name)}</span>`).join('')}<h3>Ostatnie dni nauki</h3>${history.length?history.map(([day,st])=>`<p><b>${esc(day)}</b> · ${Number(st.answered)||0} pytań · ${Number(st.xp)||0} XP</p>`).join(''):'<p class="muted">Statystyki pojawią się po wykonaniu ćwiczeń.</p>'}`)}
+// Lokalna kopia postępów, bez serwera i bez udostępniania danych osobom trzecim.
+function openBackup(){setFeature('💾 Kopia zapasowa',`<p>Eksport zapisze XP, lekcje, powtórki, odznaki i testy do pliku JSON. Możesz przenieść ten plik na drugi telefon lub komputer.</p><p><b>Ważne:</b> import zastępuje aktualne postępy na tym urządzeniu. Najpierw wykonaj eksport.</p><input type="file" id="backup-file" accept=".json,application/json" class="dt-field"><p id="backup-status" aria-live="polite"></p>`);featureButton('⬇️ POBIERZ KOPIĘ',exportBackup);featureButton('⬆️ WCZYTAJ KOPIĘ',importBackup)}
+function exportBackup(){const payload={app:'DeutschTrainer',version:2,exportedAt:new Date().toISOString(),data:JSON.parse(JSON.stringify(data)),checkpoints:JSON.parse(JSON.stringify(checkpointPassed))};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='DeutschTrainer_kopia_'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);document.getElementById('backup-status').textContent='Kopia przygotowana do pobrania.'}
+async function importBackup(){const input=document.getElementById('backup-file');const f=input.files&&input.files[0];const status=document.getElementById('backup-status');if(!f){status.textContent='Najpierw wybierz plik kopii JSON.';return}if(f.size>2_000_000){status.textContent='Plik jest zbyt duży.';return}try{const obj=JSON.parse(await f.text());if(obj.app!=='DeutschTrainer'||!obj.data||typeof obj.data!=='object'||Array.isArray(obj.data)||typeof obj.data.xp!=='number'||!obj.data.pathCompleted||typeof obj.data.pathCompleted!=='object'||!obj.checkpoints||typeof obj.checkpoints!=='object'||Array.isArray(obj.checkpoints))throw Error('To nie jest prawidłowa kopia DeutschTrainer.');if(!confirm('Import zastąpi obecne postępy na tym urządzeniu. Kontynuować?'))return;data=Object.assign({xp:0,answered:0,correct:0,completed:0,streak:0,lastDay:'',mistakes:{},seen:{},pathCompleted:{}},obj.data);checkpointPassed=obj.checkpoints;saveData();saveCheckpoints();updateUI();status.textContent='✅ Przywrócono postępy. Możesz wrócić do menu.'}catch(e){status.textContent='❌ '+(e.message||'Nie udało się odczytać kopii.')}}
 
 updateUI();
 updateSoundButton();
