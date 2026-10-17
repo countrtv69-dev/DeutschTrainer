@@ -300,6 +300,27 @@ p { line-height: 1.5; }
 @media(prefers-reduced-motion:reduce){.dt-node.dt-current{animation:none}}
 @media(max-width:360px){.dt-exercise-grid{gap:6px}.dt-exercise{font-size:10px}.dt-ex-icon{font-size:23px}}
 
+
+/* DeutschTrainer Pets v10 */
+.pet-home{display:flex;align-items:center;gap:12px;margin:12px 0;padding:12px;background:linear-gradient(115deg,#fff7e9,#eff9ff);border:1px solid #f1e4ce;border-radius:20px}
+.pet-home .pet-avatar{width:85px;height:85px;flex:none}.pet-home strong{display:block;font-size:15px}.pet-home p{font-size:12px;color:#5a6576;margin:4px 0 8px}.pet-small-btn{border:0;background:#6555d9;color:white;border-radius:11px;padding:8px 12px;font-weight:800;font-size:12px;cursor:pointer}
+.pet-avatar{display:inline-block;width:112px;height:112px;position:relative;vertical-align:middle;filter:drop-shadow(0 6px 4px #1e293b26);animation:pet-idle 2.8s ease-in-out infinite;transform-origin:50% 85%}
+.pet-avatar svg{width:100%;height:100%;overflow:visible}.pet-avatar .pet-eye{transform-box:fill-box;transform-origin:center;animation:pet-blink 5.5s infinite}.pet-avatar .pet-arm{transform-box:fill-box;transform-origin:top center;animation:pet-wave 3s ease-in-out infinite}
+.pet-avatar.pet-good{animation:pet-cheer .55s ease-in-out 2}.pet-avatar.pet-bad{animation:pet-sad .48s ease-in-out 2}
+.pet-avatar.pet-good .pet-arm{animation:pet-wave .22s ease-in-out 5}
+@keyframes pet-idle{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-5px) rotate(2deg)}}
+@keyframes pet-blink{0%,44%,48%,100%{transform:scaleY(1)}46%{transform:scaleY(.1)}}
+@keyframes pet-wave{0%,100%{transform:rotate(-9deg)}50%{transform:rotate(24deg)}}
+@keyframes pet-cheer{0%,100%{transform:translateY(0) scale(1)}45%{transform:translateY(-17px) scale(1.07)}}
+@keyframes pet-sad{0%,100%{transform:rotate(0)}25%{transform:rotate(-11deg)}75%{transform:rotate(11deg)}}
+.pet-companion{display:flex;align-items:center;gap:10px;background:#fffaf0;border:1px solid #f0dfc2;border-radius:16px;padding:8px 12px;margin:10px 0 16px;min-height:78px}
+.pet-companion .pet-avatar{width:66px;height:66px;flex:none}.pet-companion span{font-size:13px;font-weight:800;color:#634c27}
+.pet-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}
+.pet-tile{background:#f8faff;border:2px solid #e4e9f4;border-radius:17px;padding:12px;text-align:center}
+.pet-tile .pet-avatar{width:100px;height:100px;max-width:100%}.pet-tile strong{display:block;margin:4px 0}.pet-tile p{font-size:12px;color:#64748b;min-height:30px}
+.pet-tile button{width:100%;border:0;background:#6657d9;color:white;border-radius:10px;padding:9px 4px;font-size:12px;font-weight:800;cursor:pointer}.pet-tile button:disabled{background:#cbd5e1;color:#536172;cursor:default}
+.pet-reward{padding:13px;background:#fff4d9;border-radius:14px;margin:12px 0}.pet-reward .progress{margin-top:10px}
+@media(prefers-reduced-motion:reduce){.pet-avatar,.pet-avatar .pet-eye,.pet-avatar .pet-arm{animation:none!important}}
 </style>
 </head>
 
@@ -320,6 +341,7 @@ p { line-height: 1.5; }
     <!-- EKRAN GŁÓWNY -->
     <section id="home" class="screen active">
       <div class="dt-home-welcome"><div><span class="dt-eyebrow">🇩🇪 DEUTSCHTRAINER</span><h1>Hallo! 👋</h1><p>Małe kroki, wielkie postępy.</p></div><div class="dt-welcome-star">✨</div></div>
+      <div id="pet-home-slot"></div>
       <button class="dt-continue-mini" onclick="continuePath()" aria-label="Kontynuuj lekcję"><span class="dt-continue-symbol">▶</span><span><b>Kontynuuj lekcję</b><small id="dt-next-lesson">Wróć do nauki</small></span><span class="dt-continue-arrow">›</span></button>
       <div class="dt-home-heading"><h2>🎯 Centrum ćwiczeń</h2><span>Wybierz trening</span></div>
       <div class="dt-exercise-grid"><button class="dt-exercise" onclick="openFlashcards()"><span class="dt-ex-icon">🗂️</span><span>Fiszki</span></button>
@@ -330,6 +352,7 @@ p { line-height: 1.5; }
 <button class="dt-exercise" onclick="openGrammar()"><span class="dt-ex-icon">📘</span><span>Gramatyka</span></button>
 <button class="dt-exercise" onclick="openFeature('dialog')"><span class="dt-ex-icon">💬</span><span>Klient</span></button>
 <button class="dt-exercise" onclick="openFeature('dictionary')"><span class="dt-ex-icon">📖</span><span>Słownik</span></button></div>
+      <div class="dt-home-heading"><h2>🐾 Twoje zwierzątka</h2><button onclick="openPetShop()" style="border:0;background:#efeaff;color:#5544ba;padding:9px 12px;border-radius:11px;font-weight:800">Kolekcja ›</button></div><div id="pet-home-reward" class="dt-progress-card"></div>
       <div class="dt-home-heading dt-progress-heading"><h2>📊 Twój postęp</h2><button onclick="showProgress()">Zobacz więcej ›</button></div>
       <div class="dt-progress-card">
         <div class="dt-progress-top"><span>Skuteczność odpowiedzi</span><strong id="percent">0%</strong></div>
@@ -367,7 +390,7 @@ p { line-height: 1.5; }
         <div class="card"><strong>🎓 A2 i B1</strong><p class="muted">Nowe lekcje pojawią się na ścieżce po ukończeniu A1. Nowe moduły utrwalające mają 15 zadań i próg 80%.</p></div>
     </section>
 
-    <section id="feature-screen" class="screen"><button class="back" onclick="goHome()">← Wróć do menu</button><h1 id="feature-title" class="section"></h1><div id="feature-body" class="card"></div></section>
+    <section id="feature-screen" class="screen"><button class="back" onclick="goHome()">← Wróć do menu</button><h1 id="feature-title" class="section"></h1><div id="pet-feature-slot"></div><div id="feature-body" class="card"></div></section>
     <!-- EKRAN LEKCJI -->
     <section id="quiz" class="screen">
         <button class="back" onclick="returnFromQuiz()">← Wróć</button>
@@ -378,6 +401,7 @@ p { line-height: 1.5; }
         </div>
 
         <div id="heart-status" style="display:none;background:#fff0f3;color:#b21d46;padding:11px 15px;border-radius:12px;margin:8px 0 15px;font-weight:800;text-align:center" aria-live="polite"></div>
+        <div id="pet-quiz-slot"></div>
         <div id="quiz-content">
             <div class="question-tag" id="category">NIEMIECKI W PRACY</div>
             <h1 class="question" id="question">Jak powiesz po niemiecku?</h1>
@@ -3768,6 +3792,7 @@ function shuffle(arr) {
 }
 
 function showScreen(id) {
+    if(id==="feature-screen") updatePetUI();
     document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
     document.getElementById(id).classList.add("active");
     document.querySelectorAll(".bottom button").forEach(b=>b.classList.remove("active"));
@@ -4060,6 +4085,7 @@ function checkAnswer(answer, button) {
     const q=questions[index];
     const isCorrect = answer === q.de;
     playAnswerSound(isCorrect);
+    petReact(isCorrect);
     if(!isCorrect && heartsEnabled){heartsLeft=Math.max(0,heartsLeft-1);updateHearts();}
     data.answered++;
     data.seen[q.de]=true;
@@ -4167,6 +4193,7 @@ function finishLesson() {
 
 function updateUI() {
     renderPath();
+    updatePetUI();
     document.getElementById("xp").textContent=data.xp;
     document.getElementById("streak").textContent=data.streak;
     document.getElementById("percent").textContent=
@@ -4310,14 +4337,14 @@ function openFeature(mode){featureMode=mode;featureStep=0;
 }
 function drawDialogue(){if(featureStep>=currentDialogue.length){setFeature('💬 Rozmowa ukończona',`<h2>🎉 Wynik: ${dialogueScore}/${currentDialogue.length}</h2><p>Ćwicz kolejne rozmowy, aby utrwalić naturalne odpowiedzi.</p>`);featureButton('KOLEJNA ROZMOWA',()=>openFeature('dialog'));return;}
  const d=currentDialogue[featureStep];setFeature('💬 Rozmowa · '+(featureStep+1)+'/'+currentDialogue.length,`<p><b>${esc(d.who)}:</b> ${esc(d.de)}</p><p class="muted">${esc(d.pl)}</p><p><b>Co odpowiesz?</b></p><div id="dialog-answers"></div><div id="dialog-feedback"></div>`);
- shuffle(d.answers.map((a,i)=>({a,i}))).forEach(({a,i})=>{const b=document.createElement('button');b.className='option';b.style.marginTop='9px';b.textContent=a[0];b.onclick=()=>{document.querySelectorAll('#dialog-answers button').forEach(x=>x.disabled=true);const good=i===0;if(good){dialogueScore++;data.xp+=10;data.correct++;}else{data.mistakes[d.answers[0][0]]=(data.mistakes[d.answers[0][0]]||0)+1;}data.answered++;countDaily(good);data.seen[d.answers[0][0]]=true;playAnswerSound(good);saveData();updateUI();document.getElementById('dialog-feedback').innerHTML=`<p>${good?'✅ Poprawnie! +10 XP':'❌ Poprawna odpowiedź:'} <b>${esc(d.answers[0][0])}</b><br>${esc(d.answers[0][1])}</p>`;featureButton('🔊 POSŁUCHAJ ODPOWIEDZI',()=>speakGerman(d.answers[0][0]));featureButton('DALEJ →',()=>{featureStep++;drawDialogue()});};document.getElementById('dialog-answers').appendChild(b)})}
+ shuffle(d.answers.map((a,i)=>({a,i}))).forEach(({a,i})=>{const b=document.createElement('button');b.className='option';b.style.marginTop='9px';b.textContent=a[0];b.onclick=()=>{document.querySelectorAll('#dialog-answers button').forEach(x=>x.disabled=true);const good=i===0;if(good){dialogueScore++;data.xp+=10;data.correct++;}else{data.mistakes[d.answers[0][0]]=(data.mistakes[d.answers[0][0]]||0)+1;}data.answered++;countDaily(good);data.seen[d.answers[0][0]]=true;playAnswerSound(good);petReact(good);saveData();updateUI();document.getElementById('dialog-feedback').innerHTML=`<p>${good?'✅ Poprawnie! +10 XP':'❌ Poprawna odpowiedź:'} <b>${esc(d.answers[0][0])}</b><br>${esc(d.answers[0][1])}</p>`;featureButton('🔊 POSŁUCHAJ ODPOWIEDZI',()=>speakGerman(d.answers[0][0]));featureButton('DALEJ →',()=>{featureStep++;drawDialogue()});};document.getElementById('dialog-answers').appendChild(b)})}
 function nextFeatureQuestion(){featureQuestion=shuffle(allTrainingQuestions)[0];const q=featureQuestion;
  if(featureMode==='writing'){setFeature('✍️ Napisz po niemiecku',`<p><b>${esc(q.pl)}</b></p><p class="muted">Wpisz całe zdanie. Wielkość liter i znaki interpunkcyjne nie mają znaczenia.</p><input id="writing-input" autocomplete="off" style="box-sizing:border-box;width:100%;padding:15px;border:2px solid #ddd;border-radius:12px;font-size:17px" placeholder="Twoje zdanie po niemiecku"><div id="feature-feedback"></div>`);featureButton('SPRAWDŹ ZDANIE',checkWriting)}
  else{const options=shuffle([q,...shuffle(allTrainingQuestions.filter(x=>x.pl!==q.pl)).slice(0,2)]);setFeature('🎧 Rozumienie ze słuchu',`<p>Posłuchaj zdania po niemiecku i wybierz jego znaczenie.</p><div id="listen-options"></div><div id="feature-feedback"></div>`);featureButton('🔊 ODTWÓRZ PONOWNIE',()=>speakGerman(q.de));options.forEach(opt=>{const b=document.createElement('button');b.className='option';b.style.marginTop='9px';b.textContent=opt.pl;b.onclick=()=>{document.querySelectorAll('#listen-options button').forEach(x=>x.disabled=true);const good=opt.de===q.de;recordFeatureAnswer(q,good);document.getElementById('feature-feedback').innerHTML=`<p>${good?'✅ Poprawnie!':'❌ Spróbuj zapamiętać:'} <b>${esc(q.de)}</b> — ${esc(q.pl)}</p>`;featureButton('NASTĘPNE NAGRANIE →',nextFeatureQuestion)};document.getElementById('listen-options').appendChild(b)});}
 }
 function normalizeGerman(s){return s.toLocaleLowerCase('de-DE').replace(/[.!?,;:]/g,'').replace(/\s+/g,' ').trim()}
 function checkWriting(){const q=featureQuestion;const typed=document.getElementById('writing-input').value; if(!typed.trim())return;const good=normalizeGerman(typed)===normalizeGerman(q.de);recordFeatureAnswer(q,good);document.getElementById('feature-feedback').innerHTML=`<p>${good?'✅ Świetnie! +10 XP':'❌ Poprawne zdanie:'}<br><b>${esc(q.de)}</b></p>`;document.querySelectorAll('#feature-body button').forEach(b=>b.disabled=true);featureButton('🔊 ODSŁUCHAJ',()=>speakGerman(q.de));featureButton('NASTĘPNE ZDANIE →',nextFeatureQuestion)}
-function recordFeatureAnswer(q,good){data.answered++;data.seen[q.de]=true;if(good){data.correct++;data.xp+=10;if(data.mistakes[q.de])data.mistakes[q.de]=Math.max(0,data.mistakes[q.de]-1)}else data.mistakes[q.de]=(data.mistakes[q.de]||0)+1;playAnswerSound(good);saveData();updateUI()}
+function recordFeatureAnswer(q,good){data.answered++;data.seen[q.de]=true;if(good){data.correct++;data.xp+=10;if(data.mistakes[q.de])data.mistakes[q.de]=Math.max(0,data.mistakes[q.de]-1)}else data.mistakes[q.de]=(data.mistakes[q.de]||0)+1;playAnswerSound(good);petReact(good);saveData();updateUI()}
 function startSmartReview(){const now=Date.now();const pool=allTrainingQuestions.filter(q=>data.seen[q.de]||data.mistakes[q.de]);const ranked=pool.map(q=>({q,priority:(data.mistakes[q.de]||0)*100+(now-(data.reviewDates?.[q.de]||0))/86400000})).sort((a,b)=>b.priority-a.priority);const selected=ranked.slice(0,15).map(x=>x.q);if(!selected.length){setFeature('🧠 Inteligentne powtórki','<p>Najpierw wykonaj kilka lekcji. Tutaj pojawią się poznane słowa, a błędne odpowiedzi będą miały pierwszeństwo.</p>');return;}questions=shuffle(selected);activePathIndex=null;checkpointAfter=null;reviewMode=true;currentCourse='work';beginQuiz();}
 function drawDictionary(){const known=allTrainingQuestions.filter(q=>data.seen[q.de]);setFeature('📖 Twój słownik',`<p>Poznane zwroty: <b>${known.length}</b>. Kliknij, aby odsłuchać wymowę.</p><input id="dict-search" placeholder="Szukaj po polsku lub niemiecku" style="width:100%;box-sizing:border-box;padding:13px;border-radius:10px;border:1px solid #ddd"><div id="dict-list" style="margin-top:12px"></div>`);const render=()=>{const query=document.getElementById('dict-search').value.toLowerCase();const list=document.getElementById('dict-list');list.innerHTML='';known.filter(q=>(q.de+' '+q.pl).toLowerCase().includes(query)).slice(0,100).forEach(q=>{const b=document.createElement('button');b.className='option';b.style.cssText='text-align:left;margin-bottom:8px;font-size:15px';b.textContent='🔊 '+q.de+' — '+q.pl;b.onclick=()=>speakGerman(q.de);list.appendChild(b)});if(!known.length)list.textContent='Ukończ pierwsze ćwiczenia, aby dodać słowa do słownika.'};document.getElementById('dict-search').oninput=render;render();}
 function drawMissions(){const today=new Date().toLocaleDateString('sv-SE');const stats=data.dailyStats?.[today]||{answered:0,correct:0,xp:0};const milestones=[['Odpowiedz na 10 pytań',stats.answered,10],['Odpowiedz 8 razy poprawnie',stats.correct,8],['Zdobądź 100 XP',stats.xp,100]];setFeature('🏆 Dzisiejsze misje',`<p>Postęp dzisiaj: <b>${today}</b></p>`+milestones.map(([label,value,target])=>`<p><b>${value>=target?'🏅':'🎯'} ${label}</b><br>${Math.min(value,target)}/${target}</p><div class="progress"><div class="progress-fill" style="width:${Math.min(100,value/target*100)}%"></div></div>`).join('')+`<p class="muted">Odznaki zdobywasz za realizację celów. Seria nauki: ${data.streak} dni 🔥</p>`)}
@@ -4364,12 +4391,46 @@ const scenarios=[
 let scenarioIndex=0,scenarioStep=0,scenarioScore=0,scenarioLast='';
 function openExtendedDialogues(){setFeature('🎭 Scenki sytuacyjne','<p>Wybierz scenkę. Każda ma cztery kroki i różne reakcje rozmówcy na Twoją odpowiedź.</p><div id="scenario-menu"></div>');scenarios.forEach((sc,i)=>{const b=document.createElement('button');b.className='option';b.textContent=sc.title;b.onclick=()=>startScenario(i);document.getElementById('scenario-menu').appendChild(b)})}
 function startScenario(i){scenarioIndex=i;scenarioStep=0;scenarioScore=0;scenarioLast='';drawScenario()}
-function drawScenario(){const sc=scenarios[scenarioIndex];if(scenarioStep>=sc.steps.length){setFeature('🎭 Koniec rozmowy',`<h2>🏆 Wynik: ${scenarioScore}/${sc.steps.length}</h2><p>Wróć do rozmowy, aby poćwiczyć nowe odpowiedzi.</p>`);featureButton('INNA ROZMOWA',openExtendedDialogues);return}const st=sc.steps[scenarioStep];setFeature('🎭 '+sc.title,`<p><b>Krok ${scenarioStep+1}/${sc.steps.length}</b></p>${scenarioLast?`<div class="dt-help">${esc(scenarioLast)}</div>`:''}<div class="dt-help"><b>${esc(st.who)}:</b> ${esc(st.de)}<br><span class="muted">${esc(st.pl)}</span></div><div id="scenario-options"></div><div id="scenario-result"></div>`);featureButton('🔊 POSŁUCHAJ',()=>speakGerman(st.de));shuffle(st.choices).forEach(ch=>{const b=document.createElement('button');b.className='option';b.textContent=ch[0];b.onclick=()=>{document.querySelectorAll('#scenario-options button').forEach(x=>x.disabled=true);scenarioScore+=ch[1]?1:0;scenarioLast=ch[2];document.getElementById('scenario-result').innerHTML=`<p>${ch[1]?'✅':'❌'} ${esc(ch[2])}</p>`;playAnswerSound(ch[1]);featureButton('DALEJ →',()=>{scenarioStep++;drawScenario()})};document.getElementById('scenario-options').appendChild(b)})}
+function drawScenario(){const sc=scenarios[scenarioIndex];if(scenarioStep>=sc.steps.length){setFeature('🎭 Koniec rozmowy',`<h2>🏆 Wynik: ${scenarioScore}/${sc.steps.length}</h2><p>Wróć do rozmowy, aby poćwiczyć nowe odpowiedzi.</p>`);featureButton('INNA ROZMOWA',openExtendedDialogues);return}const st=sc.steps[scenarioStep];setFeature('🎭 '+sc.title,`<p><b>Krok ${scenarioStep+1}/${sc.steps.length}</b></p>${scenarioLast?`<div class="dt-help">${esc(scenarioLast)}</div>`:''}<div class="dt-help"><b>${esc(st.who)}:</b> ${esc(st.de)}<br><span class="muted">${esc(st.pl)}</span></div><div id="scenario-options"></div><div id="scenario-result"></div>`);featureButton('🔊 POSŁUCHAJ',()=>speakGerman(st.de));shuffle(st.choices).forEach(ch=>{const b=document.createElement('button');b.className='option';b.textContent=ch[0];b.onclick=()=>{document.querySelectorAll('#scenario-options button').forEach(x=>x.disabled=true);scenarioScore+=ch[1]?1:0;scenarioLast=ch[2];document.getElementById('scenario-result').innerHTML=`<p>${ch[1]?'✅':'❌'} ${esc(ch[2])}</p>`;playAnswerSound(ch[1]);petReact(ch[1]);featureButton('DALEJ →',()=>{scenarioStep++;drawScenario()})};document.getElementById('scenario-options').appendChild(b)})}
 function openProfile(){const completed=lessonsA1.filter(l=>data.pathCompleted[l.id]).length;const total=data.answered||0;const accuracy=Math.round(100*(data.correct||0)/Math.max(1,total));const achievements=[['Pierwsze kroki',total>=1],['100 pytań',total>=100],['500 XP',(data.xp||0)>=500],['5 lekcji',completed>=5],['20 lekcji',completed>=20],['7 dni nauki',(data.streak||0)>=7],['Mistrz A1',completed>=20]];const history=Object.entries(data.dailyStats||{}).sort((a,b)=>b[0].localeCompare(a[0])).slice(0,7);setFeature('🏅 Twój profil',`<div class="dt-grid"><div class="dt-stat"><b>${data.xp||0}</b>XP</div><div class="dt-stat"><b>${completed}/${lessonsA1.length}</b>Lekcje</div><div class="dt-stat"><b>${accuracy}%</b>Skuteczność</div><div class="dt-stat"><b>${data.streak||0}</b>Seria dni</div></div><h3>Odznaki</h3>${achievements.map(([name,earned])=>`<span class="dt-badge">${earned?'🏅':'🔒'} ${esc(name)}</span>`).join('')}<h3>Ostatnie dni nauki</h3>${history.length?history.map(([day,st])=>`<p><b>${esc(day)}</b> · ${Number(st.answered)||0} pytań · ${Number(st.xp)||0} XP</p>`).join(''):'<p class="muted">Statystyki pojawią się po wykonaniu ćwiczeń.</p>'}`)}
 // Lokalna kopia postępów, bez serwera i bez udostępniania danych osobom trzecim.
 function openBackup(){setFeature('💾 Kopia zapasowa',`<p>Eksport zapisze XP, lekcje, powtórki, odznaki i testy do pliku JSON. Możesz przenieść ten plik na drugi telefon lub komputer.</p><p><b>Ważne:</b> import zastępuje aktualne postępy na tym urządzeniu. Najpierw wykonaj eksport.</p><input type="file" id="backup-file" accept=".json,application/json" class="dt-field"><p id="backup-status" aria-live="polite"></p>`);featureButton('⬇️ POBIERZ KOPIĘ',exportBackup);featureButton('⬆️ WCZYTAJ KOPIĘ',importBackup)}
 function exportBackup(){const payload={app:'DeutschTrainer',version:2,exportedAt:new Date().toISOString(),data:JSON.parse(JSON.stringify(data)),checkpoints:JSON.parse(JSON.stringify(checkpointPassed))};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='DeutschTrainer_kopia_'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);document.getElementById('backup-status').textContent='Kopia przygotowana do pobrania.'}
 async function importBackup(){const input=document.getElementById('backup-file');const f=input.files&&input.files[0];const status=document.getElementById('backup-status');if(!f){status.textContent='Najpierw wybierz plik kopii JSON.';return}if(f.size>2_000_000){status.textContent='Plik jest zbyt duży.';return}try{const obj=JSON.parse(await f.text());if(obj.app!=='DeutschTrainer'||!obj.data||typeof obj.data!=='object'||Array.isArray(obj.data)||typeof obj.data.xp!=='number'||!obj.data.pathCompleted||typeof obj.data.pathCompleted!=='object'||!obj.checkpoints||typeof obj.checkpoints!=='object'||Array.isArray(obj.checkpoints))throw Error('To nie jest prawidłowa kopia DeutschTrainer.');if(!confirm('Import zastąpi obecne postępy na tym urządzeniu. Kontynuować?'))return;data=Object.assign({xp:0,answered:0,correct:0,completed:0,streak:0,lastDay:'',mistakes:{},seen:{},pathCompleted:{}},obj.data);checkpointPassed=obj.checkpoints;saveData();saveCheckpoints();updateUI();status.textContent='✅ Przywrócono postępy. Możesz wrócić do menu.'}catch(e){status.textContent='❌ '+(e.message||'Nie udało się odczytać kopii.')}}
+
+
+// --- DeutschTrainer Pets: 2000 XP za kazdy wybor, bez odejmowania XP ---
+const petCatalog=[
+{id:'cat',name:'Mimi',kind:'Kotek',color:'#f7a64a',accent:'#fbd59a',ears:'cat',msg:'Miau! Świetnie!'},
+{id:'dog',name:'Bello',kind:'Piesek',color:'#bc8858',accent:'#e8c69d',ears:'dog',msg:'Hau! Brawo!'},
+{id:'fox',name:'Foxy',kind:'Lisek',color:'#f0793c',accent:'#fff0d4',ears:'fox',msg:'Fantastycznie!'},
+{id:'dragon',name:'Drako',kind:'Smoczek',color:'#55bfa2',accent:'#a2ebce',ears:'dragon',msg:'Super!'},
+{id:'panda',name:'Pandi',kind:'Panda',color:'#f7f8fa',accent:'#222b3d',ears:'panda',msg:'Brawo!'},
+{id:'parrot',name:'Kiki',kind:'Papuga',color:'#44bfb0',accent:'#ffdb64',ears:'parrot',msg:'Gut gemacht!'},
+{id:'snake',name:'Sissi',kind:'Wąż',color:'#84c967',accent:'#c7ec7a',ears:'snake',msg:'Świetnie!'},
+{id:'spider',name:'Spidi',kind:'Pajączek',color:'#a58bea',accent:'#d3bafa',ears:'spider',msg:'Wspaniale!'}
+];
+function petState(){if(!data.pets||!Array.isArray(data.pets.unlocked))data.pets={unlocked:[],active:null};data.pets.unlocked=[...new Set(data.pets.unlocked.filter(id=>petCatalog.some(p=>p.id===id)))].slice(0,8);if(!data.pets.unlocked.includes(data.pets.active))data.pets.active=null;return data.pets;}
+function petAvailable(){return Math.max(0,Math.min(8,Math.floor(Math.max(0,Number(data.xp)||0)/2000))-petState().unlocked.length)}
+function petSvg(id){const p=petCatalog.find(x=>x.id===id);if(!p)return '';let ears='';if(p.ears==='cat'||p.ears==='fox')ears=`<path d="M30 46 L19 10 Q18 6 28 12 L48 29 M70 29 L91 10 Q98 6 91 48" fill="${p.color}" stroke="#4c4659" stroke-width="3" stroke-linejoin="round"/><path d="M30 35 L25 19 L41 32 M76 32 L87 19 L83 38" fill="#ffb3b8"/>`;
+if(p.ears==='dog')ears=`<path d="M31 31 Q4 14 9 56 Q16 73 32 54 M68 31 Q96 14 91 56 Q84 73 68 54" fill="#93613f" stroke="#664632" stroke-width="3"/>`;
+if(p.ears==='panda')ears=`<circle cx="25" cy="29" r="15" fill="#222b3d"/><circle cx="75" cy="29" r="15" fill="#222b3d"/>`;
+if(p.ears==='dragon')ears=`<path d="M26 31 L16 8 L43 28 M74 31 L84 8 L58 28" fill="#d3b4f8" stroke="#4c897e" stroke-width="3"/>`;
+if(p.ears==='parrot')ears=`<path d="M47 29 Q34 2 47 12 Q55 0 56 29" fill="#ef6e7c"/>`;
+if(p.ears==='spider')ears=`<g stroke="#7456ba" stroke-width="6" stroke-linecap="round"><path d="M26 62 L5 48 L2 28 M26 73 L5 83 L2 95 M74 62 L95 48 L98 28 M74 73 L95 83 L98 95"/></g>`;
+let eyes=p.ears==='panda'?`<ellipse cx="36" cy="53" rx="13" ry="16" fill="#222b3d"/><ellipse cx="64" cy="53" rx="13" ry="16" fill="#222b3d"/>`:'';
+let beak=p.ears==='parrot'?`<path d="M42 66 Q50 59 60 66 L51 80Z" fill="#f3a83b" stroke="#d48727" stroke-width="2"/>`:'';
+let nose=p.ears==='snake'||p.ears==='spider'||p.ears==='parrot'?'':`<ellipse cx="50" cy="66" rx="6" ry="4" fill="#493a46"/>`;
+return `<span class="pet-avatar" role="img" aria-label="${p.kind} ${p.name}"><svg viewBox="0 0 100 112" xmlns="http://www.w3.org/2000/svg">${ears}<ellipse cx="50" cy="94" rx="31" ry="16" fill="${p.color}" stroke="#4c4659" stroke-width="2"/><path class="pet-arm" d="M76 83 Q96 79 92 58" fill="none" stroke="${p.color}" stroke-width="12" stroke-linecap="round"/><path d="M24 84 Q8 80 13 65" fill="none" stroke="${p.color}" stroke-width="10" stroke-linecap="round"/><ellipse cx="50" cy="55" rx="36" ry="36" fill="${p.color}" stroke="#4c4659" stroke-width="2.4"/><ellipse cx="50" cy="71" rx="23" ry="14" fill="${p.accent}" opacity=".65"/>${eyes}<ellipse class="pet-eye" cx="36" cy="54" rx="4.5" ry="7" fill="${p.ears==='panda'?'white':'#263248'}"/><ellipse class="pet-eye" cx="64" cy="54" rx="4.5" ry="7" fill="${p.ears==='panda'?'white':'#263248'}"/>${nose}${beak}<path d="M43 75 Q50 82 57 75" fill="none" stroke="#493a46" stroke-width="2.4" stroke-linecap="round"/><ellipse cx="25" cy="69" rx="6" ry="3.5" fill="#f39da7" opacity=".65"/><ellipse cx="75" cy="69" rx="6" ry="3.5" fill="#f39da7" opacity=".65"/></svg></span>`;}
+function petCard(id,where){const p=petCatalog.find(x=>x.id===id);return `<div class="pet-companion" id="pet-companion-${where}">${petSvg(id)}<span id="pet-speech-${where}">${p.name}: ${where==='home'?'Hallo! Miło Cię widzieć!':'Viel Erfolg! Dasz radę!'}</span></div>`;}
+function updatePetUI(){const st=petState(),xp=Math.max(0,Number(data.xp)||0),slots=Math.min(8,Math.floor(xp/2000)),next=Math.min(16000,(slots+1)*2000);const home=document.getElementById('pet-home-slot');if(home){home.innerHTML=st.active?`<div class="pet-home">${petSvg(st.active)}<div><strong>${petCatalog.find(p=>p.id===st.active).name} wita Cię! 👋</strong><p>Hallo! Gotowy na kolejną lekcję?</p><button class="pet-small-btn" onclick="openPetShop()">Zmień pupila</button></div></div>`:'';}
+const reward=document.getElementById('pet-home-reward');if(reward){const pct=slots>=8?100:Math.min(100,(xp%2000)/20);reward.innerHTML=`<div class="dt-progress-top"><span>${petAvailable()>0?'🎁 Możesz odblokować pupila!':'Następne zwierzątko'}</span><strong>${st.unlocked.length}/8</strong></div><div class="progress"><div class="progress-fill" style="width:${pct}%;background:#f59e0b"></div></div><p class="muted">${slots>=8?'Wszystkie progi XP osiągnięte!':`${xp} / ${next} XP · ${Math.max(0,next-xp)} XP do kolejnego progu`}</p><button class="pet-small-btn" onclick="openPetShop()">🐾 Otwórz kolekcję ${petAvailable()?'('+petAvailable()+' wybór)':''}</button>`;}
+const quiz=document.getElementById('pet-quiz-slot');if(quiz && quiz.dataset.petId!==(st.active||'')){quiz.innerHTML=st.active?petCard(st.active,'quiz'):'';quiz.dataset.petId=st.active||'';}
+const feat=document.getElementById('pet-feature-slot');if(feat && feat.dataset.petId!==(st.active||'')){feat.innerHTML=st.active?petCard(st.active,'feature'):'';feat.dataset.petId=st.active||'';}}
+function petReact(good){const id=petState().active;if(!id)return;const p=petCatalog.find(x=>x.id===id);for(const where of ['quiz','feature']){const card=document.getElementById('pet-companion-'+where),label=document.getElementById('pet-speech-'+where);if(!card||!label)continue;card.querySelector('.pet-avatar')?.classList.remove('pet-good','pet-bad');void card.offsetWidth;card.querySelector('.pet-avatar')?.classList.add(good?'pet-good':'pet-bad');label.textContent=good?p.name+': '+p.msg:p.name+': Spróbuj jeszcze raz! 💪';}}
+function openPetShop(){const st=petState(),available=petAvailable();setFeature('🐾 Twoje zwierzątka',`<p>Co 2000 zdobytych XP wybierasz <b>jedno dowolne zwierzątko</b>. XP nie jest odejmowane. Masz <b>${Math.max(0,Number(data.xp)||0)} XP</b> i <b>${available}</b> ${available===1?'dostępny wybór':'dostępnych wyborów'}.</p><div class="pet-grid">${petCatalog.map(p=>{const owned=st.unlocked.includes(p.id),active=st.active===p.id;return `<div class="pet-tile">${petSvg(p.id)}<strong>${p.name}</strong><p>${p.kind}</p><button ${!owned&&!available?'disabled':''} onclick="${owned?`activatePet('${p.id}')`:`unlockPet('${p.id}')`}">${active?'✓ Aktywny':owned?'Wybierz':'🔓 Odblokuj'}</button></div>`}).join('')}</div>`);}
+function unlockPet(id){const st=petState();if(!petCatalog.some(p=>p.id===id)||st.unlocked.includes(id)||petAvailable()<1)return;st.unlocked.push(id);st.active=id;saveData();updateUI();openPetShop();}
+function activatePet(id){const st=petState();if(!st.unlocked.includes(id))return;st.active=id;saveData();updateUI();openPetShop();}
 
 updateUI();
 updateSoundButton();
