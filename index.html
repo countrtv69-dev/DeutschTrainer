@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<link rel="manifest" href="manifest.webmanifest?v=20261017-logo-v2"><meta name="theme-color" content="#7555dc">
+<link rel="manifest" href="manifest.webmanifest?v=20261017-adventure-v9"><meta name="theme-color" content="#7555dc">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="theme-color" content="#f7f8fc">
@@ -272,6 +272,34 @@ p { line-height: 1.5; }
 .dt-badge{display:inline-block;background:#fff0c9;padding:7px 10px;border-radius:15px;margin:4px;font-weight:700}
 .dt-field{width:100%;box-sizing:border-box;padding:12px;border-radius:10px;border:1px solid #a9b3c7;font-size:16px}
 
+
+/* DeutschTrainer Adventure v9 */
+.dt-home-welcome{display:flex;align-items:center;justify-content:space-between;background:linear-gradient(115deg,#ecfdf5,#e7f2ff);border-radius:22px;padding:18px 20px;margin-bottom:12px}
+.dt-home-welcome h1{font-size:28px;margin:4px 0}.dt-home-welcome p{font-size:13px;margin:0;color:#586b77}.dt-eyebrow{font-size:10px;letter-spacing:1.5px;font-weight:900;color:#168958}.dt-welcome-star{font-size:37px}
+.dt-continue-mini{width:100%;border:1px solid #d4ebde;background:#fff;border-radius:17px;display:flex;align-items:center;text-align:left;gap:11px;padding:11px 13px;color:#24334a;box-shadow:0 3px 0 #e5eaf0}
+.dt-continue-symbol{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:#24bd7b;color:white;font-size:17px;flex-shrink:0}.dt-continue-mini b{display:block;font-size:13px}.dt-continue-mini small{display:block;font-size:11px;color:#7a8497;margin-top:3px}.dt-continue-arrow{margin-left:auto;font-size:26px;color:#25b77a}
+.dt-home-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:21px 0 11px}.dt-home-heading h2{font-size:18px;margin:0}.dt-home-heading>span{font-size:11px;color:#7a8497}.dt-home-heading button{background:none;border:0;color:#6250ca;font-size:12px;font-weight:800}
+.dt-exercise-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}.dt-exercise{background:#fff;border:1px solid #e8edf4;border-radius:16px;min-width:0;padding:11px 3px 10px;font-size:11px;font-weight:800;color:#273248;box-shadow:0 3px 0 #e8edf4}.dt-exercise:active{transform:translateY(2px);box-shadow:0 1px 0 #e8edf4}.dt-ex-icon{display:block;font-size:27px;margin-bottom:7px}
+.dt-progress-heading{margin-top:23px}.dt-progress-card{background:#fff;border:1px solid #e9edf5;border-radius:20px;padding:17px}.dt-progress-top{display:flex;justify-content:space-between;gap:8px;font-size:13px;font-weight:700;margin-bottom:11px}.dt-progress-top strong{color:#20a86f}.dt-progress-card p{font-size:11px;margin:9px 0 14px}.dt-mini-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;border-top:1px solid #edf0f6;padding-top:13px;text-align:center}.dt-mini-stats b{display:block;font-size:19px;color:#473ba1}.dt-mini-stats small{display:block;font-size:10px;color:#7a8497;margin-top:4px}
+.dt-more-tools{margin:14px 0 5px;background:white;border:1px solid #edf0f6;border-radius:17px;padding:14px}.dt-more-tools summary{cursor:pointer;font-size:13px;font-weight:800}.dt-more-links{display:grid;gap:7px;margin-top:12px}.dt-more-links button{text-align:left;padding:12px;border-radius:10px;border:1px solid #e9edf4;background:#f8faff;color:#24334a;font-size:13px;font-weight:700}
+#path-lessons{background:transparent;padding:4px 0 20px}
+.dt-world{--world:#20b878;--world-light:#e6f9ee;position:relative;border-radius:25px;padding:16px 12px 26px;margin:17px 0 22px;background:linear-gradient(180deg,var(--world-light),#fff);border:1px solid #e4eaf2;overflow:hidden}
+.dt-world.world-a2{--world:#3b82f6;--world-light:#e6f1ff}.dt-world.world-b1{--world:#9b5de5;--world-light:#f2eaff}
+.dt-world:before{content:'☁️';position:absolute;right:18px;top:65px;font-size:38px;opacity:.5}.dt-world:after{content:'✦';position:absolute;left:15px;bottom:70px;color:var(--world);font-size:28px;opacity:.28;pointer-events:none}
+.dt-world-head{position:relative;z-index:1;background:var(--world);color:white;border-radius:17px;padding:13px 15px;box-shadow:0 4px 0 #0002}.dt-world-head strong{display:block;font-size:16px}.dt-world-head small{font-size:11px;opacity:.95}
+.dt-adventure-track{position:relative;display:flex;flex-direction:column;align-items:center;padding:20px 0 5px;gap:0}
+.dt-adventure-track:before{content:'';position:absolute;top:40px;bottom:36px;left:50%;border-left:6px dotted #b9c7d6;transform:translateX(-50%);opacity:.75}
+.dt-node-wrap{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;min-height:117px;width:100%}
+.dt-node-wrap:nth-child(3n+1){transform:translateX(-22%)}.dt-node-wrap:nth-child(3n+2){transform:translateX(21%)}
+.dt-node{width:70px;height:70px;border-radius:24px;border:4px solid white;box-shadow:0 6px 0 #0002,0 8px 14px #0001;background:var(--world);color:white;display:grid;place-items:center;font-size:30px;transition:transform .15s;position:relative;cursor:pointer}
+.dt-node:active:not(:disabled){transform:scale(.94)}.dt-node:disabled{cursor:not-allowed;background:#aab6c6;color:white;filter:grayscale(.3)}
+.dt-node.dt-done{background:#24b977}.dt-node.dt-current{background:linear-gradient(145deg,#ffcf59,#f59b23);box-shadow:0 5px 0 #cb8421,0 0 0 6px #ffd87380;animation:dt-pulse 2s ease-in-out infinite}.dt-node.dt-checkpoint{background:linear-gradient(145deg,#ac72ff,#6d43d6)}.dt-node.dt-checkpoint.dt-done{background:linear-gradient(145deg,#ffd55e,#e9a523)}
+.dt-node-number{position:absolute;right:-8px;top:-8px;min-width:23px;height:23px;border-radius:50%;background:white;border:2px solid var(--world);color:#25364d;font-size:11px;font-weight:900;display:grid;place-items:center}
+.dt-node-label{max-width:165px;text-align:center;margin-top:8px;padding:6px 11px;background:white;border-radius:14px;font-size:11px;font-weight:800;color:#324159;box-shadow:0 2px 6px #0001}.dt-node-wrap.dt-locked .dt-node-label{color:#8a93a4}
+@keyframes dt-pulse{50%{box-shadow:0 5px 0 #cb8421,0 0 0 10px #ffd87345}}
+@media(prefers-reduced-motion:reduce){.dt-node.dt-current{animation:none}}
+@media(max-width:360px){.dt-exercise-grid{gap:6px}.dt-exercise{font-size:10px}.dt-ex-icon{font-size:23px}}
+
 </style>
 </head>
 
@@ -291,51 +319,38 @@ p { line-height: 1.5; }
 
     <!-- EKRAN GŁÓWNY -->
     <section id="home" class="screen active">
-        <div class="hero">
-            <div class="emoji">💪🇩🇪</div>
-            <h1>Centrum ćwiczeń 🇩🇪</h1>
-            <p>Fiszki, dialogi, słuchanie i szybkie treningi. Lekcje znajdziesz w osobnej zakładce 📚.</p>
+      <div class="dt-home-welcome"><div><span class="dt-eyebrow">🇩🇪 DEUTSCHTRAINER</span><h1>Hallo! 👋</h1><p>Małe kroki, wielkie postępy.</p></div><div class="dt-welcome-star">✨</div></div>
+      <button class="dt-continue-mini" onclick="continuePath()" aria-label="Kontynuuj lekcję"><span class="dt-continue-symbol">▶</span><span><b>Kontynuuj lekcję</b><small id="dt-next-lesson">Wróć do nauki</small></span><span class="dt-continue-arrow">›</span></button>
+      <div class="dt-home-heading"><h2>🎯 Centrum ćwiczeń</h2><span>Wybierz trening</span></div>
+      <div class="dt-exercise-grid"><button class="dt-exercise" onclick="openFlashcards()"><span class="dt-ex-icon">🗂️</span><span>Fiszki</span></button>
+<button class="dt-exercise" onclick="openFeature('listening')"><span class="dt-ex-icon">🎧</span><span>Słuchanie</span></button>
+<button class="dt-exercise" onclick="openExtendedDialogues()"><span class="dt-ex-icon">🎭</span><span>Dialogi</span></button>
+<button class="dt-exercise" onclick="openFeature('review')"><span class="dt-ex-icon">🧠</span><span>Powtórki</span></button>
+<button class="dt-exercise" onclick="openFeature('writing')"><span class="dt-ex-icon">✍️</span><span>Pisanie</span></button>
+<button class="dt-exercise" onclick="openGrammar()"><span class="dt-ex-icon">📘</span><span>Gramatyka</span></button>
+<button class="dt-exercise" onclick="openFeature('dialog')"><span class="dt-ex-icon">💬</span><span>Klient</span></button>
+<button class="dt-exercise" onclick="openFeature('dictionary')"><span class="dt-ex-icon">📖</span><span>Słownik</span></button></div>
+      <div class="dt-home-heading dt-progress-heading"><h2>📊 Twój postęp</h2><button onclick="showProgress()">Zobacz więcej ›</button></div>
+      <div class="dt-progress-card">
+        <div class="dt-progress-top"><span>Skuteczność odpowiedzi</span><strong id="percent">0%</strong></div>
+        <div class="progress"><div id="home-progress" class="progress-fill"></div></div>
+        <p class="muted" id="progress-description">Rozpocznij pierwszą lekcję!</p>
+        <div class="dt-mini-stats"><div><b id="dt-home-lessons">0/36</b><small>Lekcje</small></div><div><b id="dt-home-xp">0</b><small>XP</small></div><div><b id="dt-home-streak">0</b><small>Seria dni 🔥</small></div></div>
+      </div>
+      <details class="dt-more-tools"><summary>⚙️ Więcej ćwiczeń i ustawienia</summary>
+        <div class="dt-more-links">
+          <button onclick="openProfile()">🏅 Mój profil i osiągnięcia</button>
+          <button onclick="openBackup()">💾 Kopia zapasowa postępów</button>
+          <button onclick="openFeature('missions')">🏆 Misje i osiągnięcia</button>
+          <button onclick="startLesson('work')">🛠️ Niemiecki w pracy</button>
+          <button onclick="startLesson('customer')">🤝 Rozmowa z klientem</button>
+          <button onclick="startLesson('daily')">🗣️ Niemiecki na co dzień</button>
+          <button onclick="startReview()">🧠 Powtórka błędów <small id="mistake-count"></small></button>
+          <button onclick="openFeature('install')">📱 Instalacja / offline</button>
+          <button onclick="openVoiceSettings()">🎙️ Ustaw głos</button>
+          <button id="sound-toggle" onclick="toggleSounds()">🔊 Dźwięki: WŁĄCZONE</button>
         </div>
-
-        <div class="card">
-            <div class="card-head">
-                <strong>Twój postęp</strong>
-                <strong id="percent">0%</strong>
-            </div>
-            <div class="progress"><div id="home-progress" class="progress-fill"></div></div>
-            <p class="muted" id="progress-description">Rozpocznij pierwszą lekcję!</p>
-        </div>
-
-        <button class="button" onclick="continuePath()">📚 KONTYNUUJ LEKCJĘ</button>
-        <button type="button" class="button secondary" style="margin-top:10px" onclick="openVoiceSettings()">🎙️ Ustaw głos</button>
-        <button id="sound-toggle" class="button secondary" style="margin-top:10px" onclick="toggleSounds()">🔊 Dźwięki: WŁĄCZONE</button>
-<h2 class="section">Fiszki i trening</h2>
-        <div class="lesson-row" onclick="openGrammar()"><div class="lesson-emoji">📘</div><div class="lesson-info"><strong>Gramatyka przed lekcją</strong><small>Polskie wyjaśnienia i przykłady A1–B1</small></div><div class="arrow">›</div></div>
-        <div class="lesson-row" onclick="openFlashcards()"><div class="lesson-emoji">🗂️</div><div class="lesson-info"><strong>Fiszki z powtórkami</strong><small>Powtórki po 1, 3 i 7 dniach</small></div><div class="arrow">›</div></div>
-        <div class="lesson-row" onclick="openExtendedDialogues()"><div class="lesson-emoji">🎭</div><div class="lesson-info"><strong>Scenki i dłuższe dialogi</strong><small>Klient, sklep, urząd i praca</small></div><div class="arrow">›</div></div>
-        <div class="lesson-row" onclick="openProfile()"><div class="lesson-emoji">🏅</div><div class="lesson-info"><strong>Mój profil i osiągnięcia</strong><small>Statystyki i odznaki</small></div><div class="arrow">›</div></div>
-        <div class="lesson-row" onclick="openBackup()"><div class="lesson-emoji">💾</div><div class="lesson-info"><strong>Kopia zapasowa</strong><small>Eksport i import postępów</small></div><div class="arrow">›</div></div>
-        <h2 class="section">Nowe tryby nauki</h2>
-        <div class="lesson-row" onclick="openFeature('dialog')"><div class="lesson-emoji">💬</div><div class="lesson-info"><strong>Rozmowy z klientem</strong><small>Interaktywne dialogi</small></div><div class="arrow">›</div></div>
-        <div class="lesson-row" onclick="openFeature('review')"><div class="lesson-emoji">🧠</div><div class="lesson-info"><strong>Inteligentne powtórki</strong><small>Trudne zdania wracają częściej</small></div><div class="arrow">›</div></div>
-        <div class="lesson-row" onclick="openFeature('writing')"><div class="lesson-emoji">✍️</div><div class="lesson-info"><strong>Samodzielne pisanie</strong><small>Wpisz niemieckie zdanie</small></div><div class="arrow">›</div></div>
-        <div class="lesson-row" onclick="openFeature('listening')"><div class="lesson-emoji">🎧</div><div class="lesson-info"><strong>Ćwiczenia ze słuchu</strong><small>Posłuchaj i rozpoznaj znaczenie</small></div><div class="arrow">›</div></div>
-        <div class="lesson-row" onclick="openFeature('dictionary')"><div class="lesson-emoji">📖</div><div class="lesson-info"><strong>Słownik i fiszki</strong><small>Poznane zwroty i wymowa</small></div><div class="arrow">›</div></div>
-        <div class="lesson-row" onclick="openFeature('missions')"><div class="lesson-emoji">🏆</div><div class="lesson-info"><strong>Misje i osiągnięcia</strong><small>Codzienne cele i odznaki</small></div><div class="arrow">›</div></div>
-        <div class="lesson-row" onclick="openFeature('install')"><div class="lesson-emoji">📱</div><div class="lesson-info"><strong>Na telefon / offline</strong><small>Instrukcja instalacji PWA</small></div><div class="arrow">›</div></div>
-        <h2 class="section">Dodatkowe ćwiczenia</h2>
-        <div class="lesson-row" onclick="startLesson('work')"><div class="lesson-emoji">🛠️</div><div class="lesson-info"><strong>Niemiecki w pracy</strong><small>Rozszerzony bank pytań do ćwiczenia</small></div><div class="arrow">›</div></div>
-        <div class="lesson-row" onclick="startLesson('customer')"><div class="lesson-emoji">🤝</div><div class="lesson-info"><strong>Rozmowa z klientem</strong><small>Przydatne zwroty i pytania</small></div><div class="arrow">›</div></div>
-        <div class="lesson-row" onclick="startLesson('daily')"><div class="lesson-emoji">🗣️</div><div class="lesson-info"><strong>Niemiecki na co dzień</strong><small>Sklep, droga i rozmowy</small></div><div class="arrow">›</div></div>
-
-        <div class="lesson-row" onclick="startReview()">
-            <div class="lesson-emoji" style="background:#ffe9f0">🧠</div>
-            <div class="lesson-info">
-                <strong>Powtórka błędów</strong>
-                <small id="mistake-count">Słówka, które warto utrwalić</small>
-            </div>
-            <div class="arrow">›</div>
-        </div>
+      </details>
     </section>
 
     <!-- ODDZIELNA ZAKŁADKA LEKCJE -->
@@ -4161,6 +4176,12 @@ function updateUI() {
     document.getElementById("progress-description").textContent=
         data.answered===0?"Rozpocznij pierwszą lekcję!":
         "Poprawne odpowiedzi: "+data.correct+" z "+data.answered+".";
+    document.getElementById("dt-home-lessons").textContent=lessonsA1.filter(l=>data.pathCompleted[l.id]).length+"/"+lessonsA1.length;
+    document.getElementById("dt-home-xp").textContent=data.xp;
+    document.getElementById("dt-home-streak").textContent=data.streak;
+    const nextIndex=unlockedPathCount();
+    const testDue=nextIndex>0 && nextIndex%5===0 && !checkpointPassed[nextIndex];
+    document.getElementById("dt-next-lesson").textContent=testDue?"Czeka test kontrolny":nextIndex>=lessonsA1.length?"Powtórz ostatnią lekcję":"Lekcja "+(nextIndex+1)+": "+lessonsA1[nextIndex].title;
     document.getElementById("mistake-count").textContent=
         Object.values(data.mistakes).filter(n=>n>0).length+" pytań do utrwalenia";
     document.getElementById("stat-xp").textContent=data.xp;
@@ -4196,31 +4217,36 @@ function renderPath() {
     document.getElementById("path-progress").style.width = (100*completed/lessonsA1.length) + "%";
     const unlocked = unlockedPathCount();
     const container = document.getElementById("path-lessons");
-    container.innerHTML = "";
+    container.replaceChildren();
+    let world=null, track=null, currentLevel='';
+    function makeNode(icon,title,num,kind,locked,done,handler){
+        const wrap=document.createElement('div');wrap.className='dt-node-wrap'+(locked?' dt-locked':'');
+        const btn=document.createElement('button');btn.type='button';btn.className='dt-node '+(kind||'')+(done?' dt-done':'')+(!done&&!locked&&kind!=='dt-checkpoint'?' dt-current':'');
+        btn.disabled=locked;btn.setAttribute('aria-label',title+(locked?' (zablokowane)':done?' (ukończone)':''));
+        btn.textContent=locked?'🔒':done?(kind==='dt-checkpoint'?'🏆':'✓'):icon;
+        const number=document.createElement('span');number.className='dt-node-number';number.textContent=num;btn.appendChild(number);
+        const label=document.createElement('div');label.className='dt-node-label';label.textContent=title;
+        btn.onclick=handler;wrap.append(btn,label);track.appendChild(wrap);
+    }
     lessonsA1.forEach((lesson,i)=>{
-        if(i===0 || (i>0 && lessonsA1[i].level!==lessonsA1[i-1].level)){
-          const hdr=document.createElement('div');hdr.className='path-section';hdr.textContent='🇩🇪 POZIOM '+(lesson.level|| (i<20?'A1':i<29?'A2':'B1'));container.appendChild(hdr);
+        const level=lesson.level||(i<20?'A1':i<29?'A2':'B1');
+        if(level!==currentLevel){
+            currentLevel=level;
+            world=document.createElement('section');world.className='dt-world world-'+level.toLowerCase();
+            const heading=document.createElement('div');heading.className='dt-world-head';
+            const headingTitle=document.createElement('strong');headingTitle.textContent=(level==='A1'?'🌿 Zielona kraina':level==='A2'?'🏙️ Niebieskie miasto':'🏰 Fioletowa przygoda')+' · '+level;
+            const sub=document.createElement('small');sub.textContent=level==='A1'?'Pierwsze kroki w niemieckim':level==='A2'?'Coraz pewniej w rozmowie':'Twoja droga do samodzielności';
+            heading.append(headingTitle,sub);world.appendChild(heading);
+            track=document.createElement('div');track.className='dt-adventure-track';world.appendChild(track);container.appendChild(world);
         }
         if(i>0 && i%5===0){
             const passed=!!checkpointPassed[i];
             const ready=lessonsA1.slice(0,i).every(l=>data.pathCompleted[l.id]);
-            const test=document.createElement("button");test.className="lesson-row";test.style.cssText="width:100%;text-align:left;color:inherit;border:2px solid #e4c6f5;background:#fff9ff;opacity:"+(ready?"1":".5");
-            test.disabled=!ready;test.innerHTML=`<div class="lesson-emoji">${passed?"🏆":"📝"}</div><div class="lesson-info"><strong>TEST KONTROLNY · lekcje ${i-4}–${i}</strong><small>25 pytań · 80% do zaliczenia · 5 żyć</small></div><div class="arrow">${passed?"✅":ready?"▶":"🔒"}</div>`;test.onclick=()=>startCheckpoint(i);container.appendChild(test);
+            makeNode('🏆','Test · lekcje '+(i-4)+'–'+i,'★','dt-checkpoint',!ready,passed,()=>startCheckpoint(i));
         }
-        const done=!!data.pathCompleted[lesson.id], locked=i>unlocked;
-        const btn=document.createElement("button");
-        btn.className="lesson-row "+(done?"path-done":(!locked?"path-current":""));
-        btn.style.cssText="width:100%;text-align:left;color:inherit;cursor:"+(locked?"not-allowed":"pointer")+";opacity:"+(locked?".52":"1")+";border:"+(!locked&&!done?"2px solid var(--purple)":"1px solid #edf0f6");
-        btn.disabled=locked;
-        const em=document.createElement("div"); em.className="lesson-emoji"; em.textContent=locked?"🔒":lesson.emoji;
-        const info=document.createElement("div"); info.className="lesson-info";
-        const strong=document.createElement("strong"); strong.textContent=(i+1)+". "+lesson.title;
-        const small=document.createElement("small"); small.textContent=lesson.description;
-        info.append(strong,small);
-        const state=document.createElement("div"); state.className="arrow"; state.textContent=done?"⭐⭐⭐":locked?"🔒":"▶";
-        btn.append(em,info,state);
-        btn.onclick=()=>startPathLesson(i);
-        container.appendChild(btn);
+        const done=!!data.pathCompleted[lesson.id];
+        const locked=i>unlocked || (i>0 && i%5===0 && !checkpointPassed[i]);
+        makeNode(lesson.emoji,lesson.title,String(i+1),'',locked,done,()=>startPathLesson(i));
     });
 }
 function continuePath() {
