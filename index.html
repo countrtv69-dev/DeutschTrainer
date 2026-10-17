@@ -384,6 +384,26 @@ body{background:radial-gradient(circle at 90% 5%,var(--pet-glow) 0,transparent 3
 @keyframes pet-v17-wave{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(8deg) translateY(-5px)}}
 @keyframes pet-v17-sorry{0%,100%{transform:translateY(0) scale(1) rotate(0)}45%{transform:translateY(10px) scale(.94) rotate(-7deg)}75%{transform:translateY(7px) scale(.96) rotate(3deg)}}
 @media(prefers-reduced-motion:reduce){.pet-avatar.pet-3d,.pet-avatar.pet-3d img{animation:none!important;transition:none!important}}
+
+/* v18: smoother companions, larger, safer mobile placement. Existing images retained. */
+.pet-avatar.pet-3d{backface-visibility:hidden;transform:translateZ(0);contain:layout style;}
+.pet-avatar.pet-3d img{image-rendering:auto;backface-visibility:hidden;transform:translateZ(0);transition:opacity .32s ease-in-out!important;}
+.pet-avatar.pet-3d .pet-idle{animation:none!important}
+.pet-home .pet-avatar.pet-3d{width:180px;height:190px}
+.pet-tile .pet-avatar.pet-3d{width:160px;height:170px}
+#quiz #pet-quiz-slot .pet-companion,#feature-screen #pet-feature-slot .pet-companion{width:174px;min-height:178px;right:5px;bottom:75px;z-index:15}
+#quiz #pet-quiz-slot .pet-avatar.pet-3d,#feature-screen #pet-feature-slot .pet-avatar.pet-3d{width:172px;height:180px}
+#quiz #pet-speech-quiz,#feature-screen #pet-speech-feature{bottom:172px}
+@media(max-width:420px){#quiz #pet-quiz-slot .pet-companion,#feature-screen #pet-feature-slot .pet-companion{width:126px;right:2px;bottom:70px;min-height:135px}#quiz #pet-quiz-slot .pet-avatar.pet-3d,#feature-screen #pet-feature-slot .pet-avatar.pet-3d{width:126px;height:135px}#quiz #pet-speech-quiz,#feature-screen #pet-speech-feature{bottom:135px;max-width:135px}}
+@keyframes pet-v18-breathe{0%,100%{transform:translate3d(0,0,0) rotate(-1deg) scale(1)}50%{transform:translate3d(0,-7px,0) rotate(1deg) scale(1.035)}}
+@keyframes pet-v18-cheer{0%,100%{transform:translate3d(0,0,0) rotate(0) scale(1)}25%{transform:translate3d(0,-30px,0) rotate(-7deg) scale(1.12)}50%{transform:translate3d(0,-5px,0) rotate(6deg) scale(1.04)}75%{transform:translate3d(0,-20px,0) rotate(-4deg) scale(1.1)}}
+@keyframes pet-v18-sad{0%,100%{transform:translate3d(0,0,0) rotate(0) scale(1)}40%{transform:translate3d(0,14px,0) rotate(-8deg) scale(.92)}70%{transform:translate3d(0,9px,0) rotate(-3deg) scale(.95)}}
+.pet-avatar.pet-3d{animation:pet-v18-breathe 4s cubic-bezier(.45,0,.55,1) infinite!important}
+.pet-avatar.pet-3d.pet-good{animation:pet-v18-cheer 1s cubic-bezier(.25,.55,.25,1) 2!important}
+.pet-avatar.pet-3d.pet-bad{animation:pet-v18-sad 1.25s ease-in-out 2!important}
+.pet-avatar.pet-3d.pet-good .pet-pose.good{animation:none!important}
+@media(prefers-reduced-motion:reduce){.pet-avatar.pet-3d{animation:none!important}}
+
 </style>
 </head>
 

@@ -1,4 +1,4 @@
-const CACHE = 'deutschtrainer-pwa-20261017-v17-pets-themes';
+const CACHE = 'deutschtrainer-pwa-20261017-v18-smooth-pets';
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './de-trainer-192-v2.png', './de-trainer-512-v2.png', './pet-cat-idle.png', './pet-cat-good.png', './pet-cat-bad.png', './pet-dog-idle.png', './pet-dog-good.png', './pet-dog-bad.png', './pet-fox-idle.png', './pet-fox-good.png', './pet-fox-bad.png', './pet-dragon-idle.png', './pet-dragon-good.png', './pet-dragon-bad.png', './pet-panda-idle.png', './pet-panda-good.png', './pet-panda-bad.png', './pet-parrot-idle.png', './pet-parrot-good.png', './pet-parrot-bad.png', './pet-snake-idle.png', './pet-snake-good.png', './pet-snake-bad.png', './pet-spider-idle.png', './pet-spider-good.png', './pet-spider-bad.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k.startsWith('deutschtrainer-') && k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
