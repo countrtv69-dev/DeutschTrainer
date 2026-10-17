@@ -1,0 +1,18 @@
+DeutschTrainer — paczka v23 (17.10.2026)
+
+CO ZOSTALO POPRAWIONE
+- Osobne zapisy localStorage dla trybu normalnego i deweloperskiego: XP, lekcje, checkpointy, zwierzatka, fiszki i statystyki.
+- Tryb deweloperski: mozna testowo odblokowac wszystkich 8 pupili, bez wplywu na zwykle XP.
+- Tryb normalny: na start 0 XP, 0 lekcji, brak odblokowanych pupili; za kazde 2000 normalnego XP dostepny jeden pupil.
+- Jednorazowe wyzerowanie starego postepu w przegladarce po pierwszym uruchomieniu v23. Pozniejsze odswiezanie NIE kasuje juz postepow.
+- Zachowane sa ustawienia glosu i dzwieku.
+
+JAK WGRAC NA GITHUB PAGES
+1. Rozpakuj ZIP.
+2. W repozytorium GitHub wybierz Add file > Upload files.
+3. Wgraj PLIKI Z ROZPAKOWANEJ PACZKI (index.html, sw.js, manifest.webmanifest, wszystkie .png) do katalogu, w ktorym obecnie jest index.html. Nie wgrywaj samego ZIP.
+4. Gdy GitHub zapyta o nadpisanie, zastap istniejace pliki i wybierz Commit changes.
+5. Otworz swoja strone i odswiez ja (w razie potrzeby Ctrl+Shift+R, w PWA zamknij i uruchom ponownie).
+6. Sprawdz: normalny 0 XP -> tryb developerski -> odblokuj zwierzatka -> wylacz developerski. W normalnym kolekcja nadal powinna byc pusta.
+
+UWAGA: Reset dotyczy lokalnych zapisow na urzadzeniu/przegladarce, na ktorej uruchomisz nowa wersje. Nie kasuje plikow kopii JSON pobranych kiedys na dysk.
