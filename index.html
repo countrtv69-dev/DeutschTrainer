@@ -1,0 +1,4220 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#7555dc">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#f7f8fc">
+<title>DeutschTrainer</title>
+
+<style>
+:root {
+    --green: #20b878;
+    --dark: #20243a;
+    --muted: #777e91;
+    --bg: #f7f8fc;
+    --purple: #7966ed;
+    --orange: #ffad4f;
+}
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: var(--bg);
+    color: var(--dark);
+}
+button { font: inherit; cursor: pointer; }
+button:focus-visible { outline: 3px solid #7966ed; outline-offset: 3px; }
+
+.app {
+    width: 100%;
+    max-width: 500px;
+    min-height: 100vh;
+    margin: auto;
+    padding: 22px 18px 100px;
+}
+.top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 26px;
+}
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 20px;
+    font-weight: 900;
+}
+.brand-icon {
+    display: grid;
+    place-items: center;
+    width: 43px;
+    height: 43px;
+    border-radius: 15px;
+    background: #e1f8ed;
+    font-size: 24px;
+}
+.stats { display: flex; gap: 8px; }
+.pill {
+    padding: 10px;
+    border-radius: 13px;
+    background: white;
+    font-weight: 800;
+    font-size: 13px;
+}
+h1 { font-size: 29px; line-height: 1.15; margin: 0 0 10px; }
+h2 { font-size: 21px; margin: 0 0 15px; }
+p { line-height: 1.5; }
+.muted { color: var(--muted); }
+.hero {
+    padding: 23px;
+    border-radius: 25px;
+    background: linear-gradient(135deg, #e1faed, #d9f3ff);
+    margin-bottom: 23px;
+}
+.hero p { margin: 0; color: #536579; }
+.hero .emoji { font-size: 43px; margin-bottom: 12px; }
+.button {
+    width: 100%;
+    padding: 17px;
+    border: 0;
+    border-radius: 16px;
+    background: var(--green);
+    color: white;
+    font-weight: 900;
+    box-shadow: 0 5px 0 #168958;
+}
+.button:active { transform: translateY(2px); box-shadow: 0 3px 0 #168958; }
+.button.secondary {
+    background: white;
+    color: var(--dark);
+    border: 1px solid #e5e7ef;
+    box-shadow: none;
+}
+.card {
+    padding: 18px;
+    background: white;
+    border: 1px solid #edf0f6;
+    border-radius: 20px;
+    margin-bottom: 14px;
+}
+.card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+.progress {
+    height: 10px;
+    background: #e9ecf4;
+    border-radius: 20px;
+    overflow: hidden;
+}
+.progress-fill {
+    height: 100%;
+    width: 0;
+    background: var(--green);
+    border-radius: inherit;
+    transition: width .25s;
+}
+.section { margin: 25px 0 12px; }
+.lesson-row {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 16px;
+    background: white;
+    border: 1px solid #edf0f6;
+    border-radius: 18px;
+    margin-bottom: 11px;
+}
+.lesson-emoji {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border-radius: 15px;
+    background: #f0edff;
+    font-size: 25px;
+}
+.lesson-info { flex: 1; }
+.lesson-info strong { display: block; margin-bottom: 5px; }
+.lesson-info small { color: var(--muted); line-height: 1.5; }
+.arrow { font-size: 23px; color: var(--muted); }
+
+.screen { display: none; }
+.screen.active { display: block; }
+.back {
+    border: 0;
+    background: transparent;
+    padding: 5px 0 18px;
+    color: var(--muted);
+    font-weight: bold;
+}
+.lesson-progress {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 25px;
+}
+.lesson-progress .progress { flex: 1; }
+.question-tag {
+    display: inline-block;
+    background: #f0edff;
+    color: #6653d6;
+    font-size: 12px;
+    font-weight: 900;
+    padding: 8px 11px;
+    border-radius: 10px;
+    margin-bottom: 14px;
+}
+.question {
+    font-size: 25px;
+    line-height: 1.35;
+    margin: 0 0 10px;
+}
+.hint { color: var(--muted); margin: 0 0 22px; }
+.options { display: grid; gap: 11px; margin: 20px 0; }
+.option {
+    width: 100%;
+    text-align: left;
+    padding: 17px;
+    border: 2px solid #e7eaf2;
+    background: white;
+    border-radius: 15px;
+    font-weight: bold;
+    color: var(--dark);
+}
+.option:disabled { cursor: default; opacity: 1; }
+.option.correct {
+    border-color: var(--green);
+    background: #e6f9ef;
+    color: #116a43;
+}
+.option.wrong {
+    border-color: #f16b70;
+    background: #fff0f0;
+    color: #a92731;
+}
+.feedback {
+    display: none;
+    padding: 16px;
+    border-radius: 15px;
+    margin-bottom: 18px;
+    line-height: 1.5;
+}
+.feedback.show { display: block; }
+.feedback.good { background: #e6f9ef; color: #116a43; }
+.feedback.bad { background: #fff0f0; color: #a92731; }
+.translation {
+    padding: 16px;
+    background: white;
+    border-radius: 16px;
+    margin: 18px 0;
+    line-height: 1.6;
+}
+.big-emoji { font-size: 64px; text-align: center; margin: 15px 0; }
+.result { text-align: center; padding-top: 20px; }
+.result-score { font-size: 44px; font-weight: 900; color: var(--green); margin: 12px; }
+.bottom {
+    position: fixed;
+    z-index: 10;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    justify-content: space-around;
+    background: #fff;
+    border-top: 1px solid #e9ebf2;
+    padding: 11px 5px calc(11px + env(safe-area-inset-bottom));
+}
+.bottom button {
+    flex: 1;
+    background: none;
+    border: 0;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: bold;
+}
+.bottom button span { display: block; font-size: 22px; margin-bottom: 4px; }
+.bottom button.active { color: var(--green); }
+.note { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+@media (min-width: 600px) {
+    body { padding: 20px 0; }
+    .app { background: var(--bg); }
+}
+</style>
+</head>
+
+<body>
+<main class="app">
+
+    <header class="top">
+        <div class="brand">
+            <div class="brand-icon">🇩🇪</div>
+            <div>DeutschTrainer</div>
+        </div>
+        <div class="stats">
+            <div class="pill">🔥 <span id="streak">0</span></div>
+            <div class="pill">⭐ <span id="xp">0</span> XP</div>
+        </div>
+    </header>
+
+    <!-- EKRAN GŁÓWNY -->
+    <section id="home" class="screen active">
+        <div class="hero">
+            <div class="emoji">💪🇩🇪</div>
+            <h1>Deutsch, który<br>przyda Ci się w pracy!</h1>
+            <p>Ucz się rozmawiać z klientami, szefem i współpracownikami.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-head">
+                <strong>Twój postęp</strong>
+                <strong id="percent">0%</strong>
+            </div>
+            <div class="progress"><div id="home-progress" class="progress-fill"></div></div>
+            <p class="muted" id="progress-description">Rozpocznij pierwszą lekcję!</p>
+        </div>
+
+        <button class="button" onclick="continuePath()">▶ KONTYNUUJ NAUKĘ</button>
+        <button id="sound-toggle" class="button secondary" style="margin-top:10px" onclick="toggleSounds()">🔊 Dźwięki: WŁĄCZONE</button>
+        <h2 class="section">Twoja ścieżka nauki</h2>
+        <div class="card" style="background:#f0edff">
+            <div class="card-head"><strong>🇩🇪 Ścieżka A1 → A2 → B1</strong><strong id="path-count">0/28</strong></div>
+            <div class="progress"><div class="progress-fill" id="path-progress" style="background:var(--purple)"></div></div>
+            <p class="muted" style="margin-bottom:0">Zdobądź co najmniej 80% poprawnych odpowiedzi (80%), aby odblokować kolejną lekcję.</p>
+        </div>
+        <div id="path-lessons"></div>
+        <div class="card"><strong>🎓 A2 i B1</strong><p class="muted">Nowe lekcje pojawią się na ścieżce po ukończeniu A1. Każda ma 10 zadań i próg 80%.</p></div>
+<h2 class="section">Nowe tryby nauki</h2>
+        <div class="lesson-row" onclick="openFeature('dialog')"><div class="lesson-emoji">💬</div><div class="lesson-info"><strong>Rozmowy z klientem</strong><small>Interaktywne dialogi</small></div><div class="arrow">›</div></div>
+        <div class="lesson-row" onclick="openFeature('review')"><div class="lesson-emoji">🧠</div><div class="lesson-info"><strong>Inteligentne powtórki</strong><small>Trudne zdania wracają częściej</small></div><div class="arrow">›</div></div>
+        <div class="lesson-row" onclick="openFeature('writing')"><div class="lesson-emoji">✍️</div><div class="lesson-info"><strong>Samodzielne pisanie</strong><small>Wpisz niemieckie zdanie</small></div><div class="arrow">›</div></div>
+        <div class="lesson-row" onclick="openFeature('listening')"><div class="lesson-emoji">🎧</div><div class="lesson-info"><strong>Ćwiczenia ze słuchu</strong><small>Posłuchaj i rozpoznaj znaczenie</small></div><div class="arrow">›</div></div>
+        <div class="lesson-row" onclick="openFeature('dictionary')"><div class="lesson-emoji">📖</div><div class="lesson-info"><strong>Słownik i fiszki</strong><small>Poznane zwroty i wymowa</small></div><div class="arrow">›</div></div>
+        <div class="lesson-row" onclick="openFeature('missions')"><div class="lesson-emoji">🏆</div><div class="lesson-info"><strong>Misje i osiągnięcia</strong><small>Codzienne cele i odznaki</small></div><div class="arrow">›</div></div>
+        <div class="lesson-row" onclick="openFeature('install')"><div class="lesson-emoji">📱</div><div class="lesson-info"><strong>Na telefon / offline</strong><small>Instrukcja instalacji PWA</small></div><div class="arrow">›</div></div>
+        <h2 class="section">Dodatkowe ćwiczenia</h2>
+        <div class="lesson-row" onclick="startLesson('work')"><div class="lesson-emoji">🛠️</div><div class="lesson-info"><strong>Niemiecki w pracy</strong><small>Rozszerzony bank pytań do ćwiczenia</small></div><div class="arrow">›</div></div>
+        <div class="lesson-row" onclick="startLesson('customer')"><div class="lesson-emoji">🤝</div><div class="lesson-info"><strong>Rozmowa z klientem</strong><small>Przydatne zwroty i pytania</small></div><div class="arrow">›</div></div>
+        <div class="lesson-row" onclick="startLesson('daily')"><div class="lesson-emoji">🗣️</div><div class="lesson-info"><strong>Niemiecki na co dzień</strong><small>Sklep, droga i rozmowy</small></div><div class="arrow">›</div></div>
+
+        <div class="lesson-row" onclick="startReview()">
+            <div class="lesson-emoji" style="background:#ffe9f0">🧠</div>
+            <div class="lesson-info">
+                <strong>Powtórka błędów</strong>
+                <small id="mistake-count">Słówka, które warto utrwalić</small>
+            </div>
+            <div class="arrow">›</div>
+        </div>
+    </section>
+
+    <section id="feature-screen" class="screen"><button class="back" onclick="goHome()">← Wróć do menu</button><h1 id="feature-title" class="section"></h1><div id="feature-body" class="card"></div></section>
+    <!-- EKRAN LEKCJI -->
+    <section id="quiz" class="screen">
+        <button class="back" onclick="goHome()">← Wróć do menu</button>
+
+        <div class="lesson-progress">
+            <div class="progress"><div id="quiz-progress" class="progress-fill"></div></div>
+            <strong id="question-count">1/15</strong>
+        </div>
+
+        <div id="quiz-content">
+            <div class="question-tag" id="category">NIEMIECKI W PRACY</div>
+            <h1 class="question" id="question">Jak powiesz po niemiecku?</h1>
+            <p class="hint" id="question-hint">Wybierz poprawną odpowiedź.</p>
+
+            <div class="translation" id="context" style="display:none"></div>
+            <div id="scramble-area" style="display:none">
+                <div id="assembled-words" class="word-zone" aria-label="Ułożone zdanie"></div>
+                <p class="hint">Klikaj słowa w odpowiedniej kolejności. Kliknij wybrane słowo, aby je cofnąć.</p>
+                <div id="word-bank" class="word-bank"></div>
+                <button id="check-words" class="button" style="margin-top:18px" onclick="submitScramble()" disabled>SPRAWDŹ ZDANIE ✓</button>
+            </div>
+            <div id="fill-area" style="display:none">
+                <div class="translation" id="fill-sentence" style="font-size:23px;font-weight:800;text-align:center"></div>
+                <p class="hint">Wybierz słowo, które pasuje w puste miejsce.</p>
+                <div class="options" id="fill-options"></div>
+            </div>
+            <div class="options" id="options"></div>
+            <div id="feedback" class="feedback"></div>
+
+            <button id="next-button" class="button" style="display:none" onclick="nextQuestion()">
+                DALEJ →
+            </button>
+        </div>
+
+        <div id="result-content" class="result" style="display:none">
+            <div class="big-emoji" id="result-emoji">🎉</div>
+            <h1 id="result-title">Świetna robota!</h1>
+            <p class="muted" id="result-description"></p>
+            <div class="result-score" id="result-xp">+0 XP</div>
+            <p id="result-accuracy"></p>
+            <button id="next-lesson-button" class="button" style="display:none;margin-bottom:14px" onclick="goToNextLesson()">NASTĘPNA LEKCJA →</button>
+            <button id="repeat-lesson-button" class="button secondary" onclick="repeatLesson()">POWTÓRZ LEKCJĘ</button>
+            <br><br>
+            <button class="button secondary" onclick="goHome()">WRÓĆ DO MENU</button>
+        </div>
+    </section>
+
+    <!-- EKRAN POSTĘPÓW -->
+    <section id="progress-screen" class="screen">
+        <h1>Twoje postępy 📊</h1>
+        <p class="muted">Każda krótka sesja przybliża Cię do swobodnej rozmowy.</p>
+
+        <div class="card">
+            <div class="card-head"><strong>⭐ Zdobyte XP</strong><strong id="stat-xp">0</strong></div>
+            <div class="card-head"><strong>📚 Ukończone pytania</strong><strong id="stat-answered">0</strong></div>
+            <div class="card-head"><strong>✅ Poprawne odpowiedzi</strong><strong id="stat-correct">0</strong></div>
+            <div class="card-head"><strong>🔥 Aktualna seria</strong><strong id="stat-streak">0 dni</strong></div>
+        </div>
+
+        <div class="card">
+            <h2>Co już umiesz?</h2>
+            <div id="topic-progress" class="muted">Ukończ pierwszą lekcję, aby zobaczyć wyniki.</div>
+        </div>
+
+        <button class="button" onclick="continuePath()">KONTYNUUJ NAUKĘ</button>
+    </section>
+
+    <!-- EKRAN POWTÓREK -->
+    <section id="review-screen" class="screen">
+        <h1>Powtórka błędów 🧠</h1>
+        <p class="muted">Wróć do pytań, które sprawiły Ci trudność.</p>
+        <div class="card">
+            <h2 id="review-heading">Utrwal wiedzę</h2>
+            <p id="review-description">Po każdej lekcji zapisujemy pytania, w których popełniłeś błąd.</p>
+        </div>
+        <button class="button" onclick="startReview()">▶ ROZPOCZNIJ POWTÓRKĘ</button>
+        <br><br>
+        <button class="button secondary" onclick="goHome()">WRÓĆ DO MENU</button>
+    </section>
+
+</main>
+
+<nav class="bottom">
+    <button id="nav-home" class="active" onclick="goHome()"><span>🏠</span>Start</button>
+    <button id="nav-lessons" onclick="goHome()"><span>📚</span>Lekcje</button>
+    <button id="nav-review" onclick="showScreen('review-screen')"><span>🧠</span>Powtórki</button>
+    <button id="nav-progress" onclick="showProgress()"><span>📊</span>Postęp</button>
+</nav>
+
+<script>
+const lessonsA1 = [
+  {
+    "id": "a1-1",
+    "emoji": "👋",
+    "title": "Powitania",
+    "description": "Przywitaj się i pożegnaj",
+    "questions": [
+      {
+        "pl": "Dzień dobry!",
+        "de": "Guten Tag!",
+        "options": [
+          "Guten Tag!",
+          "Hallo!",
+          "Guten Morgen!"
+        ],
+        "explain": "Guten Tag! = Dzień dobry!"
+      },
+      {
+        "pl": "Cześć!",
+        "de": "Hallo!",
+        "options": [
+          "Hallo!",
+          "Guten Morgen!",
+          "Guten Abend!"
+        ],
+        "explain": "Hallo! = Cześć!"
+      },
+      {
+        "pl": "Dzień dobry rano!",
+        "de": "Guten Morgen!",
+        "options": [
+          "Guten Morgen!",
+          "Guten Abend!",
+          "Auf Wiedersehen!"
+        ],
+        "explain": "Guten Morgen! = Dzień dobry rano!"
+      },
+      {
+        "pl": "Dobry wieczór!",
+        "de": "Guten Abend!",
+        "options": [
+          "Guten Abend!",
+          "Auf Wiedersehen!",
+          "Guten Tag!"
+        ],
+        "explain": "Guten Abend! = Dobry wieczór!"
+      },
+      {
+        "pl": "Do widzenia!",
+        "de": "Auf Wiedersehen!",
+        "options": [
+          "Auf Wiedersehen!",
+          "Guten Tag!",
+          "Hallo!"
+        ],
+        "explain": "Auf Wiedersehen! = Do widzenia!"
+      },
+      {
+        "pl": "Dobranoc!",
+        "de": "Gute Nacht!",
+        "options": [
+          "Tschüss!",
+          "Gute Nacht!",
+          "Bis morgen!"
+        ],
+        "explain": "Gute Nacht! = Dobranoc!"
+      },
+      {
+        "pl": "Do zobaczenia!",
+        "de": "Bis bald!",
+        "options": [
+          "Schönen Tag noch!",
+          "Bis bald!",
+          "Bis morgen!"
+        ],
+        "explain": "Bis bald! = Do zobaczenia!"
+      },
+      {
+        "pl": "Do zobaczenia później!",
+        "de": "Bis später!",
+        "options": [
+          "Bis später!",
+          "Schön, dich zu sehen!",
+          "Bis morgen!"
+        ],
+        "explain": "Bis später! = Do zobaczenia później!"
+      },
+      {
+        "pl": "Na razie!",
+        "de": "Tschüss!",
+        "options": [
+          "Tschüss!",
+          "Hallo!",
+          "Bis später!"
+        ],
+        "explain": "Tschüss! = Na razie!"
+      },
+      {
+        "pl": "Do jutra!",
+        "de": "Bis morgen!",
+        "options": [
+          "Tschüss!",
+          "Hallo!",
+          "Bis morgen!"
+        ],
+        "explain": "Bis morgen! = Do jutra!"
+      },
+      {
+        "pl": "Miłego dnia!",
+        "de": "Schönen Tag noch!",
+        "options": [
+          "Schönen Tag noch!",
+          "Bis morgen!",
+          "Bis bald!"
+        ],
+        "explain": "Schönen Tag noch! = Miłego dnia!"
+      },
+      {
+        "pl": "Miłego wieczoru!",
+        "de": "Schönen Abend noch!",
+        "options": [
+          "Guten Tag!",
+          "Bis morgen!",
+          "Schönen Abend noch!"
+        ],
+        "explain": "Schönen Abend noch! = Miłego wieczoru!"
+      },
+      {
+        "pl": "Witaj!",
+        "de": "Willkommen!",
+        "options": [
+          "Bis Montag!",
+          "Willkommen!",
+          "Guten Tag!"
+        ],
+        "explain": "Willkommen! = Witaj!"
+      },
+      {
+        "pl": "Jak miło cię widzieć!",
+        "de": "Schön, dich zu sehen!",
+        "options": [
+          "Bis morgen!",
+          "Schön, dich zu sehen!",
+          "Guten Tag!"
+        ],
+        "explain": "Schön, dich zu sehen! = Jak miło cię widzieć!"
+      },
+      {
+        "pl": "Do zobaczenia w poniedziałek!",
+        "de": "Bis Montag!",
+        "options": [
+          "Bis morgen!",
+          "Bis Montag!",
+          "Bis später!"
+        ],
+        "explain": "Bis Montag! = Do zobaczenia w poniedziałek!"
+      }
+    ]
+  },
+  {
+    "id": "a1-2",
+    "emoji": "🙋",
+    "title": "Przedstawianie się",
+    "description": "Powiedz, kim jesteś",
+    "questions": [
+      {
+        "pl": "Nazywam się Adam.",
+        "de": "Ich heiße Adam.",
+        "options": [
+          "Ich heiße Adam.",
+          "Ich komme aus Polen.",
+          "Ich wohne in Polen."
+        ],
+        "explain": "Ich heiße Adam. = Nazywam się Adam."
+      },
+      {
+        "pl": "Jestem z Polski.",
+        "de": "Ich komme aus Polen.",
+        "options": [
+          "Ich komme aus Polen.",
+          "Ich wohne in Polen.",
+          "Ich arbeite in Deutschland."
+        ],
+        "explain": "Ich komme aus Polen. = Jestem z Polski."
+      },
+      {
+        "pl": "Mieszkam w Polsce.",
+        "de": "Ich wohne in Polen.",
+        "options": [
+          "Ich wohne in Polen.",
+          "Ich arbeite in Deutschland.",
+          "Freut mich, dich kennenzulernen."
+        ],
+        "explain": "Ich wohne in Polen. = Mieszkam w Polsce."
+      },
+      {
+        "pl": "Pracuję w Niemczech.",
+        "de": "Ich arbeite in Deutschland.",
+        "options": [
+          "Ich arbeite in Deutschland.",
+          "Freut mich, dich kennenzulernen.",
+          "Ich heiße Adam."
+        ],
+        "explain": "Ich arbeite in Deutschland. = Pracuję w Niemczech."
+      },
+      {
+        "pl": "Miło mi cię poznać.",
+        "de": "Freut mich, dich kennenzulernen.",
+        "options": [
+          "Freut mich, dich kennenzulernen.",
+          "Ich heiße Adam.",
+          "Ich komme aus Polen."
+        ],
+        "explain": "Freut mich, dich kennenzulernen. = Miło mi cię poznać."
+      },
+      {
+        "pl": "Mam na imię Piotr.",
+        "de": "Ich heiße Piotr.",
+        "options": [
+          "Ich heiße Piotr.",
+          "Ich spreche ein bisschen Deutsch.",
+          "Freut mich, dich kennenzulernen."
+        ],
+        "explain": "Ich heiße Piotr. = Mam na imię Piotr."
+      },
+      {
+        "pl": "Mam trzydzieści lat.",
+        "de": "Ich bin dreißig Jahre alt.",
+        "options": [
+          "Ich spreche ein bisschen Deutsch.",
+          "Ich bin dreißig Jahre alt.",
+          "Ich komme aus Polen."
+        ],
+        "explain": "Ich bin dreißig Jahre alt. = Mam trzydzieści lat."
+      },
+      {
+        "pl": "Jestem z Polski.",
+        "de": "Ich bin aus Polen.",
+        "options": [
+          "Ich bin aus Polen.",
+          "Ich bin Pole.",
+          "Ich bin dreißig Jahre alt."
+        ],
+        "explain": "Ich bin aus Polen. = Jestem z Polski."
+      },
+      {
+        "pl": "Mieszkam w Gubinie.",
+        "de": "Ich wohne in Gubin.",
+        "options": [
+          "Ich wohne in Gubin.",
+          "Ich arbeite als Monteur.",
+          "Ich heiße Piotr."
+        ],
+        "explain": "Ich wohne in Gubin. = Mieszkam w Gubinie."
+      },
+      {
+        "pl": "Jestem Polakiem.",
+        "de": "Ich bin Pole.",
+        "options": [
+          "Ich komme aus Polen.",
+          "Ich heiße Adam.",
+          "Ich bin Pole."
+        ],
+        "explain": "Ich bin Pole. = Jestem Polakiem."
+      },
+      {
+        "pl": "Uczę się niemieckiego.",
+        "de": "Ich lerne Deutsch.",
+        "options": [
+          "Ich bin dreißig Jahre alt.",
+          "Ich lerne Deutsch.",
+          "Ich komme aus Polen."
+        ],
+        "explain": "Ich lerne Deutsch. = Uczę się niemieckiego."
+      },
+      {
+        "pl": "Mówię trochę po niemiecku.",
+        "de": "Ich spreche ein bisschen Deutsch.",
+        "options": [
+          "Ich heiße Adam.",
+          "Ich komme aus Polen.",
+          "Ich spreche ein bisschen Deutsch."
+        ],
+        "explain": "Ich spreche ein bisschen Deutsch. = Mówię trochę po niemiecku."
+      },
+      {
+        "pl": "To jest mój kolega.",
+        "de": "Das ist mein Kollege.",
+        "options": [
+          "Das ist mein Kollege.",
+          "Ich bin neu hier.",
+          "Ich arbeite in Deutschland."
+        ],
+        "explain": "Das ist mein Kollege. = To jest mój kolega."
+      },
+      {
+        "pl": "Pracuję jako monter.",
+        "de": "Ich arbeite als Monteur.",
+        "options": [
+          "Ich bin dreißig Jahre alt.",
+          "Ich arbeite als Monteur.",
+          "Ich spreche ein bisschen Deutsch."
+        ],
+        "explain": "Ich arbeite als Monteur. = Pracuję jako monter."
+      },
+      {
+        "pl": "Jestem tutaj nowy.",
+        "de": "Ich bin neu hier.",
+        "options": [
+          "Ich bin Pole.",
+          "Ich komme aus Polen.",
+          "Ich bin neu hier."
+        ],
+        "explain": "Ich bin neu hier. = Jestem tutaj nowy."
+      }
+    ]
+  },
+  {
+    "id": "a1-3",
+    "emoji": "🤝",
+    "title": "Uprzejme zwroty",
+    "description": "Proś i dziękuj",
+    "questions": [
+      {
+        "pl": "Proszę.",
+        "de": "Bitte.",
+        "options": [
+          "Bitte.",
+          "Danke.",
+          "Vielen Dank."
+        ],
+        "explain": "Bitte. = Proszę."
+      },
+      {
+        "pl": "Dziękuję.",
+        "de": "Danke.",
+        "options": [
+          "Danke.",
+          "Vielen Dank.",
+          "Entschuldigung."
+        ],
+        "explain": "Danke. = Dziękuję."
+      },
+      {
+        "pl": "Dziękuję bardzo.",
+        "de": "Vielen Dank.",
+        "options": [
+          "Vielen Dank.",
+          "Entschuldigung.",
+          "Kein Problem."
+        ],
+        "explain": "Vielen Dank. = Dziękuję bardzo."
+      },
+      {
+        "pl": "Przepraszam.",
+        "de": "Entschuldigung.",
+        "options": [
+          "Entschuldigung.",
+          "Kein Problem.",
+          "Bitte."
+        ],
+        "explain": "Entschuldigung. = Przepraszam."
+      },
+      {
+        "pl": "Nie ma problemu.",
+        "de": "Kein Problem.",
+        "options": [
+          "Kein Problem.",
+          "Bitte.",
+          "Danke."
+        ],
+        "explain": "Kein Problem. = Nie ma problemu."
+      },
+      {
+        "pl": "Proszę bardzo.",
+        "de": "Bitte schön.",
+        "options": [
+          "Es tut mir leid.",
+          "Bitte schön.",
+          "Nein, danke."
+        ],
+        "explain": "Bitte schön. = Proszę bardzo."
+      },
+      {
+        "pl": "Dziękuję bardzo!",
+        "de": "Danke schön!",
+        "options": [
+          "Danke schön!",
+          "Danke.",
+          "Kein Problem."
+        ],
+        "explain": "Danke schön! = Dziękuję bardzo!"
+      },
+      {
+        "pl": "Przepraszam, gdzie jest toaleta?",
+        "de": "Entschuldigung, wo ist die Toilette?",
+        "options": [
+          "Es tut mir leid.",
+          "Entschuldigung, wo ist die Toilette?",
+          "Danke schön!"
+        ],
+        "explain": "Entschuldigung, wo ist die Toilette? = Przepraszam, gdzie jest toaleta?"
+      },
+      {
+        "pl": "Nie ma za co.",
+        "de": "Gern geschehen.",
+        "options": [
+          "Alles in Ordnung.",
+          "Gern geschehen.",
+          "Entschuldigung."
+        ],
+        "explain": "Gern geschehen. = Nie ma za co."
+      },
+      {
+        "pl": "Przepraszam za spóźnienie.",
+        "de": "Entschuldigung für die Verspätung.",
+        "options": [
+          "Entschuldigung für die Verspätung.",
+          "Bitte.",
+          "Entschuldigung, wo ist die Toilette?"
+        ],
+        "explain": "Entschuldigung für die Verspätung. = Przepraszam za spóźnienie."
+      },
+      {
+        "pl": "Tak, proszę.",
+        "de": "Ja, bitte.",
+        "options": [
+          "Ja, bitte.",
+          "Gern geschehen.",
+          "Nein, danke."
+        ],
+        "explain": "Ja, bitte. = Tak, proszę."
+      },
+      {
+        "pl": "Nie, dziękuję.",
+        "de": "Nein, danke.",
+        "options": [
+          "Entschuldigung.",
+          "Gern geschehen.",
+          "Nein, danke."
+        ],
+        "explain": "Nein, danke. = Nie, dziękuję."
+      },
+      {
+        "pl": "Wszystko w porządku.",
+        "de": "Alles in Ordnung.",
+        "options": [
+          "Alles in Ordnung.",
+          "Danke schön!",
+          "Ja, bitte."
+        ],
+        "explain": "Alles in Ordnung. = Wszystko w porządku."
+      },
+      {
+        "pl": "Bardzo mi przykro.",
+        "de": "Es tut mir leid.",
+        "options": [
+          "Kannst du mir bitte helfen?",
+          "Es tut mir leid.",
+          "Danke schön!"
+        ],
+        "explain": "Es tut mir leid. = Bardzo mi przykro."
+      },
+      {
+        "pl": "Czy możesz mi pomóc, proszę?",
+        "de": "Kannst du mir bitte helfen?",
+        "options": [
+          "Kein Problem.",
+          "Alles in Ordnung.",
+          "Kannst du mir bitte helfen?"
+        ],
+        "explain": "Kannst du mir bitte helfen? = Czy możesz mi pomóc, proszę?"
+      }
+    ]
+  },
+  {
+    "id": "a1-4",
+    "emoji": "❓",
+    "title": "Proste pytania",
+    "description": "Zapytaj o podstawowe rzeczy",
+    "questions": [
+      {
+        "pl": "Jak się nazywasz?",
+        "de": "Wie heißt du?",
+        "options": [
+          "Wie heißt du?",
+          "Woher kommst du?",
+          "Wo wohnst du?"
+        ],
+        "explain": "Wie heißt du? = Jak się nazywasz?"
+      },
+      {
+        "pl": "Skąd jesteś?",
+        "de": "Woher kommst du?",
+        "options": [
+          "Woher kommst du?",
+          "Wo wohnst du?",
+          "Was machst du?"
+        ],
+        "explain": "Woher kommst du? = Skąd jesteś?"
+      },
+      {
+        "pl": "Gdzie mieszkasz?",
+        "de": "Wo wohnst du?",
+        "options": [
+          "Wo wohnst du?",
+          "Was machst du?",
+          "Wie geht es dir?"
+        ],
+        "explain": "Wo wohnst du? = Gdzie mieszkasz?"
+      },
+      {
+        "pl": "Co robisz?",
+        "de": "Was machst du?",
+        "options": [
+          "Was machst du?",
+          "Wie geht es dir?",
+          "Wie heißt du?"
+        ],
+        "explain": "Was machst du? = Co robisz?"
+      },
+      {
+        "pl": "Jak się masz?",
+        "de": "Wie geht es dir?",
+        "options": [
+          "Wie geht es dir?",
+          "Wie heißt du?",
+          "Woher kommst du?"
+        ],
+        "explain": "Wie geht es dir? = Jak się masz?"
+      },
+      {
+        "pl": "Jak masz na imię? (formalnie)",
+        "de": "Wie heißen Sie?",
+        "options": [
+          "Wie heißen Sie?",
+          "Was machst du?",
+          "Wie heißt du?"
+        ],
+        "explain": "Wie heißen Sie? = Jak masz na imię? (formalnie)"
+      },
+      {
+        "pl": "Skąd pan pochodzi?",
+        "de": "Woher kommen Sie?",
+        "options": [
+          "Wo ist das?",
+          "Wie viel kostet das?",
+          "Woher kommen Sie?"
+        ],
+        "explain": "Woher kommen Sie? = Skąd pan pochodzi?"
+      },
+      {
+        "pl": "Gdzie pan mieszka?",
+        "de": "Wo wohnen Sie?",
+        "options": [
+          "Wo wohnen Sie?",
+          "Wo wohnst du?",
+          "Wie heißt du?"
+        ],
+        "explain": "Wo wohnen Sie? = Gdzie pan mieszka?"
+      },
+      {
+        "pl": "Ile masz lat?",
+        "de": "Wie alt bist du?",
+        "options": [
+          "Wie geht es dir?",
+          "Wie heißt du?",
+          "Wie alt bist du?"
+        ],
+        "explain": "Wie alt bist du? = Ile masz lat?"
+      },
+      {
+        "pl": "Co to jest?",
+        "de": "Was ist das?",
+        "options": [
+          "Was ist das?",
+          "Wie viel kostet das?",
+          "Wie geht es dir?"
+        ],
+        "explain": "Was ist das? = Co to jest?"
+      },
+      {
+        "pl": "Gdzie to jest?",
+        "de": "Wo ist das?",
+        "options": [
+          "Wie viel kostet das?",
+          "Wo ist das?",
+          "Woher kommst du?"
+        ],
+        "explain": "Wo ist das? = Gdzie to jest?"
+      },
+      {
+        "pl": "Kiedy zaczynamy?",
+        "de": "Wann fangen wir an?",
+        "options": [
+          "Wie heißt du?",
+          "Wann fangen wir an?",
+          "Was ist das?"
+        ],
+        "explain": "Wann fangen wir an? = Kiedy zaczynamy?"
+      },
+      {
+        "pl": "Dlaczego?",
+        "de": "Warum?",
+        "options": [
+          "Warum?",
+          "Wo wohnen Sie?",
+          "Was ist das?"
+        ],
+        "explain": "Warum? = Dlaczego?"
+      },
+      {
+        "pl": "Kto to jest?",
+        "de": "Wer ist das?",
+        "options": [
+          "Wer ist das?",
+          "Was ist das?",
+          "Wie viel kostet das?"
+        ],
+        "explain": "Wer ist das? = Kto to jest?"
+      },
+      {
+        "pl": "Ile to kosztuje?",
+        "de": "Wie viel kostet das?",
+        "options": [
+          "Wie viel kostet das?",
+          "Wo ist das?",
+          "Wo wohnst du?"
+        ],
+        "explain": "Wie viel kostet das? = Ile to kosztuje?"
+      }
+    ]
+  },
+  {
+    "id": "a1-5",
+    "emoji": "🧱",
+    "title": "Na budowie",
+    "description": "Poznaj miejsce pracy",
+    "questions": [
+      {
+        "pl": "Gdzie jest budowa?",
+        "de": "Wo ist die Baustelle?",
+        "options": [
+          "Wo ist die Baustelle?",
+          "Wo ist das Werkzeug?",
+          "Wo ist der Chef?"
+        ],
+        "explain": "Wo ist die Baustelle? = Gdzie jest budowa?"
+      },
+      {
+        "pl": "Gdzie są narzędzia?",
+        "de": "Wo ist das Werkzeug?",
+        "options": [
+          "Wo ist das Werkzeug?",
+          "Wo ist der Chef?",
+          "Ich bin bereit."
+        ],
+        "explain": "Wo ist das Werkzeug? = Gdzie są narzędzia?"
+      },
+      {
+        "pl": "Gdzie jest szef?",
+        "de": "Wo ist der Chef?",
+        "options": [
+          "Wo ist der Chef?",
+          "Ich bin bereit.",
+          "Wir fangen jetzt an."
+        ],
+        "explain": "Wo ist der Chef? = Gdzie jest szef?"
+      },
+      {
+        "pl": "Jestem gotowy.",
+        "de": "Ich bin bereit.",
+        "options": [
+          "Ich bin bereit.",
+          "Wir fangen jetzt an.",
+          "Wo ist die Baustelle?"
+        ],
+        "explain": "Ich bin bereit. = Jestem gotowy."
+      },
+      {
+        "pl": "Zaczynamy teraz.",
+        "de": "Wir fangen jetzt an.",
+        "options": [
+          "Wir fangen jetzt an.",
+          "Wo ist die Baustelle?",
+          "Wo ist das Werkzeug?"
+        ],
+        "explain": "Wir fangen jetzt an. = Zaczynamy teraz."
+      },
+      {
+        "pl": "Jesteśmy na budowie.",
+        "de": "Wir sind auf der Baustelle.",
+        "options": [
+          "Wo kann ich parken?",
+          "Wir sind auf der Baustelle.",
+          "Ich bin bereit."
+        ],
+        "explain": "Wir sind auf der Baustelle. = Jesteśmy na budowie."
+      },
+      {
+        "pl": "Gdzie jest materiał?",
+        "de": "Wo ist das Material?",
+        "options": [
+          "Bring bitte das Material.",
+          "Wo ist der Chef?",
+          "Wo ist das Material?"
+        ],
+        "explain": "Wo ist das Material? = Gdzie jest materiał?"
+      },
+      {
+        "pl": "Potrzebujemy więcej śrub.",
+        "de": "Wir brauchen mehr Schrauben.",
+        "options": [
+          "Wir brauchen mehr Schrauben.",
+          "Das ist unser Auto.",
+          "Wo ist das Material?"
+        ],
+        "explain": "Wir brauchen mehr Schrauben. = Potrzebujemy więcej śrub."
+      },
+      {
+        "pl": "Pracujemy na zewnątrz.",
+        "de": "Wir arbeiten draußen.",
+        "options": [
+          "Wo ist die Baustelle?",
+          "Wir arbeiten draußen.",
+          "Wo ist das Material?"
+        ],
+        "explain": "Wir arbeiten draußen. = Pracujemy na zewnątrz."
+      },
+      {
+        "pl": "Dzisiaj pada deszcz.",
+        "de": "Heute regnet es.",
+        "options": [
+          "Heute regnet es.",
+          "Wo ist die Baustelle?",
+          "Wir arbeiten draußen."
+        ],
+        "explain": "Heute regnet es. = Dzisiaj pada deszcz."
+      },
+      {
+        "pl": "Gdzie mogę zaparkować?",
+        "de": "Wo kann ich parken?",
+        "options": [
+          "Bring bitte das Material.",
+          "Wo kann ich parken?",
+          "Wir sind bereit."
+        ],
+        "explain": "Wo kann ich parken? = Gdzie mogę zaparkować?"
+      },
+      {
+        "pl": "To jest nasz samochód.",
+        "de": "Das ist unser Auto.",
+        "options": [
+          "Wo ist das Material?",
+          "Das ist unser Auto.",
+          "Heute regnet es."
+        ],
+        "explain": "Das ist unser Auto. = To jest nasz samochód."
+      },
+      {
+        "pl": "Przynieś materiał, proszę.",
+        "de": "Bring bitte das Material.",
+        "options": [
+          "Wo ist der Chef?",
+          "Wir arbeiten draußen.",
+          "Bring bitte das Material."
+        ],
+        "explain": "Bring bitte das Material. = Przynieś materiał, proszę."
+      },
+      {
+        "pl": "Musimy zacząć.",
+        "de": "Wir müssen anfangen.",
+        "options": [
+          "Wir müssen anfangen.",
+          "Wo ist der Chef?",
+          "Ich bin bereit."
+        ],
+        "explain": "Wir müssen anfangen. = Musimy zacząć."
+      },
+      {
+        "pl": "Jesteśmy gotowi.",
+        "de": "Wir sind bereit.",
+        "options": [
+          "Ich bin bereit.",
+          "Wir sind bereit.",
+          "Wir fangen jetzt an."
+        ],
+        "explain": "Wir sind bereit. = Jesteśmy gotowi."
+      }
+    ]
+  },
+  {
+    "id": "a1-6",
+    "emoji": "🔨",
+    "title": "Narzędzia",
+    "description": "Poproś o potrzebny sprzęt",
+    "questions": [
+      {
+        "pl": "Potrzebuję młotka.",
+        "de": "Ich brauche einen Hammer.",
+        "options": [
+          "Ich brauche einen Hammer.",
+          "Ich brauche eine Bohrmaschine.",
+          "Wo ist der Schraubenzieher?"
+        ],
+        "explain": "Ich brauche einen Hammer. = Potrzebuję młotka."
+      },
+      {
+        "pl": "Potrzebuję wiertarki.",
+        "de": "Ich brauche eine Bohrmaschine.",
+        "options": [
+          "Ich brauche eine Bohrmaschine.",
+          "Wo ist der Schraubenzieher?",
+          "Gib mir bitte das Maßband."
+        ],
+        "explain": "Ich brauche eine Bohrmaschine. = Potrzebuję wiertarki."
+      },
+      {
+        "pl": "Gdzie jest śrubokręt?",
+        "de": "Wo ist der Schraubenzieher?",
+        "options": [
+          "Wo ist der Schraubenzieher?",
+          "Gib mir bitte das Maßband.",
+          "Wir brauchen eine Leiter."
+        ],
+        "explain": "Wo ist der Schraubenzieher? = Gdzie jest śrubokręt?"
+      },
+      {
+        "pl": "Podaj mi miarkę.",
+        "de": "Gib mir bitte das Maßband.",
+        "options": [
+          "Gib mir bitte das Maßband.",
+          "Wir brauchen eine Leiter.",
+          "Ich brauche einen Hammer."
+        ],
+        "explain": "Gib mir bitte das Maßband. = Podaj mi miarkę."
+      },
+      {
+        "pl": "Potrzebujemy drabiny.",
+        "de": "Wir brauchen eine Leiter.",
+        "options": [
+          "Wir brauchen eine Leiter.",
+          "Ich brauche einen Hammer.",
+          "Ich brauche eine Bohrmaschine."
+        ],
+        "explain": "Wir brauchen eine Leiter. = Potrzebujemy drabiny."
+      },
+      {
+        "pl": "Gdzie jest wiertarka?",
+        "de": "Wo ist die Bohrmaschine?",
+        "options": [
+          "Ich brauche eine Bohrmaschine.",
+          "Wo ist die Bohrmaschine?",
+          "Wir brauchen eine Leiter."
+        ],
+        "explain": "Wo ist die Bohrmaschine? = Gdzie jest wiertarka?"
+      },
+      {
+        "pl": "Potrzebuję śrub.",
+        "de": "Ich brauche Schrauben.",
+        "options": [
+          "Ich brauche einen Hammer.",
+          "Ich brauche Schrauben.",
+          "Gib mir bitte das Maßband."
+        ],
+        "explain": "Ich brauche Schrauben. = Potrzebuję śrub."
+      },
+      {
+        "pl": "Podaj mi młotek, proszę.",
+        "de": "Gib mir bitte den Hammer.",
+        "options": [
+          "Wo ist die Bohrmaschine?",
+          "Wir brauchen eine Leiter.",
+          "Gib mir bitte den Hammer."
+        ],
+        "explain": "Gib mir bitte den Hammer. = Podaj mi młotek, proszę."
+      },
+      {
+        "pl": "Potrzebuję poziomicy.",
+        "de": "Ich brauche eine Wasserwaage.",
+        "options": [
+          "Ich brauche eine Wasserwaage.",
+          "Wo ist die Bohrmaschine?",
+          "Ich brauche eine Bohrmaschine."
+        ],
+        "explain": "Ich brauche eine Wasserwaage. = Potrzebuję poziomicy."
+      },
+      {
+        "pl": "Gdzie jest piła?",
+        "de": "Wo ist die Säge?",
+        "options": [
+          "Das ist mein Schraubenzieher.",
+          "Wo ist die Bohrmaschine?",
+          "Wo ist die Säge?"
+        ],
+        "explain": "Wo ist die Säge? = Gdzie jest piła?"
+      },
+      {
+        "pl": "Weź drabinę.",
+        "de": "Nimm die Leiter.",
+        "options": [
+          "Nimm die Leiter.",
+          "Ich brauche einen Hammer.",
+          "Wo ist die Säge?"
+        ],
+        "explain": "Nimm die Leiter. = Weź drabinę."
+      },
+      {
+        "pl": "To jest mój śrubokręt.",
+        "de": "Das ist mein Schraubenzieher.",
+        "options": [
+          "Das ist mein Schraubenzieher.",
+          "Wo ist die Bohrmaschine?",
+          "Wir haben genug Werkzeug."
+        ],
+        "explain": "Das ist mein Schraubenzieher. = To jest mój śrubokręt."
+      },
+      {
+        "pl": "Mamy wystarczająco dużo narzędzi.",
+        "de": "Wir haben genug Werkzeug.",
+        "options": [
+          "Wo ist die Säge?",
+          "Ich brauche einen Hammer.",
+          "Wir haben genug Werkzeug."
+        ],
+        "explain": "Wir haben genug Werkzeug. = Mamy wystarczająco dużo narzędzi."
+      },
+      {
+        "pl": "Potrzebuję wkrętarki.",
+        "de": "Ich brauche einen Akkuschrauber.",
+        "options": [
+          "Gib mir bitte den Hammer.",
+          "Ich brauche eine Bohrmaschine.",
+          "Ich brauche einen Akkuschrauber."
+        ],
+        "explain": "Ich brauche einen Akkuschrauber. = Potrzebuję wkrętarki."
+      },
+      {
+        "pl": "Przynieś miarkę, proszę.",
+        "de": "Bring bitte das Maßband.",
+        "options": [
+          "Wo ist der Schraubenzieher?",
+          "Bring bitte das Maßband.",
+          "Wo ist die Bohrmaschine?"
+        ],
+        "explain": "Bring bitte das Maßband. = Przynieś miarkę, proszę."
+      }
+    ]
+  },
+  {
+    "id": "a1-7",
+    "emoji": "🗣️",
+    "title": "Polecenia",
+    "description": "Zrozum krótkie prośby",
+    "questions": [
+      {
+        "pl": "Chodź tutaj, proszę.",
+        "de": "Komm bitte her.",
+        "options": [
+          "Komm bitte her.",
+          "Warte einen Moment.",
+          "Mach die Tür auf."
+        ],
+        "explain": "Komm bitte her. = Chodź tutaj, proszę."
+      },
+      {
+        "pl": "Poczekaj chwilę.",
+        "de": "Warte einen Moment.",
+        "options": [
+          "Warte einen Moment.",
+          "Mach die Tür auf.",
+          "Mach das Fenster zu."
+        ],
+        "explain": "Warte einen Moment. = Poczekaj chwilę."
+      },
+      {
+        "pl": "Otwórz drzwi.",
+        "de": "Mach die Tür auf.",
+        "options": [
+          "Mach die Tür auf.",
+          "Mach das Fenster zu.",
+          "Hilf mir bitte."
+        ],
+        "explain": "Mach die Tür auf. = Otwórz drzwi."
+      },
+      {
+        "pl": "Zamknij okno.",
+        "de": "Mach das Fenster zu.",
+        "options": [
+          "Mach das Fenster zu.",
+          "Hilf mir bitte.",
+          "Komm bitte her."
+        ],
+        "explain": "Mach das Fenster zu. = Zamknij okno."
+      },
+      {
+        "pl": "Pomóż mi, proszę.",
+        "de": "Hilf mir bitte.",
+        "options": [
+          "Hilf mir bitte.",
+          "Komm bitte her.",
+          "Warte einen Moment."
+        ],
+        "explain": "Hilf mir bitte. = Pomóż mi, proszę."
+      },
+      {
+        "pl": "Idź tam, proszę.",
+        "de": "Geh bitte dorthin.",
+        "options": [
+          "Geh bitte dorthin.",
+          "Heb das bitte hoch.",
+          "Leg das hier hin."
+        ],
+        "explain": "Geh bitte dorthin. = Idź tam, proszę."
+      },
+      {
+        "pl": "Zostań tutaj.",
+        "de": "Bleib hier.",
+        "options": [
+          "Mach bitte die Tür zu.",
+          "Bring das hierher.",
+          "Bleib hier."
+        ],
+        "explain": "Bleib hier. = Zostań tutaj."
+      },
+      {
+        "pl": "Spójrz tutaj.",
+        "de": "Schau mal hier.",
+        "options": [
+          "Schau mal hier.",
+          "Halt das fest.",
+          "Geh bitte dorthin."
+        ],
+        "explain": "Schau mal hier. = Spójrz tutaj."
+      },
+      {
+        "pl": "Podnieś to, proszę.",
+        "de": "Heb das bitte hoch.",
+        "options": [
+          "Heb das bitte hoch.",
+          "Schau mal hier.",
+          "Pass auf!"
+        ],
+        "explain": "Heb das bitte hoch. = Podnieś to, proszę."
+      },
+      {
+        "pl": "Połóż to tutaj.",
+        "de": "Leg das hier hin.",
+        "options": [
+          "Leg das hier hin.",
+          "Halt das fest.",
+          "Komm bitte her."
+        ],
+        "explain": "Leg das hier hin. = Połóż to tutaj."
+      },
+      {
+        "pl": "Zrób to powoli.",
+        "de": "Mach das langsam.",
+        "options": [
+          "Leg das hier hin.",
+          "Mach das langsam.",
+          "Pass auf!"
+        ],
+        "explain": "Mach das langsam. = Zrób to powoli."
+      },
+      {
+        "pl": "Uważaj!",
+        "de": "Pass auf!",
+        "options": [
+          "Komm bitte her.",
+          "Leg das hier hin.",
+          "Pass auf!"
+        ],
+        "explain": "Pass auf! = Uważaj!"
+      },
+      {
+        "pl": "Przynieś to tutaj.",
+        "de": "Bring das hierher.",
+        "options": [
+          "Mach bitte die Tür zu.",
+          "Warte einen Moment.",
+          "Bring das hierher."
+        ],
+        "explain": "Bring das hierher. = Przynieś to tutaj."
+      },
+      {
+        "pl": "Trzymaj to mocno.",
+        "de": "Halt das fest.",
+        "options": [
+          "Hilf mir bitte.",
+          "Bleib hier.",
+          "Halt das fest."
+        ],
+        "explain": "Halt das fest. = Trzymaj to mocno."
+      },
+      {
+        "pl": "Zamknij drzwi, proszę.",
+        "de": "Mach bitte die Tür zu.",
+        "options": [
+          "Bleib hier.",
+          "Pass auf!",
+          "Mach bitte die Tür zu."
+        ],
+        "explain": "Mach bitte die Tür zu. = Zamknij drzwi, proszę."
+      }
+    ]
+  },
+  {
+    "id": "a1-8",
+    "emoji": "⏰",
+    "title": "Godziny i przerwy",
+    "description": "Ustal rytm pracy",
+    "questions": [
+      {
+        "pl": "O której zaczynamy?",
+        "de": "Um wie viel Uhr fangen wir an?",
+        "options": [
+          "Um wie viel Uhr fangen wir an?",
+          "Wann haben wir Pause?",
+          "Wir fangen um acht Uhr an."
+        ],
+        "explain": "Um wie viel Uhr fangen wir an? = O której zaczynamy?"
+      },
+      {
+        "pl": "Kiedy mamy przerwę?",
+        "de": "Wann haben wir Pause?",
+        "options": [
+          "Wann haben wir Pause?",
+          "Wir fangen um acht Uhr an.",
+          "Wir hören um fünf Uhr auf."
+        ],
+        "explain": "Wann haben wir Pause? = Kiedy mamy przerwę?"
+      },
+      {
+        "pl": "Zaczynamy o ósmej.",
+        "de": "Wir fangen um acht Uhr an.",
+        "options": [
+          "Wir fangen um acht Uhr an.",
+          "Wir hören um fünf Uhr auf.",
+          "Bis morgen!"
+        ],
+        "explain": "Wir fangen um acht Uhr an. = Zaczynamy o ósmej."
+      },
+      {
+        "pl": "Kończymy o piątej.",
+        "de": "Wir hören um fünf Uhr auf.",
+        "options": [
+          "Wir hören um fünf Uhr auf.",
+          "Bis morgen!",
+          "Um wie viel Uhr fangen wir an?"
+        ],
+        "explain": "Wir hören um fünf Uhr auf. = Kończymy o piątej."
+      },
+      {
+        "pl": "Do jutra!",
+        "de": "Bis morgen!",
+        "options": [
+          "Bis morgen!",
+          "Um wie viel Uhr fangen wir an?",
+          "Wann haben wir Pause?"
+        ],
+        "explain": "Bis morgen! = Do jutra!"
+      },
+      {
+        "pl": "Jest ósma.",
+        "de": "Es ist acht Uhr.",
+        "options": [
+          "Morgen fangen wir früher an.",
+          "Wir fangen um sieben Uhr an.",
+          "Es ist acht Uhr."
+        ],
+        "explain": "Es ist acht Uhr. = Jest ósma."
+      },
+      {
+        "pl": "Jest wpół do dziewiątej.",
+        "de": "Es ist halb neun.",
+        "options": [
+          "Heute arbeiten wir länger.",
+          "Wir hören um sechzehn Uhr auf.",
+          "Es ist halb neun."
+        ],
+        "explain": "Es ist halb neun. = Jest wpół do dziewiątej."
+      },
+      {
+        "pl": "Przerwa trwa trzydzieści minut.",
+        "de": "Die Pause dauert dreißig Minuten.",
+        "options": [
+          "Die Pause dauert dreißig Minuten.",
+          "Wann haben wir Feierabend?",
+          "Bis morgen!"
+        ],
+        "explain": "Die Pause dauert dreißig Minuten. = Przerwa trwa trzydzieści minut."
+      },
+      {
+        "pl": "Zaczynamy o siódmej.",
+        "de": "Wir fangen um sieben Uhr an.",
+        "options": [
+          "Wir hören um fünf Uhr auf.",
+          "Um wie viel Uhr fangen wir an?",
+          "Wir fangen um sieben Uhr an."
+        ],
+        "explain": "Wir fangen um sieben Uhr an. = Zaczynamy o siódmej."
+      },
+      {
+        "pl": "Kończymy o szesnastej.",
+        "de": "Wir hören um sechzehn Uhr auf.",
+        "options": [
+          "Die Pause dauert dreißig Minuten.",
+          "Heute arbeiten wir länger.",
+          "Wir hören um sechzehn Uhr auf."
+        ],
+        "explain": "Wir hören um sechzehn Uhr auf. = Kończymy o szesnastej."
+      },
+      {
+        "pl": "Kiedy kończymy pracę?",
+        "de": "Wann haben wir Feierabend?",
+        "options": [
+          "Bis morgen!",
+          "Wann haben wir Feierabend?",
+          "Um wie viel Uhr fangen wir an?"
+        ],
+        "explain": "Wann haben wir Feierabend? = Kiedy kończymy pracę?"
+      },
+      {
+        "pl": "Mam teraz przerwę.",
+        "de": "Ich habe jetzt Pause.",
+        "options": [
+          "Wann haben wir Feierabend?",
+          "Wir fangen um acht Uhr an.",
+          "Ich habe jetzt Pause."
+        ],
+        "explain": "Ich habe jetzt Pause. = Mam teraz przerwę."
+      },
+      {
+        "pl": "Wrócę za dziesięć minut.",
+        "de": "Ich bin in zehn Minuten zurück.",
+        "options": [
+          "Wir fangen um sieben Uhr an.",
+          "Ich bin in zehn Minuten zurück.",
+          "Wir fangen um acht Uhr an."
+        ],
+        "explain": "Ich bin in zehn Minuten zurück. = Wrócę za dziesięć minut."
+      },
+      {
+        "pl": "Dzisiaj pracujemy dłużej.",
+        "de": "Heute arbeiten wir länger.",
+        "options": [
+          "Die Pause dauert dreißig Minuten.",
+          "Heute arbeiten wir länger.",
+          "Wir hören um fünf Uhr auf."
+        ],
+        "explain": "Heute arbeiten wir länger. = Dzisiaj pracujemy dłużej."
+      },
+      {
+        "pl": "Jutro zaczynamy wcześniej.",
+        "de": "Morgen fangen wir früher an.",
+        "options": [
+          "Morgen fangen wir früher an.",
+          "Bis morgen!",
+          "Wann haben wir Feierabend?"
+        ],
+        "explain": "Morgen fangen wir früher an. = Jutro zaczynamy wcześniej."
+      }
+    ]
+  },
+  {
+    "id": "a1-9",
+    "emoji": "🛠️",
+    "title": "Problemy w pracy",
+    "description": "Zgłoś problem i poproś o pomoc",
+    "questions": [
+      {
+        "pl": "Nie rozumiem tego.",
+        "de": "Ich verstehe das nicht.",
+        "options": [
+          "Ich verstehe das nicht.",
+          "Kannst du mir helfen?",
+          "Das ist kaputt."
+        ],
+        "explain": "Ich verstehe das nicht. = Nie rozumiem tego."
+      },
+      {
+        "pl": "Możesz mi pomóc?",
+        "de": "Kannst du mir helfen?",
+        "options": [
+          "Kannst du mir helfen?",
+          "Das ist kaputt.",
+          "Ich habe ein Problem."
+        ],
+        "explain": "Kannst du mir helfen? = Możesz mi pomóc?"
+      },
+      {
+        "pl": "To jest zepsute.",
+        "de": "Das ist kaputt.",
+        "options": [
+          "Das ist kaputt.",
+          "Ich habe ein Problem.",
+          "Wiederhole das bitte."
+        ],
+        "explain": "Das ist kaputt. = To jest zepsute."
+      },
+      {
+        "pl": "Mam problem.",
+        "de": "Ich habe ein Problem.",
+        "options": [
+          "Ich habe ein Problem.",
+          "Wiederhole das bitte.",
+          "Ich verstehe das nicht."
+        ],
+        "explain": "Ich habe ein Problem. = Mam problem."
+      },
+      {
+        "pl": "Powtórz proszę.",
+        "de": "Wiederhole das bitte.",
+        "options": [
+          "Wiederhole das bitte.",
+          "Ich verstehe das nicht.",
+          "Kannst du mir helfen?"
+        ],
+        "explain": "Wiederhole das bitte. = Powtórz proszę."
+      },
+      {
+        "pl": "Nie wiem.",
+        "de": "Ich weiß es nicht.",
+        "options": [
+          "Wir müssen das reparieren.",
+          "Ich weiß es nicht.",
+          "Das ist zu schwer."
+        ],
+        "explain": "Ich weiß es nicht. = Nie wiem."
+      },
+      {
+        "pl": "Nie mam tego narzędzia.",
+        "de": "Ich habe dieses Werkzeug nicht.",
+        "options": [
+          "Das funktioniert nicht.",
+          "Ich habe ein Problem.",
+          "Ich habe dieses Werkzeug nicht."
+        ],
+        "explain": "Ich habe dieses Werkzeug nicht. = Nie mam tego narzędzia."
+      },
+      {
+        "pl": "To nie działa.",
+        "de": "Das funktioniert nicht.",
+        "options": [
+          "Das funktioniert nicht.",
+          "Das ist kaputt.",
+          "Ich habe ein Problem."
+        ],
+        "explain": "Das funktioniert nicht. = To nie działa."
+      },
+      {
+        "pl": "Potrzebuję pomocy.",
+        "de": "Ich brauche Hilfe.",
+        "options": [
+          "Ich verstehe das nicht.",
+          "Ich weiß es nicht.",
+          "Ich brauche Hilfe."
+        ],
+        "explain": "Ich brauche Hilfe. = Potrzebuję pomocy."
+      },
+      {
+        "pl": "Czy możesz mówić wolniej?",
+        "de": "Kannst du langsamer sprechen?",
+        "options": [
+          "Kannst du langsamer sprechen?",
+          "Das ist kaputt.",
+          "Wiederhole das bitte."
+        ],
+        "explain": "Kannst du langsamer sprechen? = Czy możesz mówić wolniej?"
+      },
+      {
+        "pl": "Nie słyszę cię.",
+        "de": "Ich höre dich nicht.",
+        "options": [
+          "Ich höre dich nicht.",
+          "Wiederhole das bitte.",
+          "Das funktioniert nicht."
+        ],
+        "explain": "Ich höre dich nicht. = Nie słyszę cię."
+      },
+      {
+        "pl": "Zrobiłem błąd.",
+        "de": "Ich habe einen Fehler gemacht.",
+        "options": [
+          "Ich habe dieses Werkzeug nicht.",
+          "Ich höre dich nicht.",
+          "Ich habe einen Fehler gemacht."
+        ],
+        "explain": "Ich habe einen Fehler gemacht. = Zrobiłem błąd."
+      },
+      {
+        "pl": "Brakuje jednej śruby.",
+        "de": "Eine Schraube fehlt.",
+        "options": [
+          "Ich höre dich nicht.",
+          "Ich weiß es nicht.",
+          "Eine Schraube fehlt."
+        ],
+        "explain": "Eine Schraube fehlt. = Brakuje jednej śruby."
+      },
+      {
+        "pl": "To jest za ciężkie.",
+        "de": "Das ist zu schwer.",
+        "options": [
+          "Das ist zu schwer.",
+          "Kannst du mir helfen?",
+          "Ich weiß es nicht."
+        ],
+        "explain": "Das ist zu schwer. = To jest za ciężkie."
+      },
+      {
+        "pl": "Musimy to naprawić.",
+        "de": "Wir müssen das reparieren.",
+        "options": [
+          "Wir müssen das reparieren.",
+          "Kannst du langsamer sprechen?",
+          "Das ist zu schwer."
+        ],
+        "explain": "Wir müssen das reparieren. = Musimy to naprawić."
+      }
+    ]
+  },
+  {
+    "id": "a1-10",
+    "emoji": "🏁",
+    "title": "Pierwsza rozmowa",
+    "description": "Połącz zdania w praktyce",
+    "questions": [
+      {
+        "pl": "Dzień dobry, jestem Adam.",
+        "de": "Guten Tag, ich bin Adam.",
+        "options": [
+          "Guten Tag, ich bin Adam.",
+          "Was soll ich jetzt machen?",
+          "Wo soll ich das hinlegen?"
+        ],
+        "explain": "Guten Tag, ich bin Adam. = Dzień dobry, jestem Adam."
+      },
+      {
+        "pl": "Co mam teraz zrobić?",
+        "de": "Was soll ich jetzt machen?",
+        "options": [
+          "Was soll ich jetzt machen?",
+          "Wo soll ich das hinlegen?",
+          "Ich bin schon fertig."
+        ],
+        "explain": "Was soll ich jetzt machen? = Co mam teraz zrobić?"
+      },
+      {
+        "pl": "Gdzie mam to położyć?",
+        "de": "Wo soll ich das hinlegen?",
+        "options": [
+          "Wo soll ich das hinlegen?",
+          "Ich bin schon fertig.",
+          "Danke, bis morgen!"
+        ],
+        "explain": "Wo soll ich das hinlegen? = Gdzie mam to położyć?"
+      },
+      {
+        "pl": "Już skończyłem.",
+        "de": "Ich bin schon fertig.",
+        "options": [
+          "Ich bin schon fertig.",
+          "Danke, bis morgen!",
+          "Guten Tag, ich bin Adam."
+        ],
+        "explain": "Ich bin schon fertig. = Już skończyłem."
+      },
+      {
+        "pl": "Dziękuję, do jutra!",
+        "de": "Danke, bis morgen!",
+        "options": [
+          "Danke, bis morgen!",
+          "Guten Tag, ich bin Adam.",
+          "Was soll ich jetzt machen?"
+        ],
+        "explain": "Danke, bis morgen! = Dziękuję, do jutra!"
+      },
+      {
+        "pl": "Dzień dobry, w czym mogę pomóc?",
+        "de": "Guten Tag, wie kann ich helfen?",
+        "options": [
+          "Guten Tag, wie kann ich helfen?",
+          "Ich brauche noch fünf Minuten.",
+          "Ich bin hier, um zu arbeiten."
+        ],
+        "explain": "Guten Tag, wie kann ich helfen? = Dzień dobry, w czym mogę pomóc?"
+      },
+      {
+        "pl": "Jestem tutaj, żeby pracować.",
+        "de": "Ich bin hier, um zu arbeiten.",
+        "options": [
+          "Ist alles in Ordnung?",
+          "Ich bin hier, um zu arbeiten.",
+          "Wo soll ich das hinlegen?"
+        ],
+        "explain": "Ich bin hier, um zu arbeiten. = Jestem tutaj, żeby pracować."
+      },
+      {
+        "pl": "Czy to jest właściwy adres?",
+        "de": "Ist das die richtige Adresse?",
+        "options": [
+          "Ist das die richtige Adresse?",
+          "Ich bin schon fertig.",
+          "Guten Tag, ich bin Adam."
+        ],
+        "explain": "Ist das die richtige Adresse? = Czy to jest właściwy adres?"
+      },
+      {
+        "pl": "Gdzie mogę zostawić narzędzia?",
+        "de": "Wo kann ich das Werkzeug abstellen?",
+        "options": [
+          "Wo soll ich das hinlegen?",
+          "Wo kann ich das Werkzeug abstellen?",
+          "Wir sind für heute fertig."
+        ],
+        "explain": "Wo kann ich das Werkzeug abstellen? = Gdzie mogę zostawić narzędzia?"
+      },
+      {
+        "pl": "Kiedy możemy zacząć?",
+        "de": "Wann können wir anfangen?",
+        "options": [
+          "Ist das die richtige Adresse?",
+          "Was soll ich jetzt machen?",
+          "Wann können wir anfangen?"
+        ],
+        "explain": "Wann können wir anfangen? = Kiedy możemy zacząć?"
+      },
+      {
+        "pl": "Potrzebuję jeszcze pięciu minut.",
+        "de": "Ich brauche noch fünf Minuten.",
+        "options": [
+          "Ist alles in Ordnung?",
+          "Ich brauche noch fünf Minuten.",
+          "Was soll ich jetzt machen?"
+        ],
+        "explain": "Ich brauche noch fünf Minuten. = Potrzebuję jeszcze pięciu minut."
+      },
+      {
+        "pl": "Czy wszystko jest w porządku?",
+        "de": "Ist alles in Ordnung?",
+        "options": [
+          "Ist alles in Ordnung?",
+          "Bis morgen früh.",
+          "Ist das die richtige Adresse?"
+        ],
+        "explain": "Ist alles in Ordnung? = Czy wszystko jest w porządku?"
+      },
+      {
+        "pl": "Pokażę panu to.",
+        "de": "Ich zeige Ihnen das.",
+        "options": [
+          "Ich zeige Ihnen das.",
+          "Ist alles in Ordnung?",
+          "Guten Tag, ich bin Adam."
+        ],
+        "explain": "Ich zeige Ihnen das. = Pokażę panu to."
+      },
+      {
+        "pl": "Skończyliśmy na dzisiaj.",
+        "de": "Wir sind für heute fertig.",
+        "options": [
+          "Wo soll ich das hinlegen?",
+          "Wir sind für heute fertig.",
+          "Ich bin schon fertig."
+        ],
+        "explain": "Wir sind für heute fertig. = Skończyliśmy na dzisiaj."
+      },
+      {
+        "pl": "Do zobaczenia jutro rano.",
+        "de": "Bis morgen früh.",
+        "options": [
+          "Ist alles in Ordnung?",
+          "Wo kann ich das Werkzeug abstellen?",
+          "Bis morgen früh."
+        ],
+        "explain": "Bis morgen früh. = Do zobaczenia jutro rano."
+      }
+    ]
+  }
+];
+
+// Dodatkowe lekcje A1 — rozbudowana ścieżka nauki
+lessonsA1.push(...[
+  {
+    "id": "a1-11",
+    "emoji": "🛒",
+    "title": "Zakupy i ceny",
+    "description": "Pytaj o ceny i kupuj",
+    "questions": [
+      {
+        "pl": "Ile to kosztuje?",
+        "de": "Wie viel kostet das?",
+        "options": [
+          "Wie viel kostet das?",
+          "Kann ich mit Karte bezahlen?",
+          "Ich nehme das."
+        ],
+        "explain": "Wie viel kostet das? = Ile to kosztuje?"
+      },
+      {
+        "pl": "To jest za drogie.",
+        "de": "Das ist zu teuer.",
+        "options": [
+          "Das ist zu teuer.",
+          "Wo ist die Kasse?",
+          "Geht es günstiger?"
+        ],
+        "explain": "Das ist zu teuer. = To jest za drogie."
+      },
+      {
+        "pl": "Czy macie chleb?",
+        "de": "Haben Sie Brot?",
+        "options": [
+          "Haben Sie Brot?",
+          "Ich suche Milch.",
+          "Danke, das ist alles."
+        ],
+        "explain": "Haben Sie Brot? = Czy macie chleb?"
+      },
+      {
+        "pl": "Chciałbym wodę.",
+        "de": "Ich möchte Wasser.",
+        "options": [
+          "Ich möchte Wasser.",
+          "Ich brauche einen Kassenbon.",
+          "Haben Sie etwas Größeres?"
+        ],
+        "explain": "Ich möchte Wasser. = Chciałbym wodę."
+      },
+      {
+        "pl": "Poproszę torbę.",
+        "de": "Eine Tüte, bitte.",
+        "options": [
+          "Eine Tüte, bitte.",
+          "Ist das frisch?",
+          "Kann ich das sehen?"
+        ],
+        "explain": "Eine Tüte, bitte. = Poproszę torbę."
+      },
+      {
+        "pl": "Czy mogę zapłacić kartą?",
+        "de": "Kann ich mit Karte bezahlen?",
+        "options": [
+          "Kann ich mit Karte bezahlen?",
+          "Ich nehme das.",
+          "Wie viel kostet das?"
+        ],
+        "explain": "Kann ich mit Karte bezahlen? = Czy mogę zapłacić kartą?"
+      },
+      {
+        "pl": "Gdzie jest kasa?",
+        "de": "Wo ist die Kasse?",
+        "options": [
+          "Wo ist die Kasse?",
+          "Geht es günstiger?",
+          "Das ist zu teuer."
+        ],
+        "explain": "Wo ist die Kasse? = Gdzie jest kasa?"
+      },
+      {
+        "pl": "Szukam mleka.",
+        "de": "Ich suche Milch.",
+        "options": [
+          "Ich suche Milch.",
+          "Danke, das ist alles.",
+          "Haben Sie Brot?"
+        ],
+        "explain": "Ich suche Milch. = Szukam mleka."
+      },
+      {
+        "pl": "Potrzebuję paragonu.",
+        "de": "Ich brauche einen Kassenbon.",
+        "options": [
+          "Ich brauche einen Kassenbon.",
+          "Haben Sie etwas Größeres?",
+          "Ich möchte Wasser."
+        ],
+        "explain": "Ich brauche einen Kassenbon. = Potrzebuję paragonu."
+      },
+      {
+        "pl": "Czy to jest świeże?",
+        "de": "Ist das frisch?",
+        "options": [
+          "Ist das frisch?",
+          "Kann ich das sehen?",
+          "Eine Tüte, bitte."
+        ],
+        "explain": "Ist das frisch? = Czy to jest świeże?"
+      },
+      {
+        "pl": "Wezmę to.",
+        "de": "Ich nehme das.",
+        "options": [
+          "Ich nehme das.",
+          "Wie viel kostet das?",
+          "Kann ich mit Karte bezahlen?"
+        ],
+        "explain": "Ich nehme das. = Wezmę to."
+      },
+      {
+        "pl": "Czy jest taniej?",
+        "de": "Geht es günstiger?",
+        "options": [
+          "Geht es günstiger?",
+          "Das ist zu teuer.",
+          "Wo ist die Kasse?"
+        ],
+        "explain": "Geht es günstiger? = Czy jest taniej?"
+      },
+      {
+        "pl": "Dziękuję, to wszystko.",
+        "de": "Danke, das ist alles.",
+        "options": [
+          "Danke, das ist alles.",
+          "Haben Sie Brot?",
+          "Ich suche Milch."
+        ],
+        "explain": "Danke, das ist alles. = Dziękuję, to wszystko."
+      },
+      {
+        "pl": "Czy macie coś większego?",
+        "de": "Haben Sie etwas Größeres?",
+        "options": [
+          "Haben Sie etwas Größeres?",
+          "Ich möchte Wasser.",
+          "Ich brauche einen Kassenbon."
+        ],
+        "explain": "Haben Sie etwas Größeres? = Czy macie coś większego?"
+      },
+      {
+        "pl": "Czy mogę to zobaczyć?",
+        "de": "Kann ich das sehen?",
+        "options": [
+          "Kann ich das sehen?",
+          "Eine Tüte, bitte.",
+          "Ist das frisch?"
+        ],
+        "explain": "Kann ich das sehen? = Czy mogę to zobaczyć?"
+      }
+    ]
+  },
+  {
+    "id": "a1-12",
+    "emoji": "🕒",
+    "title": "Godziny i terminy",
+    "description": "Umawiaj spotkania i podawaj godziny",
+    "questions": [
+      {
+        "pl": "Która jest godzina?",
+        "de": "Wie spät ist es?",
+        "options": [
+          "Wie spät ist es?",
+          "Heute kann ich nicht.",
+          "Warte fünf Minuten."
+        ],
+        "explain": "Wie spät ist es? = Która jest godzina?"
+      },
+      {
+        "pl": "Jest ósma.",
+        "de": "Es ist acht Uhr.",
+        "options": [
+          "Es ist acht Uhr.",
+          "Bis Montag.",
+          "Hast du einen Moment?"
+        ],
+        "explain": "Es ist acht Uhr. = Jest ósma."
+      },
+      {
+        "pl": "Zaczynamy o siódmej.",
+        "de": "Wir fangen um sieben Uhr an.",
+        "options": [
+          "Wir fangen um sieben Uhr an.",
+          "Der Termin ist um zehn Uhr.",
+          "Wir müssen uns beeilen."
+        ],
+        "explain": "Wir fangen um sieben Uhr an. = Zaczynamy o siódmej."
+      },
+      {
+        "pl": "Kończymy o szesnastej.",
+        "de": "Wir hören um sechzehn Uhr auf.",
+        "options": [
+          "Wir hören um sechzehn Uhr auf.",
+          "Ich komme in einer Stunde.",
+          "Ich komme pünktlich."
+        ],
+        "explain": "Wir hören um sechzehn Uhr auf. = Kończymy o szesnastej."
+      },
+      {
+        "pl": "Mam czas jutro.",
+        "de": "Ich habe morgen Zeit.",
+        "options": [
+          "Ich habe morgen Zeit.",
+          "Es ist schon spät.",
+          "Wann fangen wir an?"
+        ],
+        "explain": "Ich habe morgen Zeit. = Mam czas jutro."
+      },
+      {
+        "pl": "Dzisiaj nie mogę.",
+        "de": "Heute kann ich nicht.",
+        "options": [
+          "Heute kann ich nicht.",
+          "Warte fünf Minuten.",
+          "Wie spät ist es?"
+        ],
+        "explain": "Heute kann ich nicht. = Dzisiaj nie mogę."
+      },
+      {
+        "pl": "Do zobaczenia w poniedziałek.",
+        "de": "Bis Montag.",
+        "options": [
+          "Bis Montag.",
+          "Hast du einen Moment?",
+          "Es ist acht Uhr."
+        ],
+        "explain": "Bis Montag. = Do zobaczenia w poniedziałek."
+      },
+      {
+        "pl": "Spotkanie jest o dziesiątej.",
+        "de": "Der Termin ist um zehn Uhr.",
+        "options": [
+          "Der Termin ist um zehn Uhr.",
+          "Wir müssen uns beeilen.",
+          "Wir fangen um sieben Uhr an."
+        ],
+        "explain": "Der Termin ist um zehn Uhr. = Spotkanie jest o dziesiątej."
+      },
+      {
+        "pl": "Przyjdę za godzinę.",
+        "de": "Ich komme in einer Stunde.",
+        "options": [
+          "Ich komme in einer Stunde.",
+          "Ich komme pünktlich.",
+          "Wir hören um sechzehn Uhr auf."
+        ],
+        "explain": "Ich komme in einer Stunde. = Przyjdę za godzinę."
+      },
+      {
+        "pl": "Jest już późno.",
+        "de": "Es ist schon spät.",
+        "options": [
+          "Es ist schon spät.",
+          "Wann fangen wir an?",
+          "Ich habe morgen Zeit."
+        ],
+        "explain": "Es ist schon spät. = Jest już późno."
+      },
+      {
+        "pl": "Poczekaj pięć minut.",
+        "de": "Warte fünf Minuten.",
+        "options": [
+          "Warte fünf Minuten.",
+          "Wie spät ist es?",
+          "Heute kann ich nicht."
+        ],
+        "explain": "Warte fünf Minuten. = Poczekaj pięć minut."
+      },
+      {
+        "pl": "Czy masz chwilę?",
+        "de": "Hast du einen Moment?",
+        "options": [
+          "Hast du einen Moment?",
+          "Es ist acht Uhr.",
+          "Bis Montag."
+        ],
+        "explain": "Hast du einen Moment? = Czy masz chwilę?"
+      },
+      {
+        "pl": "Musimy się pospieszyć.",
+        "de": "Wir müssen uns beeilen.",
+        "options": [
+          "Wir müssen uns beeilen.",
+          "Wir fangen um sieben Uhr an.",
+          "Der Termin ist um zehn Uhr."
+        ],
+        "explain": "Wir müssen uns beeilen. = Musimy się pospieszyć."
+      },
+      {
+        "pl": "Przyjadę punktualnie.",
+        "de": "Ich komme pünktlich.",
+        "options": [
+          "Ich komme pünktlich.",
+          "Wir hören um sechzehn Uhr auf.",
+          "Ich komme in einer Stunde."
+        ],
+        "explain": "Ich komme pünktlich. = Przyjadę punktualnie."
+      },
+      {
+        "pl": "Kiedy zaczynamy?",
+        "de": "Wann fangen wir an?",
+        "options": [
+          "Wann fangen wir an?",
+          "Ich habe morgen Zeit.",
+          "Es ist schon spät."
+        ],
+        "explain": "Wann fangen wir an? = Kiedy zaczynamy?"
+      }
+    ]
+  },
+  {
+    "id": "a1-13",
+    "emoji": "🧭",
+    "title": "Pytanie o drogę",
+    "description": "Orientuj się w mieście",
+    "questions": [
+      {
+        "pl": "Gdzie jest dworzec?",
+        "de": "Wo ist der Bahnhof?",
+        "options": [
+          "Wo ist der Bahnhof?",
+          "Das ist in der Nähe.",
+          "Ich muss aussteigen."
+        ],
+        "explain": "Wo ist der Bahnhof? = Gdzie jest dworzec?"
+      },
+      {
+        "pl": "Proszę iść prosto.",
+        "de": "Gehen Sie geradeaus.",
+        "options": [
+          "Gehen Sie geradeaus.",
+          "Ich suche eine Apotheke.",
+          "Welcher Bus fährt in die Stadt?"
+        ],
+        "explain": "Gehen Sie geradeaus. = Proszę iść prosto."
+      },
+      {
+        "pl": "Proszę skręcić w lewo.",
+        "de": "Biegen Sie links ab.",
+        "options": [
+          "Biegen Sie links ab.",
+          "Wo ist der Parkplatz?",
+          "Ist das der richtige Weg?"
+        ],
+        "explain": "Biegen Sie links ab. = Proszę skręcić w lewo."
+      },
+      {
+        "pl": "Proszę skręcić w prawo.",
+        "de": "Biegen Sie rechts ab.",
+        "options": [
+          "Biegen Sie rechts ab.",
+          "Wie komme ich ins Zentrum?",
+          "Ich habe mich verlaufen."
+        ],
+        "explain": "Biegen Sie rechts ab. = Proszę skręcić w prawo."
+      },
+      {
+        "pl": "Czy to daleko?",
+        "de": "Ist das weit?",
+        "options": [
+          "Ist das weit?",
+          "Ich bin hier.",
+          "Danke für Ihre Hilfe."
+        ],
+        "explain": "Ist das weit? = Czy to daleko?"
+      },
+      {
+        "pl": "To jest blisko.",
+        "de": "Das ist in der Nähe.",
+        "options": [
+          "Das ist in der Nähe.",
+          "Ich muss aussteigen.",
+          "Wo ist der Bahnhof?"
+        ],
+        "explain": "Das ist in der Nähe. = To jest blisko."
+      },
+      {
+        "pl": "Szukam apteki.",
+        "de": "Ich suche eine Apotheke.",
+        "options": [
+          "Ich suche eine Apotheke.",
+          "Welcher Bus fährt in die Stadt?",
+          "Gehen Sie geradeaus."
+        ],
+        "explain": "Ich suche eine Apotheke. = Szukam apteki."
+      },
+      {
+        "pl": "Gdzie jest parking?",
+        "de": "Wo ist der Parkplatz?",
+        "options": [
+          "Wo ist der Parkplatz?",
+          "Ist das der richtige Weg?",
+          "Biegen Sie links ab."
+        ],
+        "explain": "Wo ist der Parkplatz? = Gdzie jest parking?"
+      },
+      {
+        "pl": "Jak dojadę do centrum?",
+        "de": "Wie komme ich ins Zentrum?",
+        "options": [
+          "Wie komme ich ins Zentrum?",
+          "Ich habe mich verlaufen.",
+          "Biegen Sie rechts ab."
+        ],
+        "explain": "Wie komme ich ins Zentrum? = Jak dojadę do centrum?"
+      },
+      {
+        "pl": "Jestem tutaj.",
+        "de": "Ich bin hier.",
+        "options": [
+          "Ich bin hier.",
+          "Danke für Ihre Hilfe.",
+          "Ist das weit?"
+        ],
+        "explain": "Ich bin hier. = Jestem tutaj."
+      },
+      {
+        "pl": "Muszę wysiąść.",
+        "de": "Ich muss aussteigen.",
+        "options": [
+          "Ich muss aussteigen.",
+          "Wo ist der Bahnhof?",
+          "Das ist in der Nähe."
+        ],
+        "explain": "Ich muss aussteigen. = Muszę wysiąść."
+      },
+      {
+        "pl": "Który autobus jedzie do miasta?",
+        "de": "Welcher Bus fährt in die Stadt?",
+        "options": [
+          "Welcher Bus fährt in die Stadt?",
+          "Gehen Sie geradeaus.",
+          "Ich suche eine Apotheke."
+        ],
+        "explain": "Welcher Bus fährt in die Stadt? = Który autobus jedzie do miasta?"
+      },
+      {
+        "pl": "Czy to właściwa droga?",
+        "de": "Ist das der richtige Weg?",
+        "options": [
+          "Ist das der richtige Weg?",
+          "Biegen Sie links ab.",
+          "Wo ist der Parkplatz?"
+        ],
+        "explain": "Ist das der richtige Weg? = Czy to właściwa droga?"
+      },
+      {
+        "pl": "Zgubiłem się.",
+        "de": "Ich habe mich verlaufen.",
+        "options": [
+          "Ich habe mich verlaufen.",
+          "Biegen Sie rechts ab.",
+          "Wie komme ich ins Zentrum?"
+        ],
+        "explain": "Ich habe mich verlaufen. = Zgubiłem się."
+      },
+      {
+        "pl": "Dziękuję za pomoc.",
+        "de": "Danke für Ihre Hilfe.",
+        "options": [
+          "Danke für Ihre Hilfe.",
+          "Ist das weit?",
+          "Ich bin hier."
+        ],
+        "explain": "Danke für Ihre Hilfe. = Dziękuję za pomoc."
+      }
+    ]
+  },
+  {
+    "id": "a1-14",
+    "emoji": "🍽️",
+    "title": "Jedzenie i restauracja",
+    "description": "Zamawiaj jedzenie",
+    "questions": [
+      {
+        "pl": "Jestem głodny.",
+        "de": "Ich habe Hunger.",
+        "options": [
+          "Ich habe Hunger.",
+          "Das ist sehr lecker.",
+          "Ist ein Tisch frei?"
+        ],
+        "explain": "Ich habe Hunger. = Jestem głodny."
+      },
+      {
+        "pl": "Jestem spragniony.",
+        "de": "Ich habe Durst.",
+        "options": [
+          "Ich habe Durst.",
+          "Die Rechnung, bitte.",
+          "Ein stilles Wasser, bitte."
+        ],
+        "explain": "Ich habe Durst. = Jestem spragniony."
+      },
+      {
+        "pl": "Poproszę menu.",
+        "de": "Die Speisekarte, bitte.",
+        "options": [
+          "Die Speisekarte, bitte.",
+          "Ist das scharf?",
+          "Haben Sie Suppe?"
+        ],
+        "explain": "Die Speisekarte, bitte. = Poproszę menu."
+      },
+      {
+        "pl": "Chciałbym kawę.",
+        "de": "Ich möchte einen Kaffee.",
+        "options": [
+          "Ich möchte einen Kaffee.",
+          "Ich esse kein Fleisch.",
+          "Ich bin schon satt."
+        ],
+        "explain": "Ich möchte einen Kaffee. = Chciałbym kawę."
+      },
+      {
+        "pl": "Bez cukru, proszę.",
+        "de": "Ohne Zucker, bitte.",
+        "options": [
+          "Ohne Zucker, bitte.",
+          "Ich möchte etwas essen.",
+          "Danke, es war lecker."
+        ],
+        "explain": "Ohne Zucker, bitte. = Bez cukru, proszę."
+      },
+      {
+        "pl": "To jest bardzo smaczne.",
+        "de": "Das ist sehr lecker.",
+        "options": [
+          "Das ist sehr lecker.",
+          "Ist ein Tisch frei?",
+          "Ich habe Hunger."
+        ],
+        "explain": "Das ist sehr lecker. = To jest bardzo smaczne."
+      },
+      {
+        "pl": "Poproszę rachunek.",
+        "de": "Die Rechnung, bitte.",
+        "options": [
+          "Die Rechnung, bitte.",
+          "Ein stilles Wasser, bitte.",
+          "Ich habe Durst."
+        ],
+        "explain": "Die Rechnung, bitte. = Poproszę rachunek."
+      },
+      {
+        "pl": "Czy to jest ostre?",
+        "de": "Ist das scharf?",
+        "options": [
+          "Ist das scharf?",
+          "Haben Sie Suppe?",
+          "Die Speisekarte, bitte."
+        ],
+        "explain": "Ist das scharf? = Czy to jest ostre?"
+      },
+      {
+        "pl": "Nie jem mięsa.",
+        "de": "Ich esse kein Fleisch.",
+        "options": [
+          "Ich esse kein Fleisch.",
+          "Ich bin schon satt.",
+          "Ich möchte einen Kaffee."
+        ],
+        "explain": "Ich esse kein Fleisch. = Nie jem mięsa."
+      },
+      {
+        "pl": "Chciałbym coś zjeść.",
+        "de": "Ich möchte etwas essen.",
+        "options": [
+          "Ich möchte etwas essen.",
+          "Danke, es war lecker.",
+          "Ohne Zucker, bitte."
+        ],
+        "explain": "Ich möchte etwas essen. = Chciałbym coś zjeść."
+      },
+      {
+        "pl": "Czy jest wolny stolik?",
+        "de": "Ist ein Tisch frei?",
+        "options": [
+          "Ist ein Tisch frei?",
+          "Ich habe Hunger.",
+          "Das ist sehr lecker."
+        ],
+        "explain": "Ist ein Tisch frei? = Czy jest wolny stolik?"
+      },
+      {
+        "pl": "Poproszę wodę niegazowaną.",
+        "de": "Ein stilles Wasser, bitte.",
+        "options": [
+          "Ein stilles Wasser, bitte.",
+          "Ich habe Durst.",
+          "Die Rechnung, bitte."
+        ],
+        "explain": "Ein stilles Wasser, bitte. = Poproszę wodę niegazowaną."
+      },
+      {
+        "pl": "Czy macie zupę?",
+        "de": "Haben Sie Suppe?",
+        "options": [
+          "Haben Sie Suppe?",
+          "Die Speisekarte, bitte.",
+          "Ist das scharf?"
+        ],
+        "explain": "Haben Sie Suppe? = Czy macie zupę?"
+      },
+      {
+        "pl": "Jestem już najedzony.",
+        "de": "Ich bin schon satt.",
+        "options": [
+          "Ich bin schon satt.",
+          "Ich möchte einen Kaffee.",
+          "Ich esse kein Fleisch."
+        ],
+        "explain": "Ich bin schon satt. = Jestem już najedzony."
+      },
+      {
+        "pl": "Dziękuję, było pyszne.",
+        "de": "Danke, es war lecker.",
+        "options": [
+          "Danke, es war lecker.",
+          "Ohne Zucker, bitte.",
+          "Ich möchte etwas essen."
+        ],
+        "explain": "Danke, es war lecker. = Dziękuję, było pyszne."
+      }
+    ]
+  },
+  {
+    "id": "a1-15",
+    "emoji": "🔧",
+    "title": "Narzędzia i materiały",
+    "description": "Nazywaj sprzęt na budowie",
+    "questions": [
+      {
+        "pl": "Podaj mi wiertarkę.",
+        "de": "Gib mir die Bohrmaschine.",
+        "options": [
+          "Gib mir die Bohrmaschine.",
+          "Das ist zu kurz.",
+          "Gib mir den Schlüssel."
+        ],
+        "explain": "Gib mir die Bohrmaschine. = Podaj mi wiertarkę."
+      },
+      {
+        "pl": "Gdzie jest poziomica?",
+        "de": "Wo ist die Wasserwaage?",
+        "options": [
+          "Wo ist die Wasserwaage?",
+          "Das ist zu lang.",
+          "Dieses Werkzeug ist kaputt."
+        ],
+        "explain": "Wo ist die Wasserwaage? = Gdzie jest poziomica?"
+      },
+      {
+        "pl": "Potrzebuję śrub.",
+        "de": "Ich brauche Schrauben.",
+        "options": [
+          "Ich brauche Schrauben.",
+          "Miss das noch einmal.",
+          "Wir haben genug Material."
+        ],
+        "explain": "Ich brauche Schrauben. = Potrzebuję śrub."
+      },
+      {
+        "pl": "Przynieś mi młotek.",
+        "de": "Bring mir den Hammer.",
+        "options": [
+          "Bring mir den Hammer.",
+          "Ich brauche ein Maßband.",
+          "Bring die Leiter."
+        ],
+        "explain": "Bring mir den Hammer. = Przynieś mi młotek."
+      },
+      {
+        "pl": "Brakuje nam betonu.",
+        "de": "Uns fehlt Beton.",
+        "options": [
+          "Uns fehlt Beton.",
+          "Wo sind die Handschuhe?",
+          "Pass auf das Kabel auf."
+        ],
+        "explain": "Uns fehlt Beton. = Brakuje nam betonu."
+      },
+      {
+        "pl": "To jest za krótkie.",
+        "de": "Das ist zu kurz.",
+        "options": [
+          "Das ist zu kurz.",
+          "Gib mir den Schlüssel.",
+          "Gib mir die Bohrmaschine."
+        ],
+        "explain": "Das ist zu kurz. = To jest za krótkie."
+      },
+      {
+        "pl": "To jest za długie.",
+        "de": "Das ist zu lang.",
+        "options": [
+          "Das ist zu lang.",
+          "Dieses Werkzeug ist kaputt.",
+          "Wo ist die Wasserwaage?"
+        ],
+        "explain": "Das ist zu lang. = To jest za długie."
+      },
+      {
+        "pl": "Zmierz to jeszcze raz.",
+        "de": "Miss das noch einmal.",
+        "options": [
+          "Miss das noch einmal.",
+          "Wir haben genug Material.",
+          "Ich brauche Schrauben."
+        ],
+        "explain": "Miss das noch einmal. = Zmierz to jeszcze raz."
+      },
+      {
+        "pl": "Potrzebuję miarki.",
+        "de": "Ich brauche ein Maßband.",
+        "options": [
+          "Ich brauche ein Maßband.",
+          "Bring die Leiter.",
+          "Bring mir den Hammer."
+        ],
+        "explain": "Ich brauche ein Maßband. = Potrzebuję miarki."
+      },
+      {
+        "pl": "Gdzie są rękawice?",
+        "de": "Wo sind die Handschuhe?",
+        "options": [
+          "Wo sind die Handschuhe?",
+          "Pass auf das Kabel auf.",
+          "Uns fehlt Beton."
+        ],
+        "explain": "Wo sind die Handschuhe? = Gdzie są rękawice?"
+      },
+      {
+        "pl": "Podaj mi klucz.",
+        "de": "Gib mir den Schlüssel.",
+        "options": [
+          "Gib mir den Schlüssel.",
+          "Gib mir die Bohrmaschine.",
+          "Das ist zu kurz."
+        ],
+        "explain": "Gib mir den Schlüssel. = Podaj mi klucz."
+      },
+      {
+        "pl": "To narzędzie jest zepsute.",
+        "de": "Dieses Werkzeug ist kaputt.",
+        "options": [
+          "Dieses Werkzeug ist kaputt.",
+          "Wo ist die Wasserwaage?",
+          "Das ist zu lang."
+        ],
+        "explain": "Dieses Werkzeug ist kaputt. = To narzędzie jest zepsute."
+      },
+      {
+        "pl": "Mamy wystarczająco dużo materiału.",
+        "de": "Wir haben genug Material.",
+        "options": [
+          "Wir haben genug Material.",
+          "Ich brauche Schrauben.",
+          "Miss das noch einmal."
+        ],
+        "explain": "Wir haben genug Material. = Mamy wystarczająco dużo materiału."
+      },
+      {
+        "pl": "Przynieś drabinę.",
+        "de": "Bring die Leiter.",
+        "options": [
+          "Bring die Leiter.",
+          "Bring mir den Hammer.",
+          "Ich brauche ein Maßband."
+        ],
+        "explain": "Bring die Leiter. = Przynieś drabinę."
+      },
+      {
+        "pl": "Uważaj na kabel.",
+        "de": "Pass auf das Kabel auf.",
+        "options": [
+          "Pass auf das Kabel auf.",
+          "Uns fehlt Beton.",
+          "Wo sind die Handschuhe?"
+        ],
+        "explain": "Pass auf das Kabel auf. = Uważaj na kabel."
+      }
+    ]
+  },
+  {
+    "id": "a1-16",
+    "emoji": "🚧",
+    "title": "Montaż ogrodzenia",
+    "description": "Przydatne zdania przy montażu",
+    "questions": [
+      {
+        "pl": "Montujemy dzisiaj ogrodzenie.",
+        "de": "Wir montieren heute den Zaun.",
+        "options": [
+          "Wir montieren heute den Zaun.",
+          "Wir brauchen mehr Beton.",
+          "Wir müssen warten, bis der Beton hart ist."
+        ],
+        "explain": "Wir montieren heute den Zaun. = Montujemy dzisiaj ogrodzenie."
+      },
+      {
+        "pl": "Gdzie ma stać brama?",
+        "de": "Wo soll das Tor stehen?",
+        "options": [
+          "Wo soll das Tor stehen?",
+          "Das Tor öffnet sich nach links.",
+          "Öffnen Sie bitte das Tor."
+        ],
+        "explain": "Wo soll das Tor stehen? = Gdzie ma stać brama?"
+      },
+      {
+        "pl": "Musimy wykopać otwory.",
+        "de": "Wir müssen Löcher graben.",
+        "options": [
+          "Wir müssen Löcher graben.",
+          "Das ist zu hoch.",
+          "Soll der Zaun schwarz sein?"
+        ],
+        "explain": "Wir müssen Löcher graben. = Musimy wykopać otwory."
+      },
+      {
+        "pl": "Słup musi stać prosto.",
+        "de": "Der Pfosten muss gerade stehen.",
+        "options": [
+          "Der Pfosten muss gerade stehen.",
+          "Das ist zu niedrig.",
+          "Die Arbeiten sind fast fertig."
+        ],
+        "explain": "Der Pfosten muss gerade stehen. = Słup musi stać prosto."
+      },
+      {
+        "pl": "Sprawdź poziom.",
+        "de": "Prüf die Wasserwaage.",
+        "options": [
+          "Prüf die Wasserwaage.",
+          "Befestige dieses Teil.",
+          "Morgen montieren wir die Pforte."
+        ],
+        "explain": "Prüf die Wasserwaage. = Sprawdź poziom."
+      },
+      {
+        "pl": "Potrzebujemy więcej betonu.",
+        "de": "Wir brauchen mehr Beton.",
+        "options": [
+          "Wir brauchen mehr Beton.",
+          "Wir müssen warten, bis der Beton hart ist.",
+          "Wir montieren heute den Zaun."
+        ],
+        "explain": "Wir brauchen mehr Beton. = Potrzebujemy więcej betonu."
+      },
+      {
+        "pl": "Brama otwiera się w lewo.",
+        "de": "Das Tor öffnet sich nach links.",
+        "options": [
+          "Das Tor öffnet sich nach links.",
+          "Öffnen Sie bitte das Tor.",
+          "Wo soll das Tor stehen?"
+        ],
+        "explain": "Das Tor öffnet sich nach links. = Brama otwiera się w lewo."
+      },
+      {
+        "pl": "To jest za wysoko.",
+        "de": "Das ist zu hoch.",
+        "options": [
+          "Das ist zu hoch.",
+          "Soll der Zaun schwarz sein?",
+          "Wir müssen Löcher graben."
+        ],
+        "explain": "Das ist zu hoch. = To jest za wysoko."
+      },
+      {
+        "pl": "To jest za nisko.",
+        "de": "Das ist zu niedrig.",
+        "options": [
+          "Das ist zu niedrig.",
+          "Die Arbeiten sind fast fertig.",
+          "Der Pfosten muss gerade stehen."
+        ],
+        "explain": "Das ist zu niedrig. = To jest za nisko."
+      },
+      {
+        "pl": "Zamocuj ten element.",
+        "de": "Befestige dieses Teil.",
+        "options": [
+          "Befestige dieses Teil.",
+          "Morgen montieren wir die Pforte.",
+          "Prüf die Wasserwaage."
+        ],
+        "explain": "Befestige dieses Teil. = Zamocuj ten element."
+      },
+      {
+        "pl": "Musimy poczekać, aż beton stwardnieje.",
+        "de": "Wir müssen warten, bis der Beton hart ist.",
+        "options": [
+          "Wir müssen warten, bis der Beton hart ist.",
+          "Wir montieren heute den Zaun.",
+          "Wir brauchen mehr Beton."
+        ],
+        "explain": "Wir müssen warten, bis der Beton hart ist. = Musimy poczekać, aż beton stwardnieje."
+      },
+      {
+        "pl": "Proszę otworzyć bramę.",
+        "de": "Öffnen Sie bitte das Tor.",
+        "options": [
+          "Öffnen Sie bitte das Tor.",
+          "Wo soll das Tor stehen?",
+          "Das Tor öffnet sich nach links."
+        ],
+        "explain": "Öffnen Sie bitte das Tor. = Proszę otworzyć bramę."
+      },
+      {
+        "pl": "Czy ogrodzenie ma być czarne?",
+        "de": "Soll der Zaun schwarz sein?",
+        "options": [
+          "Soll der Zaun schwarz sein?",
+          "Wir müssen Löcher graben.",
+          "Das ist zu hoch."
+        ],
+        "explain": "Soll der Zaun schwarz sein? = Czy ogrodzenie ma być czarne?"
+      },
+      {
+        "pl": "Prace są prawie skończone.",
+        "de": "Die Arbeiten sind fast fertig.",
+        "options": [
+          "Die Arbeiten sind fast fertig.",
+          "Der Pfosten muss gerade stehen.",
+          "Das ist zu niedrig."
+        ],
+        "explain": "Die Arbeiten sind fast fertig. = Prace są prawie skończone."
+      },
+      {
+        "pl": "Jutro zamontujemy furtkę.",
+        "de": "Morgen montieren wir die Pforte.",
+        "options": [
+          "Morgen montieren wir die Pforte.",
+          "Prüf die Wasserwaage.",
+          "Befestige dieses Teil."
+        ],
+        "explain": "Morgen montieren wir die Pforte. = Jutro zamontujemy furtkę."
+      }
+    ]
+  },
+  {
+    "id": "a1-17",
+    "emoji": "🤝",
+    "title": "Rozmowa z klientem",
+    "description": "Ustalaj szczegóły i odpowiadaj",
+    "questions": [
+      {
+        "pl": "Dzień dobry, mamy dzisiaj termin.",
+        "de": "Guten Tag, wir haben heute einen Termin.",
+        "options": [
+          "Guten Tag, wir haben heute einen Termin.",
+          "Welche Farbe wählen Sie?",
+          "Das dauert ungefähr zwei Stunden."
+        ],
+        "explain": "Guten Tag, wir haben heute einen Termin. = Dzień dobry, mamy dzisiaj termin."
+      },
+      {
+        "pl": "Czy możemy wejść na posesję?",
+        "de": "Dürfen wir das Grundstück betreten?",
+        "options": [
+          "Dürfen wir das Grundstück betreten?",
+          "Haben Sie noch Fragen?",
+          "Unterschreiben Sie bitte hier."
+        ],
+        "explain": "Dürfen wir das Grundstück betreten? = Czy możemy wejść na posesję?"
+      },
+      {
+        "pl": "Gdzie możemy zaparkować?",
+        "de": "Wo dürfen wir parken?",
+        "options": [
+          "Wo dürfen wir parken?",
+          "Wir beginnen morgen früh.",
+          "Ist alles zu Ihrer Zufriedenheit?"
+        ],
+        "explain": "Wo dürfen wir parken? = Gdzie możemy zaparkować?"
+      },
+      {
+        "pl": "Czy może pan to pokazać?",
+        "de": "Können Sie mir das zeigen?",
+        "options": [
+          "Können Sie mir das zeigen?",
+          "Wir brauchen Zugang zu Strom.",
+          "Vielen Dank für den Auftrag."
+        ],
+        "explain": "Können Sie mir das zeigen? = Czy może pan to pokazać?"
+      },
+      {
+        "pl": "Jak wysoka ma być brama?",
+        "de": "Wie hoch soll das Tor sein?",
+        "options": [
+          "Wie hoch soll das Tor sein?",
+          "Dürfen wir Wasser benutzen?",
+          "Auf Wiedersehen und einen schönen Tag."
+        ],
+        "explain": "Wie hoch soll das Tor sein? = Jak wysoka ma być brama?"
+      },
+      {
+        "pl": "Jaki kolor pan wybiera?",
+        "de": "Welche Farbe wählen Sie?",
+        "options": [
+          "Welche Farbe wählen Sie?",
+          "Das dauert ungefähr zwei Stunden.",
+          "Guten Tag, wir haben heute einen Termin."
+        ],
+        "explain": "Welche Farbe wählen Sie? = Jaki kolor pan wybiera?"
+      },
+      {
+        "pl": "Czy ma pan jakieś pytania?",
+        "de": "Haben Sie noch Fragen?",
+        "options": [
+          "Haben Sie noch Fragen?",
+          "Unterschreiben Sie bitte hier.",
+          "Dürfen wir das Grundstück betreten?"
+        ],
+        "explain": "Haben Sie noch Fragen? = Czy ma pan jakieś pytania?"
+      },
+      {
+        "pl": "Zaczniemy jutro rano.",
+        "de": "Wir beginnen morgen früh.",
+        "options": [
+          "Wir beginnen morgen früh.",
+          "Ist alles zu Ihrer Zufriedenheit?",
+          "Wo dürfen wir parken?"
+        ],
+        "explain": "Wir beginnen morgen früh. = Zaczniemy jutro rano."
+      },
+      {
+        "pl": "Potrzebujemy dostępu do prądu.",
+        "de": "Wir brauchen Zugang zu Strom.",
+        "options": [
+          "Wir brauchen Zugang zu Strom.",
+          "Vielen Dank für den Auftrag.",
+          "Können Sie mir das zeigen?"
+        ],
+        "explain": "Wir brauchen Zugang zu Strom. = Potrzebujemy dostępu do prądu."
+      },
+      {
+        "pl": "Czy możemy użyć wody?",
+        "de": "Dürfen wir Wasser benutzen?",
+        "options": [
+          "Dürfen wir Wasser benutzen?",
+          "Auf Wiedersehen und einen schönen Tag.",
+          "Wie hoch soll das Tor sein?"
+        ],
+        "explain": "Dürfen wir Wasser benutzen? = Czy możemy użyć wody?"
+      },
+      {
+        "pl": "To potrwa około dwóch godzin.",
+        "de": "Das dauert ungefähr zwei Stunden.",
+        "options": [
+          "Das dauert ungefähr zwei Stunden.",
+          "Guten Tag, wir haben heute einen Termin.",
+          "Welche Farbe wählen Sie?"
+        ],
+        "explain": "Das dauert ungefähr zwei Stunden. = To potrwa około dwóch godzin."
+      },
+      {
+        "pl": "Proszę tutaj podpisać.",
+        "de": "Unterschreiben Sie bitte hier.",
+        "options": [
+          "Unterschreiben Sie bitte hier.",
+          "Dürfen wir das Grundstück betreten?",
+          "Haben Sie noch Fragen?"
+        ],
+        "explain": "Unterschreiben Sie bitte hier. = Proszę tutaj podpisać."
+      },
+      {
+        "pl": "Czy wszystko panu odpowiada?",
+        "de": "Ist alles zu Ihrer Zufriedenheit?",
+        "options": [
+          "Ist alles zu Ihrer Zufriedenheit?",
+          "Wo dürfen wir parken?",
+          "Wir beginnen morgen früh."
+        ],
+        "explain": "Ist alles zu Ihrer Zufriedenheit? = Czy wszystko panu odpowiada?"
+      },
+      {
+        "pl": "Dziękujemy za zlecenie.",
+        "de": "Vielen Dank für den Auftrag.",
+        "options": [
+          "Vielen Dank für den Auftrag.",
+          "Können Sie mir das zeigen?",
+          "Wir brauchen Zugang zu Strom."
+        ],
+        "explain": "Vielen Dank für den Auftrag. = Dziękujemy za zlecenie."
+      },
+      {
+        "pl": "Do widzenia i miłego dnia.",
+        "de": "Auf Wiedersehen und einen schönen Tag.",
+        "options": [
+          "Auf Wiedersehen und einen schönen Tag.",
+          "Wie hoch soll das Tor sein?",
+          "Dürfen wir Wasser benutzen?"
+        ],
+        "explain": "Auf Wiedersehen und einen schönen Tag. = Do widzenia i miłego dnia."
+      }
+    ]
+  },
+  {
+    "id": "a1-18",
+    "emoji": "⚠️",
+    "title": "Problemy i bezpieczeństwo",
+    "description": "Reaguj na problemy",
+    "questions": [
+      {
+        "pl": "Uważaj!",
+        "de": "Vorsicht!",
+        "options": [
+          "Vorsicht!",
+          "Hast du einen Helm?",
+          "Der Boden ist rutschig."
+        ],
+        "explain": "Vorsicht! = Uważaj!"
+      },
+      {
+        "pl": "To jest niebezpieczne.",
+        "de": "Das ist gefährlich.",
+        "options": [
+          "Das ist gefährlich.",
+          "Die Maschine funktioniert nicht.",
+          "Hier liegt ein Kabel."
+        ],
+        "explain": "Das ist gefährlich. = To jest niebezpieczne."
+      },
+      {
+        "pl": "Nie dotykaj tego.",
+        "de": "Fass das nicht an.",
+        "options": [
+          "Fass das nicht an.",
+          "Wir müssen die Arbeit unterbrechen.",
+          "Ich habe nicht das richtige Werkzeug."
+        ],
+        "explain": "Fass das nicht an. = Nie dotykaj tego."
+      },
+      {
+        "pl": "Potrzebujemy pomocy.",
+        "de": "Wir brauchen Hilfe.",
+        "options": [
+          "Wir brauchen Hilfe.",
+          "Jemand ist verletzt.",
+          "Wir müssen das reparieren."
+        ],
+        "explain": "Wir brauchen Hilfe. = Potrzebujemy pomocy."
+      },
+      {
+        "pl": "Masz rękawice ochronne?",
+        "de": "Hast du Schutzhandschuhe?",
+        "options": [
+          "Hast du Schutzhandschuhe?",
+          "Ruf Hilfe.",
+          "Jetzt ist alles sicher."
+        ],
+        "explain": "Hast du Schutzhandschuhe? = Masz rękawice ochronne?"
+      },
+      {
+        "pl": "Masz kask?",
+        "de": "Hast du einen Helm?",
+        "options": [
+          "Hast du einen Helm?",
+          "Der Boden ist rutschig.",
+          "Vorsicht!"
+        ],
+        "explain": "Hast du einen Helm? = Masz kask?"
+      },
+      {
+        "pl": "Maszyna nie działa.",
+        "de": "Die Maschine funktioniert nicht.",
+        "options": [
+          "Die Maschine funktioniert nicht.",
+          "Hier liegt ein Kabel.",
+          "Das ist gefährlich."
+        ],
+        "explain": "Die Maschine funktioniert nicht. = Maszyna nie działa."
+      },
+      {
+        "pl": "Musimy przerwać pracę.",
+        "de": "Wir müssen die Arbeit unterbrechen.",
+        "options": [
+          "Wir müssen die Arbeit unterbrechen.",
+          "Ich habe nicht das richtige Werkzeug.",
+          "Fass das nicht an."
+        ],
+        "explain": "Wir müssen die Arbeit unterbrechen. = Musimy przerwać pracę."
+      },
+      {
+        "pl": "Ktoś jest ranny.",
+        "de": "Jemand ist verletzt.",
+        "options": [
+          "Jemand ist verletzt.",
+          "Wir müssen das reparieren.",
+          "Wir brauchen Hilfe."
+        ],
+        "explain": "Jemand ist verletzt. = Ktoś jest ranny."
+      },
+      {
+        "pl": "Zadzwoń po pomoc.",
+        "de": "Ruf Hilfe.",
+        "options": [
+          "Ruf Hilfe.",
+          "Jetzt ist alles sicher.",
+          "Hast du Schutzhandschuhe?"
+        ],
+        "explain": "Ruf Hilfe. = Zadzwoń po pomoc."
+      },
+      {
+        "pl": "Podłoga jest śliska.",
+        "de": "Der Boden ist rutschig.",
+        "options": [
+          "Der Boden ist rutschig.",
+          "Vorsicht!",
+          "Hast du einen Helm?"
+        ],
+        "explain": "Der Boden ist rutschig. = Podłoga jest śliska."
+      },
+      {
+        "pl": "Tutaj jest kabel.",
+        "de": "Hier liegt ein Kabel.",
+        "options": [
+          "Hier liegt ein Kabel.",
+          "Das ist gefährlich.",
+          "Die Maschine funktioniert nicht."
+        ],
+        "explain": "Hier liegt ein Kabel. = Tutaj jest kabel."
+      },
+      {
+        "pl": "Nie mam odpowiednich narzędzi.",
+        "de": "Ich habe nicht das richtige Werkzeug.",
+        "options": [
+          "Ich habe nicht das richtige Werkzeug.",
+          "Fass das nicht an.",
+          "Wir müssen die Arbeit unterbrechen."
+        ],
+        "explain": "Ich habe nicht das richtige Werkzeug. = Nie mam odpowiednich narzędzi."
+      },
+      {
+        "pl": "Musimy to naprawić.",
+        "de": "Wir müssen das reparieren.",
+        "options": [
+          "Wir müssen das reparieren.",
+          "Wir brauchen Hilfe.",
+          "Jemand ist verletzt."
+        ],
+        "explain": "Wir müssen das reparieren. = Musimy to naprawić."
+      },
+      {
+        "pl": "Wszystko jest już bezpieczne.",
+        "de": "Jetzt ist alles sicher.",
+        "options": [
+          "Jetzt ist alles sicher.",
+          "Hast du Schutzhandschuhe?",
+          "Ruf Hilfe."
+        ],
+        "explain": "Jetzt ist alles sicher. = Wszystko jest już bezpieczne."
+      }
+    ]
+  },
+  {
+    "id": "a1-19",
+    "emoji": "🏠",
+    "title": "Dom i codzienność",
+    "description": "Opowiadaj o domu",
+    "questions": [
+      {
+        "pl": "Mieszkam w Polsce.",
+        "de": "Ich wohne in Polen.",
+        "options": [
+          "Ich wohne in Polen.",
+          "Ich muss aufräumen.",
+          "Ich bin müde."
+        ],
+        "explain": "Ich wohne in Polen. = Mieszkam w Polsce."
+      },
+      {
+        "pl": "Pracuję w Niemczech.",
+        "de": "Ich arbeite in Deutschland.",
+        "options": [
+          "Ich arbeite in Deutschland.",
+          "Mach das Fenster auf.",
+          "Ich gehe schlafen."
+        ],
+        "explain": "Ich arbeite in Deutschland. = Pracuję w Niemczech."
+      },
+      {
+        "pl": "Mam mały dom.",
+        "de": "Ich habe ein kleines Haus.",
+        "options": [
+          "Ich habe ein kleines Haus.",
+          "Mach die Tür zu.",
+          "Morgen habe ich frei."
+        ],
+        "explain": "Ich habe ein kleines Haus. = Mam mały dom."
+      },
+      {
+        "pl": "Gdzie mieszkasz?",
+        "de": "Wo wohnst du?",
+        "options": [
+          "Wo wohnst du?",
+          "In der Küche ist es kalt.",
+          "Ich muss einkaufen."
+        ],
+        "explain": "Wo wohnst du? = Gdzie mieszkasz?"
+      },
+      {
+        "pl": "Jestem dzisiaj w domu.",
+        "de": "Ich bin heute zu Hause.",
+        "options": [
+          "Ich bin heute zu Hause.",
+          "Das Badezimmer ist oben.",
+          "Ich fahre nach Hause."
+        ],
+        "explain": "Ich bin heute zu Hause. = Jestem dzisiaj w domu."
+      },
+      {
+        "pl": "Muszę posprzątać.",
+        "de": "Ich muss aufräumen.",
+        "options": [
+          "Ich muss aufräumen.",
+          "Ich bin müde.",
+          "Ich wohne in Polen."
+        ],
+        "explain": "Ich muss aufräumen. = Muszę posprzątać."
+      },
+      {
+        "pl": "Otwórz okno.",
+        "de": "Mach das Fenster auf.",
+        "options": [
+          "Mach das Fenster auf.",
+          "Ich gehe schlafen.",
+          "Ich arbeite in Deutschland."
+        ],
+        "explain": "Mach das Fenster auf. = Otwórz okno."
+      },
+      {
+        "pl": "Zamknij drzwi.",
+        "de": "Mach die Tür zu.",
+        "options": [
+          "Mach die Tür zu.",
+          "Morgen habe ich frei.",
+          "Ich habe ein kleines Haus."
+        ],
+        "explain": "Mach die Tür zu. = Zamknij drzwi."
+      },
+      {
+        "pl": "W kuchni jest zimno.",
+        "de": "In der Küche ist es kalt.",
+        "options": [
+          "In der Küche ist es kalt.",
+          "Ich muss einkaufen.",
+          "Wo wohnst du?"
+        ],
+        "explain": "In der Küche ist es kalt. = W kuchni jest zimno."
+      },
+      {
+        "pl": "Łazienka jest na górze.",
+        "de": "Das Badezimmer ist oben.",
+        "options": [
+          "Das Badezimmer ist oben.",
+          "Ich fahre nach Hause.",
+          "Ich bin heute zu Hause."
+        ],
+        "explain": "Das Badezimmer ist oben. = Łazienka jest na górze."
+      },
+      {
+        "pl": "Jestem zmęczony.",
+        "de": "Ich bin müde.",
+        "options": [
+          "Ich bin müde.",
+          "Ich wohne in Polen.",
+          "Ich muss aufräumen."
+        ],
+        "explain": "Ich bin müde. = Jestem zmęczony."
+      },
+      {
+        "pl": "Idę spać.",
+        "de": "Ich gehe schlafen.",
+        "options": [
+          "Ich gehe schlafen.",
+          "Ich arbeite in Deutschland.",
+          "Mach das Fenster auf."
+        ],
+        "explain": "Ich gehe schlafen. = Idę spać."
+      },
+      {
+        "pl": "Jutro mam wolne.",
+        "de": "Morgen habe ich frei.",
+        "options": [
+          "Morgen habe ich frei.",
+          "Ich habe ein kleines Haus.",
+          "Mach die Tür zu."
+        ],
+        "explain": "Morgen habe ich frei. = Jutro mam wolne."
+      },
+      {
+        "pl": "Muszę zrobić zakupy.",
+        "de": "Ich muss einkaufen.",
+        "options": [
+          "Ich muss einkaufen.",
+          "Wo wohnst du?",
+          "In der Küche ist es kalt."
+        ],
+        "explain": "Ich muss einkaufen. = Muszę zrobić zakupy."
+      },
+      {
+        "pl": "Wracam do domu.",
+        "de": "Ich fahre nach Hause.",
+        "options": [
+          "Ich fahre nach Hause.",
+          "Ich bin heute zu Hause.",
+          "Das Badezimmer ist oben."
+        ],
+        "explain": "Ich fahre nach Hause. = Wracam do domu."
+      }
+    ]
+  },
+  {
+    "id": "a1-20",
+    "emoji": "❓",
+    "title": "Pytania i odpowiedzi",
+    "description": "Buduj proste rozmowy",
+    "questions": [
+      {
+        "pl": "Jak się nazywasz?",
+        "de": "Wie heißt du?",
+        "options": [
+          "Wie heißt du?",
+          "Wer ist das?",
+          "Kannst du das wiederholen?"
+        ],
+        "explain": "Wie heißt du? = Jak się nazywasz?"
+      },
+      {
+        "pl": "Skąd jesteś?",
+        "de": "Woher kommst du?",
+        "options": [
+          "Woher kommst du?",
+          "Was brauchst du?",
+          "Sprich bitte langsamer."
+        ],
+        "explain": "Woher kommst du? = Skąd jesteś?"
+      },
+      {
+        "pl": "Co robisz?",
+        "de": "Was machst du?",
+        "options": [
+          "Was machst du?",
+          "Verstehst du?",
+          "Ich weiß es nicht."
+        ],
+        "explain": "Was machst du? = Co robisz?"
+      },
+      {
+        "pl": "Dlaczego czekasz?",
+        "de": "Warum wartest du?",
+        "options": [
+          "Warum wartest du?",
+          "Ja, ich verstehe.",
+          "Ich glaube schon."
+        ],
+        "explain": "Warum wartest du? = Dlaczego czekasz?"
+      },
+      {
+        "pl": "Kiedy przyjdziesz?",
+        "de": "Wann kommst du?",
+        "options": [
+          "Wann kommst du?",
+          "Nein, ich verstehe nicht.",
+          "Das ist eine gute Idee."
+        ],
+        "explain": "Wann kommst du? = Kiedy przyjdziesz?"
+      },
+      {
+        "pl": "Kto to jest?",
+        "de": "Wer ist das?",
+        "options": [
+          "Wer ist das?",
+          "Kannst du das wiederholen?",
+          "Wie heißt du?"
+        ],
+        "explain": "Wer ist das? = Kto to jest?"
+      },
+      {
+        "pl": "Czego potrzebujesz?",
+        "de": "Was brauchst du?",
+        "options": [
+          "Was brauchst du?",
+          "Sprich bitte langsamer.",
+          "Woher kommst du?"
+        ],
+        "explain": "Was brauchst du? = Czego potrzebujesz?"
+      },
+      {
+        "pl": "Czy rozumiesz?",
+        "de": "Verstehst du?",
+        "options": [
+          "Verstehst du?",
+          "Ich weiß es nicht.",
+          "Was machst du?"
+        ],
+        "explain": "Verstehst du? = Czy rozumiesz?"
+      },
+      {
+        "pl": "Tak, rozumiem.",
+        "de": "Ja, ich verstehe.",
+        "options": [
+          "Ja, ich verstehe.",
+          "Ich glaube schon.",
+          "Warum wartest du?"
+        ],
+        "explain": "Ja, ich verstehe. = Tak, rozumiem."
+      },
+      {
+        "pl": "Nie, nie rozumiem.",
+        "de": "Nein, ich verstehe nicht.",
+        "options": [
+          "Nein, ich verstehe nicht.",
+          "Das ist eine gute Idee.",
+          "Wann kommst du?"
+        ],
+        "explain": "Nein, ich verstehe nicht. = Nie, nie rozumiem."
+      },
+      {
+        "pl": "Możesz powtórzyć?",
+        "de": "Kannst du das wiederholen?",
+        "options": [
+          "Kannst du das wiederholen?",
+          "Wie heißt du?",
+          "Wer ist das?"
+        ],
+        "explain": "Kannst du das wiederholen? = Możesz powtórzyć?"
+      },
+      {
+        "pl": "Mów wolniej, proszę.",
+        "de": "Sprich bitte langsamer.",
+        "options": [
+          "Sprich bitte langsamer.",
+          "Woher kommst du?",
+          "Was brauchst du?"
+        ],
+        "explain": "Sprich bitte langsamer. = Mów wolniej, proszę."
+      },
+      {
+        "pl": "Nie wiem.",
+        "de": "Ich weiß es nicht.",
+        "options": [
+          "Ich weiß es nicht.",
+          "Was machst du?",
+          "Verstehst du?"
+        ],
+        "explain": "Ich weiß es nicht. = Nie wiem."
+      },
+      {
+        "pl": "Myślę, że tak.",
+        "de": "Ich glaube schon.",
+        "options": [
+          "Ich glaube schon.",
+          "Warum wartest du?",
+          "Ja, ich verstehe."
+        ],
+        "explain": "Ich glaube schon. = Myślę, że tak."
+      },
+      {
+        "pl": "To dobry pomysł.",
+        "de": "Das ist eine gute Idee.",
+        "options": [
+          "Das ist eine gute Idee.",
+          "Wann kommst du?",
+          "Nein, ich verstehe nicht."
+        ],
+        "explain": "Das ist eine gute Idee. = To dobry pomysł."
+      }
+    ]
+  }
+]);
+
+const advancedLessons = [{"id": "a2-1", "level": "A2", "title": "Czas przeszły Perfekt", "emoji": "🕒", "description": "10 zdań · A2", "questions": [{"pl": "Wczoraj pracowałem.", "de": "Ich habe gestern gearbeitet.", "options": ["Ich habe gestern gearbeitet.", "Wir haben das Tor montiert.", "Der Kunde hat angerufen."], "explain": "Ich habe gestern gearbeitet. = Wczoraj pracowałem."}, {"pl": "Zamontowaliśmy bramę.", "de": "Wir haben das Tor montiert.", "options": ["Wir haben das Tor montiert.", "Ich habe Schrauben gekauft.", "Ich bin im Lager gewesen."], "explain": "Wir haben das Tor montiert. = Zamontowaliśmy bramę."}, {"pl": "Kupiłem śruby.", "de": "Ich habe Schrauben gekauft.", "options": ["Ich habe Schrauben gekauft.", "Der Kunde hat angerufen.", "Wir sind früh angekommen."], "explain": "Ich habe Schrauben gekauft. = Kupiłem śruby."}, {"pl": "Klient zadzwonił.", "de": "Der Kunde hat angerufen.", "options": ["Der Kunde hat angerufen.", "Ich bin im Lager gewesen.", "Ich habe das Werkzeug gefunden."], "explain": "Der Kunde hat angerufen. = Klient zadzwonił."}, {"pl": "Byłem w magazynie.", "de": "Ich bin im Lager gewesen.", "options": ["Ich bin im Lager gewesen.", "Wir sind früh angekommen.", "Wir haben den Zaun repariert."], "explain": "Ich bin im Lager gewesen. = Byłem w magazynie."}, {"pl": "Przyjechaliśmy wcześnie.", "de": "Wir sind früh angekommen.", "options": ["Wir sind früh angekommen.", "Ich habe das Werkzeug gefunden.", "Ich habe die Frage nicht verstanden."], "explain": "Wir sind früh angekommen. = Przyjechaliśmy wcześnie."}, {"pl": "Znalazłem narzędzia.", "de": "Ich habe das Werkzeug gefunden.", "options": ["Ich habe das Werkzeug gefunden.", "Wir haben den Zaun repariert.", "Ich habe eine Nachricht geschickt."], "explain": "Ich habe das Werkzeug gefunden. = Znalazłem narzędzia."}, {"pl": "Naprawiliśmy ogrodzenie.", "de": "Wir haben den Zaun repariert.", "options": ["Wir haben den Zaun repariert.", "Ich habe die Frage nicht verstanden.", "Ich habe gestern gearbeitet."], "explain": "Wir haben den Zaun repariert. = Naprawiliśmy ogrodzenie."}, {"pl": "Nie zrozumiałem pytania.", "de": "Ich habe die Frage nicht verstanden.", "options": ["Ich habe die Frage nicht verstanden.", "Ich habe eine Nachricht geschickt.", "Wir haben das Tor montiert."], "explain": "Ich habe die Frage nicht verstanden. = Nie zrozumiałem pytania."}, {"pl": "Wysłałem wiadomość.", "de": "Ich habe eine Nachricht geschickt.", "options": ["Ich habe eine Nachricht geschickt.", "Ich habe gestern gearbeitet.", "Ich habe Schrauben gekauft."], "explain": "Ich habe eine Nachricht geschickt. = Wysłałem wiadomość."}]}, {"id": "a2-2", "level": "A2", "title": "Plany i przyszłość", "emoji": "📅", "description": "10 zdań · A2", "questions": [{"pl": "Jutro będziemy pracować.", "de": "Wir werden morgen arbeiten.", "options": ["Wir werden morgen arbeiten.", "Ich möchte Deutsch lernen.", "Nächste Woche habe ich Zeit."], "explain": "Wir werden morgen arbeiten. = Jutro będziemy pracować."}, {"pl": "Chcę nauczyć się niemieckiego.", "de": "Ich möchte Deutsch lernen.", "options": ["Ich möchte Deutsch lernen.", "Wir müssen das Material bestellen.", "Am Montag fangen wir an."], "explain": "Ich möchte Deutsch lernen. = Chcę nauczyć się niemieckiego."}, {"pl": "Musimy zamówić materiał.", "de": "Wir müssen das Material bestellen.", "options": ["Wir müssen das Material bestellen.", "Nächste Woche habe ich Zeit.", "Ich werde den Kunden anrufen."], "explain": "Wir müssen das Material bestellen. = Musimy zamówić materiał."}, {"pl": "W przyszłym tygodniu mam czas.", "de": "Nächste Woche habe ich Zeit.", "options": ["Nächste Woche habe ich Zeit.", "Am Montag fangen wir an.", "Kannst du morgen kommen?"], "explain": "Nächste Woche habe ich Zeit. = W przyszłym tygodniu mam czas."}, {"pl": "W poniedziałek zaczynamy.", "de": "Am Montag fangen wir an.", "options": ["Am Montag fangen wir an.", "Ich werde den Kunden anrufen.", "Wir planen ein neues Projekt."], "explain": "Am Montag fangen wir an. = W poniedziałek zaczynamy."}, {"pl": "Zadzwonię do klienta.", "de": "Ich werde den Kunden anrufen.", "options": ["Ich werde den Kunden anrufen.", "Kannst du morgen kommen?", "Ich möchte das heute fertig machen."], "explain": "Ich werde den Kunden anrufen. = Zadzwonię do klienta."}, {"pl": "Czy możesz przyjść jutro?", "de": "Kannst du morgen kommen?", "options": ["Kannst du morgen kommen?", "Wir planen ein neues Projekt.", "Ich werde bald das Angebot schicken."], "explain": "Kannst du morgen kommen? = Czy możesz przyjść jutro?"}, {"pl": "Planujemy nowy projekt.", "de": "Wir planen ein neues Projekt.", "options": ["Wir planen ein neues Projekt.", "Ich möchte das heute fertig machen.", "Wir werden morgen arbeiten."], "explain": "Wir planen ein neues Projekt. = Planujemy nowy projekt."}, {"pl": "Chcę to dzisiaj skończyć.", "de": "Ich möchte das heute fertig machen.", "options": ["Ich möchte das heute fertig machen.", "Ich werde bald das Angebot schicken.", "Ich möchte Deutsch lernen."], "explain": "Ich möchte das heute fertig machen. = Chcę to dzisiaj skończyć."}, {"pl": "Wkrótce wyślę ofertę.", "de": "Ich werde bald das Angebot schicken.", "options": ["Ich werde bald das Angebot schicken.", "Wir werden morgen arbeiten.", "Wir müssen das Material bestellen."], "explain": "Ich werde bald das Angebot schicken. = Wkrótce wyślę ofertę."}]}, {"id": "a2-3", "level": "A2", "title": "Zdania z weil i dass", "emoji": "🧠", "description": "10 zdań · A2", "questions": [{"pl": "Zostaję w domu, bo pada.", "de": "Ich bleibe zu Hause, weil es regnet.", "options": ["Ich bleibe zu Hause, weil es regnet.", "Ich denke, dass das gut ist.", "Ich weiß, dass du recht hast."], "explain": "Ich bleibe zu Hause, weil es regnet. = Zostaję w domu, bo pada."}, {"pl": "Myślę, że to jest dobre.", "de": "Ich denke, dass das gut ist.", "options": ["Ich denke, dass das gut ist.", "Wir arbeiten nicht, weil es kalt ist.", "Ich komme zu spät, weil es Stau gibt."], "explain": "Ich denke, dass das gut ist. = Myślę, że to jest dobre."}, {"pl": "Nie pracujemy, bo jest zimno.", "de": "Wir arbeiten nicht, weil es kalt ist.", "options": ["Wir arbeiten nicht, weil es kalt ist.", "Ich weiß, dass du recht hast.", "Er sagt, dass er morgen kommt."], "explain": "Wir arbeiten nicht, weil es kalt ist. = Nie pracujemy, bo jest zimno."}, {"pl": "Wiem, że masz rację.", "de": "Ich weiß, dass du recht hast.", "options": ["Ich weiß, dass du recht hast.", "Ich komme zu spät, weil es Stau gibt.", "Ich brauche Hilfe, weil das schwer ist."], "explain": "Ich weiß, dass du recht hast. = Wiem, że masz rację."}, {"pl": "Spóźniam się, bo jest korek.", "de": "Ich komme zu spät, weil es Stau gibt.", "options": ["Ich komme zu spät, weil es Stau gibt.", "Er sagt, dass er morgen kommt.", "Ich glaube, dass wir das schaffen."], "explain": "Ich komme zu spät, weil es Stau gibt. = Spóźniam się, bo jest korek."}, {"pl": "On mówi, że przyjdzie jutro.", "de": "Er sagt, dass er morgen kommt.", "options": ["Er sagt, dass er morgen kommt.", "Ich brauche Hilfe, weil das schwer ist.", "Ich warte, weil der Kunde nicht hier ist."], "explain": "Er sagt, dass er morgen kommt. = On mówi, że przyjdzie jutro."}, {"pl": "Potrzebuję pomocy, bo to jest ciężkie.", "de": "Ich brauche Hilfe, weil das schwer ist.", "options": ["Ich brauche Hilfe, weil das schwer ist.", "Ich glaube, dass wir das schaffen.", "Ich weiß, dass das mehr kostet."], "explain": "Ich brauche Hilfe, weil das schwer ist. = Potrzebuję pomocy, bo to jest ciężkie."}, {"pl": "Wierzę, że damy radę.", "de": "Ich glaube, dass wir das schaffen.", "options": ["Ich glaube, dass wir das schaffen.", "Ich warte, weil der Kunde nicht hier ist.", "Ich bleibe zu Hause, weil es regnet."], "explain": "Ich glaube, dass wir das schaffen. = Wierzę, że damy radę."}, {"pl": "Czekam, bo klient nie jest tutaj.", "de": "Ich warte, weil der Kunde nicht hier ist.", "options": ["Ich warte, weil der Kunde nicht hier ist.", "Ich weiß, dass das mehr kostet.", "Ich denke, dass das gut ist."], "explain": "Ich warte, weil der Kunde nicht hier ist. = Czekam, bo klient nie jest tutaj."}, {"pl": "Wiem, że to kosztuje więcej.", "de": "Ich weiß, dass das mehr kostet.", "options": ["Ich weiß, dass das mehr kostet.", "Ich bleibe zu Hause, weil es regnet.", "Wir arbeiten nicht, weil es kalt ist."], "explain": "Ich weiß, dass das mehr kostet. = Wiem, że to kosztuje więcej."}]}, {"id": "a2-4", "level": "A2", "title": "U klienta: ustalenia", "emoji": "🤝", "description": "10 zdań · A2", "questions": [{"pl": "Czy możemy przesunąć termin?", "de": "Können wir den Termin verschieben?", "options": ["Können wir den Termin verschieben?", "Wir brauchen die genauen Maße.", "Ich werde einen Kostenvoranschlag erstellen."], "explain": "Können wir den Termin verschieben? = Czy możemy przesunąć termin?"}, {"pl": "Potrzebujemy dokładnych wymiarów.", "de": "Wir brauchen die genauen Maße.", "options": ["Wir brauchen die genauen Maße.", "Haben Sie noch Fragen?", "Bitte unterschreiben Sie hier."], "explain": "Wir brauchen die genauen Maße. = Potrzebujemy dokładnych wymiarów."}, {"pl": "Czy ma pan jakieś pytania?", "de": "Haben Sie noch Fragen?", "options": ["Haben Sie noch Fragen?", "Ich werde einen Kostenvoranschlag erstellen.", "Das Material kommt morgen an."], "explain": "Haben Sie noch Fragen? = Czy ma pan jakieś pytania?"}, {"pl": "Przygotuję kosztorys.", "de": "Ich werde einen Kostenvoranschlag erstellen.", "options": ["Ich werde einen Kostenvoranschlag erstellen.", "Bitte unterschreiben Sie hier.", "Die Montage dauert zwei Tage."], "explain": "Ich werde einen Kostenvoranschlag erstellen. = Przygotuję kosztorys."}, {"pl": "Proszę podpisać tutaj.", "de": "Bitte unterschreiben Sie hier.", "options": ["Bitte unterschreiben Sie hier.", "Das Material kommt morgen an.", "Ist die Farbe in Ordnung?"], "explain": "Bitte unterschreiben Sie hier. = Proszę podpisać tutaj."}, {"pl": "Materiał dotrze jutro.", "de": "Das Material kommt morgen an.", "options": ["Das Material kommt morgen an.", "Die Montage dauert zwei Tage.", "Ich melde mich bei Ihnen."], "explain": "Das Material kommt morgen an. = Materiał dotrze jutro."}, {"pl": "Montaż potrwa dwa dni.", "de": "Die Montage dauert zwei Tage.", "options": ["Die Montage dauert zwei Tage.", "Ist die Farbe in Ordnung?", "Vielen Dank für Ihre Geduld."], "explain": "Die Montage dauert zwei Tage. = Montaż potrwa dwa dni."}, {"pl": "Czy kolor jest odpowiedni?", "de": "Ist die Farbe in Ordnung?", "options": ["Ist die Farbe in Ordnung?", "Ich melde mich bei Ihnen.", "Können wir den Termin verschieben?"], "explain": "Ist die Farbe in Ordnung? = Czy kolor jest odpowiedni?"}, {"pl": "Skontaktuję się z panem.", "de": "Ich melde mich bei Ihnen.", "options": ["Ich melde mich bei Ihnen.", "Vielen Dank für Ihre Geduld.", "Wir brauchen die genauen Maße."], "explain": "Ich melde mich bei Ihnen. = Skontaktuję się z panem."}, {"pl": "Dziękuję za cierpliwość.", "de": "Vielen Dank für Ihre Geduld.", "options": ["Vielen Dank für Ihre Geduld.", "Können wir den Termin verschieben?", "Haben Sie noch Fragen?"], "explain": "Vielen Dank für Ihre Geduld. = Dziękuję za cierpliwość."}]}, {"id": "b1-5", "level": "B1", "title": "Wyjaśnianie problemów", "emoji": "🔧", "description": "10 zdań · B1", "questions": [{"pl": "Musimy sprawdzić, dlaczego brama nie działa.", "de": "Wir müssen prüfen, warum das Tor nicht funktioniert.", "options": ["Wir müssen prüfen, warum das Tor nicht funktioniert.", "Das Problem ist, dass der Boden uneben ist.", "Leider fehlt ein Teil."], "explain": "Wir müssen prüfen, warum das Tor nicht funktioniert. = Musimy sprawdzić, dlaczego brama nie działa."}, {"pl": "Problem polega na tym, że podłoże jest nierówne.", "de": "Das Problem ist, dass der Boden uneben ist.", "options": ["Das Problem ist, dass der Boden uneben ist.", "Ich schlage eine andere Lösung vor.", "Könnten Sie mir das Problem zeigen?"], "explain": "Das Problem ist, dass der Boden uneben ist. = Problem polega na tym, że podłoże jest nierówne."}, {"pl": "Proponuję inne rozwiązanie.", "de": "Ich schlage eine andere Lösung vor.", "options": ["Ich schlage eine andere Lösung vor.", "Leider fehlt ein Teil.", "Die Reparatur dauert länger als geplant."], "explain": "Ich schlage eine andere Lösung vor. = Proponuję inne rozwiązanie."}, {"pl": "Niestety brakuje jednej części.", "de": "Leider fehlt ein Teil.", "options": ["Leider fehlt ein Teil.", "Könnten Sie mir das Problem zeigen?", "Wir müssen warten, bis der Beton trocken ist."], "explain": "Leider fehlt ein Teil. = Niestety brakuje jednej części."}, {"pl": "Czy mógłby pan pokazać mi problem?", "de": "Könnten Sie mir das Problem zeigen?", "options": ["Könnten Sie mir das Problem zeigen?", "Die Reparatur dauert länger als geplant.", "Das hängt vom Wetter ab."], "explain": "Könnten Sie mir das Problem zeigen? = Czy mógłby pan pokazać mi problem?"}, {"pl": "Naprawa zajmie więcej czasu niż planowaliśmy.", "de": "Die Reparatur dauert länger als geplant.", "options": ["Die Reparatur dauert länger als geplant.", "Wir müssen warten, bis der Beton trocken ist.", "Wir können diesen Termin nicht garantieren."], "explain": "Die Reparatur dauert länger als geplant. = Naprawa zajmie więcej czasu niż planowaliśmy."}, {"pl": "Musimy poczekać, aż beton wyschnie.", "de": "Wir müssen warten, bis der Beton trocken ist.", "options": ["Wir müssen warten, bis der Beton trocken ist.", "Das hängt vom Wetter ab.", "Wir werden eine Lösung finden."], "explain": "Wir müssen warten, bis der Beton trocken ist. = Musimy poczekać, aż beton wyschnie."}, {"pl": "To zależy od pogody.", "de": "Das hängt vom Wetter ab.", "options": ["Das hängt vom Wetter ab.", "Wir können diesen Termin nicht garantieren.", "Wir müssen prüfen, warum das Tor nicht funktioniert."], "explain": "Das hängt vom Wetter ab. = To zależy od pogody."}, {"pl": "Nie możemy zagwarantować tego terminu.", "de": "Wir können diesen Termin nicht garantieren.", "options": ["Wir können diesen Termin nicht garantieren.", "Wir werden eine Lösung finden.", "Das Problem ist, dass der Boden uneben ist."], "explain": "Wir können diesen Termin nicht garantieren. = Nie możemy zagwarantować tego terminu."}, {"pl": "Znajdziemy rozwiązanie.", "de": "Wir werden eine Lösung finden.", "options": ["Wir werden eine Lösung finden.", "Wir müssen prüfen, warum das Tor nicht funktioniert.", "Ich schlage eine andere Lösung vor."], "explain": "Wir werden eine Lösung finden. = Znajdziemy rozwiązanie."}]}, {"id": "b1-6", "level": "B1", "title": "Rozmowa telefoniczna", "emoji": "📞", "description": "10 zdań · B1", "questions": [{"pl": "Dzwonię w sprawie naszego terminu.", "de": "Ich rufe wegen unseres Termins an.", "options": ["Ich rufe wegen unseres Termins an.", "Könnte ich bitte mit dem Leiter sprechen?", "Ich rufe in einer halben Stunde zurück."], "explain": "Ich rufe wegen unseres Termins an. = Dzwonię w sprawie naszego terminu."}, {"pl": "Czy mógłbym rozmawiać z kierownikiem?", "de": "Könnte ich bitte mit dem Leiter sprechen?", "options": ["Könnte ich bitte mit dem Leiter sprechen?", "Leider kann ich gerade nicht sprechen.", "Könnten Sie die Nummer wiederholen?"], "explain": "Könnte ich bitte mit dem Leiter sprechen? = Czy mógłbym rozmawiać z kierownikiem?"}, {"pl": "Niestety nie mogę teraz rozmawiać.", "de": "Leider kann ich gerade nicht sprechen.", "options": ["Leider kann ich gerade nicht sprechen.", "Ich rufe in einer halben Stunde zurück.", "Ich möchte den Termin bestätigen."], "explain": "Leider kann ich gerade nicht sprechen. = Niestety nie mogę teraz rozmawiać."}, {"pl": "Oddzwonię za pół godziny.", "de": "Ich rufe in einer halben Stunde zurück.", "options": ["Ich rufe in einer halben Stunde zurück.", "Könnten Sie die Nummer wiederholen?", "Bitte schicken Sie mir die Adresse per E-Mail."], "explain": "Ich rufe in einer halben Stunde zurück. = Oddzwonię za pół godziny."}, {"pl": "Czy może pan powtórzyć numer?", "de": "Könnten Sie die Nummer wiederholen?", "options": ["Könnten Sie die Nummer wiederholen?", "Ich möchte den Termin bestätigen.", "Die Verbindung ist sehr schlecht."], "explain": "Könnten Sie die Nummer wiederholen? = Czy może pan powtórzyć numer?"}, {"pl": "Chciałbym potwierdzić spotkanie.", "de": "Ich möchte den Termin bestätigen.", "options": ["Ich möchte den Termin bestätigen.", "Bitte schicken Sie mir die Adresse per E-Mail.", "Ich habe den Namen nicht verstanden."], "explain": "Ich möchte den Termin bestätigen. = Chciałbym potwierdzić spotkanie."}, {"pl": "Proszę wysłać mi adres mailem.", "de": "Bitte schicken Sie mir die Adresse per E-Mail.", "options": ["Bitte schicken Sie mir die Adresse per E-Mail.", "Die Verbindung ist sehr schlecht.", "Vielen Dank für Ihren Anruf."], "explain": "Bitte schicken Sie mir die Adresse per E-Mail. = Proszę wysłać mi adres mailem."}, {"pl": "Połączenie jest bardzo słabe.", "de": "Die Verbindung ist sehr schlecht.", "options": ["Die Verbindung ist sehr schlecht.", "Ich habe den Namen nicht verstanden.", "Ich rufe wegen unseres Termins an."], "explain": "Die Verbindung ist sehr schlecht. = Połączenie jest bardzo słabe."}, {"pl": "Nie dosłyszałem nazwiska.", "de": "Ich habe den Namen nicht verstanden.", "options": ["Ich habe den Namen nicht verstanden.", "Vielen Dank für Ihren Anruf.", "Könnte ich bitte mit dem Leiter sprechen?"], "explain": "Ich habe den Namen nicht verstanden. = Nie dosłyszałem nazwiska."}, {"pl": "Dziękuję za telefon.", "de": "Vielen Dank für Ihren Anruf.", "options": ["Vielen Dank für Ihren Anruf.", "Ich rufe wegen unseres Termins an.", "Leider kann ich gerade nicht sprechen."], "explain": "Vielen Dank für Ihren Anruf. = Dziękuję za telefon."}]}, {"id": "b1-7", "level": "B1", "title": "Opinie i argumenty", "emoji": "💬", "description": "10 zdań · B1", "questions": [{"pl": "Moim zdaniem to lepsze rozwiązanie.", "de": "Meiner Meinung nach ist das die bessere Lösung.", "options": ["Meiner Meinung nach ist das die bessere Lösung.", "Einerseits ist es günstiger.", "Ich bin mit Ihrem Vorschlag einverstanden."], "explain": "Meiner Meinung nach ist das die bessere Lösung. = Moim zdaniem to lepsze rozwiązanie."}, {"pl": "Z jednej strony jest taniej.", "de": "Einerseits ist es günstiger.", "options": ["Einerseits ist es günstiger.", "Andererseits dauert es länger.", "Ich bin nicht ganz überzeugt."], "explain": "Einerseits ist es günstiger. = Z jednej strony jest taniej."}, {"pl": "Z drugiej strony trwa to dłużej.", "de": "Andererseits dauert es länger.", "options": ["Andererseits dauert es länger.", "Ich bin mit Ihrem Vorschlag einverstanden.", "Am wichtigsten ist die Sicherheit."], "explain": "Andererseits dauert es länger. = Z drugiej strony trwa to dłużej."}, {"pl": "Zgadzam się z pana propozycją.", "de": "Ich bin mit Ihrem Vorschlag einverstanden.", "options": ["Ich bin mit Ihrem Vorschlag einverstanden.", "Ich bin nicht ganz überzeugt.", "Das hat mehrere Vorteile."], "explain": "Ich bin mit Ihrem Vorschlag einverstanden. = Zgadzam się z pana propozycją."}, {"pl": "Nie jestem całkiem przekonany.", "de": "Ich bin nicht ganz überzeugt.", "options": ["Ich bin nicht ganz überzeugt.", "Am wichtigsten ist die Sicherheit.", "Ich würde einen anderen Termin bevorzugen."], "explain": "Ich bin nicht ganz überzeugt. = Nie jestem całkiem przekonany."}, {"pl": "Najważniejsze jest bezpieczeństwo.", "de": "Am wichtigsten ist die Sicherheit.", "options": ["Am wichtigsten ist die Sicherheit.", "Das hat mehrere Vorteile.", "Können wir einen Kompromiss finden?"], "explain": "Am wichtigsten ist die Sicherheit. = Najważniejsze jest bezpieczeństwo."}, {"pl": "To ma kilka zalet.", "de": "Das hat mehrere Vorteile.", "options": ["Das hat mehrere Vorteile.", "Ich würde einen anderen Termin bevorzugen.", "Ich verstehe Ihren Standpunkt."], "explain": "Das hat mehrere Vorteile. = To ma kilka zalet."}, {"pl": "Wolałbym inny termin.", "de": "Ich würde einen anderen Termin bevorzugen.", "options": ["Ich würde einen anderen Termin bevorzugen.", "Können wir einen Kompromiss finden?", "Meiner Meinung nach ist das die bessere Lösung."], "explain": "Ich würde einen anderen Termin bevorzugen. = Wolałbym inny termin."}, {"pl": "Czy możemy znaleźć kompromis?", "de": "Können wir einen Kompromiss finden?", "options": ["Können wir einen Kompromiss finden?", "Ich verstehe Ihren Standpunkt.", "Einerseits ist es günstiger."], "explain": "Können wir einen Kompromiss finden? = Czy możemy znaleźć kompromis?"}, {"pl": "Rozumiem pana punkt widzenia.", "de": "Ich verstehe Ihren Standpunkt.", "options": ["Ich verstehe Ihren Standpunkt.", "Meiner Meinung nach ist das die bessere Lösung.", "Andererseits dauert es länger."], "explain": "Ich verstehe Ihren Standpunkt. = Rozumiem pana punkt widzenia."}]}, {"id": "b1-8", "level": "B1", "title": "Sytuacje awaryjne", "emoji": "🚧", "description": "10 zdań · B1", "questions": [{"pl": "Proszę natychmiast wyłączyć maszynę.", "de": "Bitte schalten Sie die Maschine sofort aus.", "options": ["Bitte schalten Sie die Maschine sofort aus.", "Jemand braucht Hilfe.", "Bitte bleiben Sie ruhig."], "explain": "Bitte schalten Sie die Maschine sofort aus. = Proszę natychmiast wyłączyć maszynę."}, {"pl": "Ktoś potrzebuje pomocy.", "de": "Jemand braucht Hilfe.", "options": ["Jemand braucht Hilfe.", "Wir müssen den Bereich absichern.", "Ist jemand verletzt worden?"], "explain": "Jemand braucht Hilfe. = Ktoś potrzebuje pomocy."}, {"pl": "Musimy zabezpieczyć teren.", "de": "Wir müssen den Bereich absichern.", "options": ["Wir müssen den Bereich absichern.", "Bitte bleiben Sie ruhig.", "Man darf hier nicht hineingehen."], "explain": "Wir müssen den Bereich absichern. = Musimy zabezpieczyć teren."}, {"pl": "Proszę zachować spokój.", "de": "Bitte bleiben Sie ruhig.", "options": ["Bitte bleiben Sie ruhig.", "Ist jemand verletzt worden?", "Ich werde das meinem Vorgesetzten melden."], "explain": "Bitte bleiben Sie ruhig. = Proszę zachować spokój."}, {"pl": "Czy ktoś został ranny?", "de": "Ist jemand verletzt worden?", "options": ["Ist jemand verletzt worden?", "Man darf hier nicht hineingehen.", "Wir brauchen einen Verbandskasten."], "explain": "Ist jemand verletzt worden? = Czy ktoś został ranny?"}, {"pl": "Nie wolno tutaj wchodzić.", "de": "Man darf hier nicht hineingehen.", "options": ["Man darf hier nicht hineingehen.", "Ich werde das meinem Vorgesetzten melden.", "Dieses Gerät ist gefährlich."], "explain": "Man darf hier nicht hineingehen. = Nie wolno tutaj wchodzić."}, {"pl": "Zgłoszę to przełożonemu.", "de": "Ich werde das meinem Vorgesetzten melden.", "options": ["Ich werde das meinem Vorgesetzten melden.", "Wir brauchen einen Verbandskasten.", "Lassen Sie uns zuerst die Sicherungen prüfen."], "explain": "Ich werde das meinem Vorgesetzten melden. = Zgłoszę to przełożonemu."}, {"pl": "Potrzebujemy apteczki.", "de": "Wir brauchen einen Verbandskasten.", "options": ["Wir brauchen einen Verbandskasten.", "Dieses Gerät ist gefährlich.", "Bitte schalten Sie die Maschine sofort aus."], "explain": "Wir brauchen einen Verbandskasten. = Potrzebujemy apteczki."}, {"pl": "To urządzenie jest niebezpieczne.", "de": "Dieses Gerät ist gefährlich.", "options": ["Dieses Gerät ist gefährlich.", "Lassen Sie uns zuerst die Sicherungen prüfen.", "Jemand braucht Hilfe."], "explain": "Dieses Gerät ist gefährlich. = To urządzenie jest niebezpieczne."}, {"pl": "Najpierw sprawdźmy zabezpieczenia.", "de": "Lassen Sie uns zuerst die Sicherungen prüfen.", "options": ["Lassen Sie uns zuerst die Sicherungen prüfen.", "Bitte schalten Sie die Maschine sofort aus.", "Wir müssen den Bereich absichern."], "explain": "Lassen Sie uns zuerst die Sicherungen prüfen. = Najpierw sprawdźmy zabezpieczenia."}]}];
+lessonsA1.push(...advancedLessons);
+const courses = {
+    work: {
+        title: "NIEMIECKI W PRACY",
+        questions: [
+            {pl:"Dzień dobry! / Dzień dobry rano!", de:"Guten Morgen!", options:["Guten Morgen!", "Ich brauche Hilfe.", "Wo ist das Werkzeug?"], explain:"Guten Morgen! = Dzień dobry! / Dzień dobry rano!"},
+            {pl:"Nie rozumiem tego.", de:"Ich verstehe das nicht.", options:["Ich verstehe das nicht.", "Wo ist der Chef?", "Ich brauche einen Hammer."], explain:"Ich verstehe das nicht. = Nie rozumiem tego."},
+            {pl:"Możesz mi pomóc?", de:"Kannst du mir helfen?", options:["Kannst du mir helfen?", "Was soll ich machen?", "Wo ist der Schraubenzieher?"], explain:"Kannst du mir helfen? = Możesz mi pomóc?"},
+            {pl:"Gdzie mam to położyć?", de:"Wo soll ich das hinlegen?", options:["Wo soll ich das hinlegen?", "Ich komme gleich.", "Das ist kaputt."], explain:"Wo soll ich das hinlegen? = Gdzie mam to położyć?"},
+            {pl:"Skończyłem.", de:"Ich bin fertig.", options:["Ich bin fertig.", "Ich bin gleich zurück.", "Die Maschine funktioniert nicht."], explain:"Ich bin fertig. = Skończyłem."},
+            {pl:"O której zaczynamy?", de:"Um wie viel Uhr fangen wir an?", options:["Um wie viel Uhr fangen wir an?", "Warte bitte kurz.", "Kannst du das wiederholen?"], explain:"Um wie viel Uhr fangen wir an? = O której zaczynamy?"},
+            {pl:"Kiedy mamy przerwę?", de:"Wann haben wir Pause?", options:["Wann haben wir Pause?", "Komm bitte hier.", "Bitte langsamer."], explain:"Wann haben wir Pause? = Kiedy mamy przerwę?"},
+            {pl:"Potrzebuję pomocy.", de:"Ich brauche Hilfe.", options:["Ich brauche Hilfe.", "Mach bitte die Tür zu.", "Was bedeutet das?"], explain:"Ich brauche Hilfe. = Potrzebuję pomocy."},
+            {pl:"Gdzie jest szef?", de:"Wo ist der Chef?", options:["Wo ist der Chef?", "Mach bitte das Fenster auf.", "Wie sagt man das auf Deutsch?"], explain:"Wo ist der Chef? = Gdzie jest szef?"},
+            {pl:"Co mam zrobić?", de:"Was soll ich machen?", options:["Was soll ich machen?", "Wo ist das Werkzeug?", "Ich habe eine Frage."], explain:"Was soll ich machen? = Co mam zrobić?"},
+            {pl:"Zaraz przyjdę.", de:"Ich komme gleich.", options:["Ich komme gleich.", "Ich brauche einen Hammer.", "Ich habe ein Problem."], explain:"Ich komme gleich. = Zaraz przyjdę."},
+            {pl:"Zaraz wrócę.", de:"Ich bin gleich zurück.", options:["Ich bin gleich zurück.", "Wo ist der Schraubenzieher?", "Alles klar."], explain:"Ich bin gleich zurück. = Zaraz wrócę."},
+            {pl:"Poczekaj chwilę, proszę.", de:"Warte bitte kurz.", options:["Warte bitte kurz.", "Das ist kaputt.", "Kein Problem."], explain:"Warte bitte kurz. = Poczekaj chwilę, proszę."},
+            {pl:"Chodź tutaj, proszę.", de:"Komm bitte hier.", options:["Komm bitte hier.", "Die Maschine funktioniert nicht.", "Bis morgen!"], explain:"Komm bitte hier. = Chodź tutaj, proszę."},
+            {pl:"Zamknij proszę drzwi.", de:"Mach bitte die Tür zu.", options:["Mach bitte die Tür zu.", "Kannst du das wiederholen?", "Bis später!"], explain:"Mach bitte die Tür zu. = Zamknij proszę drzwi."},
+            {pl:"Otwórz proszę okno.", de:"Mach bitte das Fenster auf.", options:["Mach bitte das Fenster auf.", "Bitte langsamer.", "Guten Morgen!"], explain:"Mach bitte das Fenster auf. = Otwórz proszę okno."},
+            {pl:"Gdzie są narzędzia?", de:"Wo ist das Werkzeug?", options:["Wo ist das Werkzeug?", "Was bedeutet das?", "Ich verstehe das nicht."], explain:"Wo ist das Werkzeug? = Gdzie są narzędzia?"},
+            {pl:"Potrzebuję młotka.", de:"Ich brauche einen Hammer.", options:["Ich brauche einen Hammer.", "Wie sagt man das auf Deutsch?", "Kannst du mir helfen?"], explain:"Ich brauche einen Hammer. = Potrzebuję młotka."},
+            {pl:"Gdzie jest śrubokręt?", de:"Wo ist der Schraubenzieher?", options:["Wo ist der Schraubenzieher?", "Ich habe eine Frage.", "Wo soll ich das hinlegen?"], explain:"Wo ist der Schraubenzieher? = Gdzie jest śrubokręt?"},
+            {pl:"To jest zepsute.", de:"Das ist kaputt.", options:["Das ist kaputt.", "Ich habe ein Problem.", "Ich bin fertig."], explain:"Das ist kaputt. = To jest zepsute."},
+            {pl:"Maszyna nie działa.", de:"Die Maschine funktioniert nicht.", options:["Die Maschine funktioniert nicht.", "Alles klar.", "Um wie viel Uhr fangen wir an?"], explain:"Die Maschine funktioniert nicht. = Maszyna nie działa."},
+            {pl:"Możesz to powtórzyć?", de:"Kannst du das wiederholen?", options:["Kannst du das wiederholen?", "Kein Problem.", "Wann haben wir Pause?"], explain:"Kannst du das wiederholen? = Możesz to powtórzyć?"},
+            {pl:"Proszę wolniej.", de:"Bitte langsamer.", options:["Bitte langsamer.", "Bis morgen!", "Ich brauche Hilfe."], explain:"Bitte langsamer. = Proszę wolniej."},
+            {pl:"Co to znaczy?", de:"Was bedeutet das?", options:["Was bedeutet das?", "Bis später!", "Wo ist der Chef?"], explain:"Was bedeutet das? = Co to znaczy?"},
+            {pl:"Jak się to mówi po niemiecku?", de:"Wie sagt man das auf Deutsch?", options:["Wie sagt man das auf Deutsch?", "Guten Morgen!", "Was soll ich machen?"], explain:"Wie sagt man das auf Deutsch? = Jak się to mówi po niemiecku?"},
+            {pl:"Mam pytanie.", de:"Ich habe eine Frage.", options:["Ich habe eine Frage.", "Ich verstehe das nicht.", "Ich komme gleich."], explain:"Ich habe eine Frage. = Mam pytanie."},
+            {pl:"Mam problem.", de:"Ich habe ein Problem.", options:["Ich habe ein Problem.", "Kannst du mir helfen?", "Ich bin gleich zurück."], explain:"Ich habe ein Problem. = Mam problem."},
+            {pl:"Wszystko jasne.", de:"Alles klar.", options:["Alles klar.", "Wo soll ich das hinlegen?", "Warte bitte kurz."], explain:"Alles klar. = Wszystko jasne."},
+            {pl:"Nie ma problemu.", de:"Kein Problem.", options:["Kein Problem.", "Ich bin fertig.", "Komm bitte hier."], explain:"Kein Problem. = Nie ma problemu."},
+            {pl:"Do jutra!", de:"Bis morgen!", options:["Bis morgen!", "Um wie viel Uhr fangen wir an?", "Mach bitte die Tür zu."], explain:"Bis morgen! = Do jutra!"},
+            {pl:"Do później!", de:"Bis später!", options:["Bis später!", "Wann haben wir Pause?", "Mach bitte das Fenster auf."], explain:"Bis später! = Do później!"}
+        ]
+    },
+    customer: {
+        title: "ROZMOWA Z KLIENTEM",
+        questions: [
+            {pl:"Dzień dobry, w czym mogę pomóc?", hint:"Uprzejme przywitanie klienta.", de:"Guten Tag, wie kann ich Ihnen helfen?", options:["Guten Tag, wie kann ich Ihnen helfen?","Was machst du?","Ich bin müde."], explain:"Wie kann ich Ihnen helfen? = W czym mogę Panu/Pani pomóc?"},
+            {pl:"Proszę chwilę poczekać.", hint:"Uprzejma prośba do klienta.", de:"Bitte warten Sie einen Moment.", options:["Bitte kommen Sie morgen.","Bitte warten Sie einen Moment.","Bitte gehen Sie nach Hause."], explain:"Bitte warten Sie einen Moment. = Proszę chwilę poczekać."},
+            {pl:"Kiedy możemy zacząć?", hint:"Ustal termin rozpoczęcia.", de:"Wann können wir anfangen?", options:["Wann können wir anfangen?","Wo kann ich bezahlen?","Wie viel kostet das?"], explain:"Wann können wir anfangen? = Kiedy możemy zacząć?"},
+            {pl:"To będzie kosztować 200 euro.", hint:"Podaj cenę.", de:"Das kostet 200 Euro.", options:["Das dauert zwei Stunden.","Das kostet 200 Euro.","Das ist sehr groß."], explain:"Das kostet ... Euro. = To kosztuje ... euro."},
+            {pl:"Czy tak jest dobrze?", hint:"Zapytaj klienta o akceptację.", de:"Ist das so in Ordnung?", options:["Ist das so in Ordnung?","Haben Sie Hunger?","Wo ist die Tür?"], explain:"Ist das so in Ordnung? = Czy tak jest dobrze?"},
+            {pl:"Dziękuję za zlecenie.", hint:"Uprzejme zakończenie rozmowy.", de:"Vielen Dank für den Auftrag.", options:["Gute Besserung!","Vielen Dank für den Auftrag.","Ich brauche Urlaub."], explain:"Vielen Dank für den Auftrag. = Dziękuję za zlecenie."}
+        ]
+    },
+    daily: {
+        title: "NIEMIECKI NA CO DZIEŃ",
+        questions: [
+            {pl:"Poproszę kawę.", hint:"Zamów coś w kawiarni.", de:"Ich hätte gern einen Kaffee.", options:["Ich hätte gern einen Kaffee.","Ich habe einen Kaffee.","Wo ist mein Kaffee?"], explain:"Ich hätte gern ... = Poproszę ..."},
+            {pl:"Ile to kosztuje?", hint:"Zapytaj o cenę.", de:"Wie viel kostet das?", options:["Wie spät ist es?","Wie viel kostet das?","Wie heißt das?"], explain:"Wie viel kostet das? = Ile to kosztuje?"},
+            {pl:"Gdzie jest dworzec?", hint:"Zapytaj o drogę.", de:"Wo ist der Bahnhof?", options:["Wo ist der Bahnhof?","Wo ist die Arbeit?","Wo ist mein Bruder?"], explain:"Wo ist der Bahnhof? = Gdzie jest dworzec?"},
+            {pl:"Nie mówię dobrze po niemiecku.", hint:"Przydatne na początku nauki.", de:"Ich spreche nicht gut Deutsch.", options:["Ich lerne kein Deutsch.","Ich spreche nicht gut Deutsch.","Ich komme aus Deutschland."], explain:"Ich spreche nicht gut Deutsch. = Nie mówię dobrze po niemiecku."},
+            {pl:"Poproszę rachunek.", hint:"W restauracji.", de:"Die Rechnung, bitte.", options:["Die Speisekarte, bitte.","Die Rechnung, bitte.","Ein Wasser, bitte."], explain:"Die Rechnung, bitte. = Poproszę rachunek."},
+            {pl:"Możesz mówić wolniej?", hint:"Poproś o wolniejsze tempo rozmowy.", de:"Kannst du langsamer sprechen?", options:["Kannst du lauter lachen?","Kannst du langsamer sprechen?","Kannst du mir das geben?"], explain:"Kannst du langsamer sprechen? = Możesz mówić wolniej?"}
+        ]
+    }
+};
+
+
+// Rozszerzone zestawy dodatkowych ćwiczeń: losowanie ze wszystkich nowych tematów.
+const extraLessons = lessonsA1.slice(10);
+const extraCategories = {
+  work: ["Narzędzia i materiały", "Montaż ogrodzenia", "Problemy i bezpieczeństwo", "Godziny i terminy"],
+  customer: ["Rozmowa z klientem", "Montaż ogrodzenia", "Pytania i odpowiedzi"],
+  daily: ["Zakupy i ceny", "Pytanie o drogę", "Jedzenie i restauracja", "Dom i codzienność", "Godziny i terminy", "Pytania i odpowiedzi"]
+};
+Object.entries(extraCategories).forEach(([key,titles]) => {
+  const additional = extraLessons.filter(l=>titles.includes(l.title)).flatMap(l=>l.questions);
+  courses[key].questions.push(...additional);
+});
+const storageKey = "deutschTrainerDataV1";
+function loadData() {
+    try {
+        return JSON.parse(localStorage.getItem(storageKey)) || {};
+    } catch(e) { return {}; }
+}
+let data = Object.assign({
+    xp:0, answered:0, correct:0, completed:0,
+    streak:0, lastDay:"", mistakes:{}, seen:{}, pathCompleted:{}
+}, loadData());
+
+function saveData() {
+    try { localStorage.setItem(storageKey, JSON.stringify(data)); }
+    catch(e) {}
+}
+
+let currentCourse = "work";
+let questions = [];
+let index = 0;
+let score = 0;
+let lessonCorrect = 0;
+let answeredThisQuestion = false;
+let reviewMode = false;
+let activePathIndex = null;
+let scrambleTokens = [];
+let selectedTokens = [];
+let scrambleWordCount = 0;
+let fillCorrectWord = "";
+if (!data.pathCompleted || typeof data.pathCompleted !== "object") data.pathCompleted = {};
+
+function shuffle(arr) {
+    const copy = arr.slice();
+    for (let i=copy.length-1; i>0; i--) {
+        const j = Math.floor(Math.random()*(i+1));
+        [copy[i],copy[j]] = [copy[j],copy[i]];
+    }
+    return copy;
+}
+
+function showScreen(id) {
+    document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+    document.querySelectorAll(".bottom button").forEach(b=>b.classList.remove("active"));
+    const nav = {
+        home:"nav-home",
+        quiz:"",
+        "progress-screen":"nav-progress",
+        "review-screen":"nav-review"
+    };
+    if(nav[id]) document.getElementById(nav[id]).classList.add("active");
+    window.scrollTo(0,0);
+}
+
+function goHome() {
+    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    updateUI();
+    showScreen("home");
+}
+
+function startLesson(course) {
+    activePathIndex = null;
+    currentCourse = course;
+    reviewMode = false;
+
+    const all = courses[course].questions;
+
+    if (!all || all.length === 0) {
+        alert("Brak pytań w tej lekcji.");
+        return;
+    }
+
+    const shuffled = shuffle([...all]);
+
+    questions = shuffled.slice(0, Math.min(15, shuffled.length));
+
+    beginQuiz();
+}
+function startReview() {
+    activePathIndex = null;
+    reviewMode = true;
+    const all = [...Object.values(courses).flatMap(c=>c.questions),...lessonsA1.flatMap(l=>l.questions)];
+    const pool = all.filter(q=>(data.mistakes[q.de]||0)>0);
+    if(pool.length===0) {
+        document.getElementById("review-heading").textContent="Wszystko na dobrej drodze! 🎉";
+        document.getElementById("review-description").textContent="Nie masz jeszcze zapisanych błędów. Zrób lekcję, a trudniejsze pytania pojawią się tutaj.";
+        showScreen("review-screen");
+        return;
+    }
+    questions = shuffle(pool).slice(0,15);
+    currentCourse = "work";
+    beginQuiz();
+}
+
+function beginQuiz() {
+    index = 0;
+    score = 0;
+    lessonCorrect = 0;
+    document.getElementById("quiz-content").style.display="block";
+    document.getElementById("result-content").style.display="none";
+    showScreen("quiz");
+    renderQuestion();
+}
+
+function renderQuestion() {
+    answeredThisQuestion = false;
+    const q = questions[index];
+    document.getElementById("category").textContent=reviewMode?"POWTÓRKA BŁĘDÓW":activePathIndex!==null?(lessonsA1[activePathIndex].level || "A1")+" · LEKCJA "+(activePathIndex+1):courses[currentCourse].title;
+    document.getElementById("question").textContent=q.pl;
+    document.getElementById("question-hint").textContent=q.hint || "Wybierz poprawne zdanie po niemiecku.";
+    document.getElementById("question-count").textContent=(index+1)+"/"+questions.length;
+    document.getElementById("quiz-progress").style.width=((index/questions.length)*100)+"%";
+    document.getElementById("context").style.display="none";
+    const scrambled = activePathIndex !== null && (index === 2 || index === 4);
+    const fillBlank = activePathIndex !== null && (index === 1 || index === 3);
+    document.getElementById("fill-area").style.display = fillBlank ? "block" : "none";
+    document.getElementById("scramble-area").style.display = scrambled ? "block" : "none";
+    document.getElementById("question-hint").textContent = scrambled ? "🧩 Ułóż zdanie. Uwaga: niektóre słowa są zbędne!" : fillBlank ? "✍️ Uzupełnij brakujące niemieckie słowo." : (q.hint || "Wybierz poprawne zdanie po niemiecku.");
+    if (scrambled) setupScramble(q);
+    if (fillBlank) setupFillBlank(q);
+
+    const options = document.getElementById("options");
+    options.innerHTML="";
+    options.style.display = (scrambled || fillBlank) ? "none" : "grid";
+    if (!scrambled && !fillBlank) shuffle(q.options).forEach(option=>{
+        const b=document.createElement("button");
+        b.className="option";
+        b.textContent=option;
+        b.onclick=()=>checkAnswer(option,b);
+        options.appendChild(b);
+    });
+
+    const feedback=document.getElementById("feedback");
+    feedback.className="feedback";
+    feedback.textContent="";
+    document.getElementById("next-button").style.display="none";
+}
+
+function setupFillBlank(q) {
+    const words = q.de.trim().split(/\s+/);
+    // Zachowujemy interpunkcję i oryginalną pisownię w zdaniu.
+    const candidates = words.map((word, i) => ({word, i}))
+        .filter(x => x.word.replace(/[^\p{L}]/gu, "").length >= 3);
+    const chosen = candidates.length ? candidates[Math.floor(candidates.length / 2)] : {word: words[0], i: 0};
+    fillCorrectWord = chosen.word;
+    const shown = words.slice();
+    shown[chosen.i] = "_____";
+    document.getElementById("fill-sentence").textContent = shown.join(" ");
+
+    // Odpowiedzi błędne są niemieckimi słowami, a nie polskimi tłumaczeniami.
+    const pool = ["machen", "gehen", "kommen", "brauche", "habe", "heute", "morgen", "später", "bitte", "nicht", "wieder", "gut", "hier", "dort", "arbeiten", "fertig", "helfen", "warten", "Guten", "Hallo!", "Danke!", "Tschüss!", "Abend!", "Morgen!", "Tag!", "Sie", "wir", "einen", "eine", "das", "ist"];
+    const clean = w => w.replace(/[.!?,;:]+$/g, "").toLocaleLowerCase("de");
+    const distractors = shuffle(pool.filter(w => clean(w) !== clean(fillCorrectWord) && !words.some(original => clean(original) === clean(w)))).slice(0, 2);
+    const options = document.getElementById("fill-options");
+    options.innerHTML = "";
+    shuffle([fillCorrectWord, ...distractors]).forEach(word => {
+        const button = document.createElement("button");
+        button.className = "option";
+        button.textContent = word;
+        button.onclick = () => {
+            // Wspólny mechanizm punktacji, XP i powtórek.
+            const correct = word === fillCorrectWord;
+            checkAnswer(correct ? q.de : "__wrong_fill__", button);
+            document.querySelectorAll("#fill-options .option").forEach(b => {
+                b.disabled = true;
+                if (b.textContent === fillCorrectWord) b.classList.add("correct");
+            });
+            document.getElementById("fill-sentence").textContent = q.de;
+        };
+        options.appendChild(button);
+    });
+}
+
+function setupScramble(q) {
+    selectedTokens = [];
+    const correctWords = q.de.trim().split(/\s+/);
+    scrambleWordCount = correctWords.length;
+    const normalize = w => w.replace(/[.!?,;:]+$/g, "").toLocaleLowerCase("de");
+    const used = new Set(correctWords.map(normalize));
+    // Dodatkowe niemieckie słowa, których NIE ma w prawidłowym zdaniu.
+    const extraPool = ["ich", "du", "wir", "Sie", "nicht", "heute", "morgen", "bitte", "hier", "dort", "jetzt", "später", "immer", "auch", "schon", "noch", "sehr", "gut", "schnell", "langsam", "brauche", "habe", "bin", "ist", "sind", "machen", "gehen", "kommen", "arbeiten", "helfen", "warten", "das", "die", "der", "ein", "eine", "einen", "mit", "ohne", "für", "auf", "zu", "fertig", "kaputt", "Werkzeug", "Hammer", "Frage", "Problem"];
+    const available = shuffle(extraPool.filter(w => !used.has(normalize(w))));
+    const extrasCount = Math.min(correctWords.length <= 2 ? 2 : 3, available.length);
+    const correctTokens = correctWords.map((word, id) => ({word, id}));
+    const extraTokens = available.slice(0, extrasCount).map((word, i) => ({word, id: correctWords.length + i}));
+    scrambleTokens = shuffle([...correctTokens, ...extraTokens]);
+    drawScramble();
+}
+function drawScramble() {
+    const chosen = document.getElementById("assembled-words");
+    const bank = document.getElementById("word-bank");
+    chosen.innerHTML = "";
+    bank.innerHTML = "";
+    selectedTokens.forEach((t, i) => {
+        const b = document.createElement("button");
+        b.className = "word-chip";
+        b.textContent = t.word;
+        b.disabled = answeredThisQuestion;
+        b.onclick = () => { selectedTokens.splice(i, 1); drawScramble(); };
+        chosen.appendChild(b);
+    });
+    scrambleTokens.filter(t => !selectedTokens.some(x => x.id === t.id)).forEach(t => {
+        const b = document.createElement("button");
+        b.className = "word-chip";
+        b.textContent = t.word;
+        b.disabled = answeredThisQuestion || selectedTokens.length >= scrambleWordCount;
+        b.onclick = () => { selectedTokens.push(t); drawScramble(); };
+        bank.appendChild(b);
+    });
+    const check = document.getElementById("check-words");
+    check.disabled = answeredThisQuestion || selectedTokens.length !== scrambleWordCount;
+    check.style.display = answeredThisQuestion ? "none" : "block";
+}
+function submitScramble() {
+    if (answeredThisQuestion || selectedTokens.length !== scrambleWordCount) return;
+    checkAnswer(selectedTokens.map(t => t.word).join(" "), null);
+    drawScramble();
+}
+
+// Krótkie efekty dźwiękowe generowane lokalnie (bez plików i internetu).
+let soundsEnabled = localStorage.getItem("deutschTrainerSounds") !== "off";
+let soundContext = null;
+function updateSoundButton() {
+    const b = document.getElementById("sound-toggle");
+    if (b) b.textContent = soundsEnabled ? "🔊 Dźwięki: WŁĄCZONE" : "🔇 Dźwięki: WYŁĄCZONE";
+}
+function toggleSounds() {
+    soundsEnabled = !soundsEnabled;
+    try { localStorage.setItem("deutschTrainerSounds", soundsEnabled ? "on" : "off"); } catch(e) {}
+    updateSoundButton();
+}
+function playAnswerSound(correct) {
+    if (!soundsEnabled) return;
+    try {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextClass) return;
+        if (!soundContext) soundContext = new AudioContextClass();
+        if (soundContext.state === "suspended") soundContext.resume().catch(() => {});
+        const now = soundContext.currentTime;
+        const notes = correct ? [523.25, 659.25, 783.99] : [310, 230];
+        notes.forEach((frequency, i) => {
+            const start = now + i * (correct ? 0.09 : 0.14);
+            const duration = correct ? 0.16 : 0.19;
+            const oscillator = soundContext.createOscillator();
+            const gain = soundContext.createGain();
+            oscillator.type = correct ? "sine" : "triangle";
+            oscillator.frequency.setValueAtTime(frequency, start);
+            gain.gain.setValueAtTime(0.0001, start);
+            gain.gain.exponentialRampToValueAtTime(correct ? 0.11 : 0.085, start + 0.015);
+            gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+            oscillator.connect(gain);
+            gain.connect(soundContext.destination);
+            oscillator.start(start);
+            oscillator.stop(start + duration + 0.01);
+        });
+    } catch(e) { /* Brak obsługi dźwięku nie blokuje nauki. */ }
+}
+
+// Preferowany niemiecki głos i tempo odczytu.
+const voiceSettingsKey = 'deutschTrainerVoiceV1';
+let voiceSettings = {voiceURI:'', rate:0.9};
+try {voiceSettings = {...voiceSettings,...JSON.parse(localStorage.getItem(voiceSettingsKey)||'{}')};} catch(e) {}
+function germanVoices(){
+    if (!('speechSynthesis' in window)) return [];
+    return window.speechSynthesis.getVoices().filter(v => /^de([_-]|$)/i.test(v.lang));
+}
+function voiceScore(v){
+    const label=(v.name+' '+v.voiceURI).toLowerCase();
+    return (/(natural|neural|online|premium|enhanced)/.test(label)?100:0)
+        + (/(google deutsch|microsoft katja|microsoft conrad|microsoft amalia)/.test(label)?30:0)
+        + (v.lang.toLowerCase()==='de-de'?10:0);
+}
+function selectedGermanVoice(){
+    const voices=germanVoices();
+    return voices.find(v=>v.voiceURI===voiceSettings.voiceURI) || [...voices].sort((a,b)=>voiceScore(b)-voiceScore(a))[0];
+}
+function speakGerman(sentence) {
+    if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
+        alert('Ta przeglądarka nie obsługuje syntezy mowy. Spróbuj w Chrome lub Edge.');
+        return;
+    }
+    window.speechSynthesis.cancel();
+    const utterance=new SpeechSynthesisUtterance(sentence);
+    utterance.lang='de-DE';
+    utterance.rate=Number(voiceSettings.rate)||0.9;
+    utterance.pitch=1;
+    const voice=selectedGermanVoice();
+    if(voice) utterance.voice=voice;
+    window.speechSynthesis.speak(utterance);
+}
+function refreshVoiceChoices(){
+    const select=document.getElementById('voice-choice');
+    if(!select) return;
+    const voices=germanVoices().sort((a,b)=>voiceScore(b)-voiceScore(a));
+    select.innerHTML='';
+    const auto=document.createElement('option');auto.value='';auto.textContent='Automatyczny (najlepszy dostępny)';select.appendChild(auto);
+    voices.forEach(v=>{const opt=document.createElement('option');opt.value=v.voiceURI;opt.textContent=v.name+' ('+v.lang+')'+(v.localService?'':' — online');select.appendChild(opt);});
+    select.value=voices.some(v=>v.voiceURI===voiceSettings.voiceURI)?voiceSettings.voiceURI:'';
+    const info=document.getElementById('voice-info');
+    if(info) info.textContent=voices.length?`Dostępne głosy niemieckie: ${voices.length}. Niektóre głosy online wymagają internetu.`:'Nie znaleziono niemieckiego głosu. Dodaj niemiecki głos w ustawieniach mowy Windows lub spróbuj Edge.';
+}
+function openVoiceSettings(){
+    document.getElementById('voice-panel').style.display='flex';
+    document.getElementById('voice-rate').value=voiceSettings.rate;
+    document.getElementById('voice-rate-label').textContent=Number(voiceSettings.rate).toFixed(2)+'×';
+    refreshVoiceChoices();
+}
+function saveVoiceSettings(){try{localStorage.setItem(voiceSettingsKey,JSON.stringify(voiceSettings));}catch(e){}}
+if('speechSynthesis' in window){window.speechSynthesis.addEventListener?.('voiceschanged',refreshVoiceChoices);}
+
+function checkAnswer(answer, button) {
+    if(answeredThisQuestion) return;
+    answeredThisQuestion=true;
+    const q=questions[index];
+    const isCorrect = answer === q.de;
+    playAnswerSound(isCorrect);
+    data.answered++;
+    data.seen[q.de]=true;
+
+    if(isCorrect) {
+        lessonCorrect++;
+        score+=10;
+        data.correct++;
+        data.xp+=10;
+        if(data.mistakes[q.de]) data.mistakes[q.de]=Math.max(0,data.mistakes[q.de]-1);
+        if(button) button.classList.add("correct");
+    } else {
+        data.mistakes[q.de]=(data.mistakes[q.de]||0)+1;
+        document.querySelectorAll(".option").forEach(b=>{
+            if(b.textContent===q.de) b.classList.add("correct");
+        });
+        if(button) button.classList.add("wrong");
+    }
+
+    document.querySelectorAll(".option").forEach(b=>b.disabled=true);
+
+    const feedback=document.getElementById("feedback");
+    feedback.className="feedback show "+(isCorrect?"good":"bad");
+    feedback.innerHTML="";
+    const heading=document.createElement("strong");
+    heading.textContent=isCorrect?"Świetnie! +10 XP 🎉":"Jeszcze raz, dasz radę! 💪";
+    const explanation=document.createElement("div");
+    explanation.style.marginTop="7px";
+    explanation.textContent=q.explain;
+    feedback.append(heading,explanation);
+    const correctSentence = document.createElement("div");
+    correctSentence.style.cssText = "margin-top:12px;font-size:17px;font-weight:800;line-height:1.5";
+    correctSentence.textContent = "🇩🇪 " + q.de;
+    feedback.appendChild(correctSentence);
+    const listenButton = document.createElement("button");
+    listenButton.type = "button";
+    listenButton.className = "button";
+    listenButton.style.cssText = "margin-top:12px;width:100%;font-size:16px";
+    listenButton.textContent = "🔊 ODSŁUCHAJ POPRAWNĄ ODPOWIEDŹ";
+    listenButton.setAttribute("aria-label", "Odsłuchaj niemiecką wymowę poprawnej odpowiedzi");
+    listenButton.onclick = () => speakGerman(q.de);
+    feedback.appendChild(listenButton);
+
+    document.getElementById("next-button").style.display="block";
+    document.getElementById("next-button").textContent=
+        index===questions.length-1?"ZOBACZ WYNIK →":"NASTĘPNE PYTANIE →";
+    saveData();
+    updateUI();
+}
+
+function nextQuestion() {
+    if(!answeredThisQuestion) return;
+    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    index++;
+    if(index<questions.length) renderQuestion();
+    else finishLesson();
+}
+
+function finishLesson() {
+    data.completed++;
+    if (activePathIndex !== null && lessonCorrect >= Math.ceil(questions.length * 0.8)) {
+        data.pathCompleted[lessonsA1[activePathIndex].id] = true;
+    }
+    const today=new Date();
+    const day=today.getFullYear()+"-"+String(today.getMonth()+1).padStart(2,"0")+"-"+String(today.getDate()).padStart(2,"0");
+    const yesterdayDate=new Date(today);
+    yesterdayDate.setDate(today.getDate()-1);
+    const yesterday=yesterdayDate.getFullYear()+"-"+String(yesterdayDate.getMonth()+1).padStart(2,"0")+"-"+String(yesterdayDate.getDate()).padStart(2,"0");
+
+    if(data.lastDay!==day) {
+        data.streak=data.lastDay===yesterday?data.streak+1:1;
+        data.lastDay=day;
+    }
+
+    saveData();
+    updateUI();
+
+    document.getElementById("quiz-content").style.display="none";
+    document.getElementById("result-content").style.display="block";
+    document.getElementById("quiz-progress").style.width="100%";
+    document.getElementById("result-emoji").textContent=
+        lessonCorrect===questions.length?"🏆":lessonCorrect>=Math.ceil(questions.length/2)?"🎉":"💪";
+    document.getElementById("result-title").textContent=
+        lessonCorrect===questions.length?"Perfekcyjnie!":lessonCorrect>=Math.ceil(questions.length/2)?"Świetna robota!":"Nie poddawaj się!";
+    document.getElementById("result-description").textContent=
+        activePathIndex !== null
+          ? (lessonCorrect >= Math.ceil(questions.length * 0.8) ? "Lekcja zaliczona! Odblokowano kolejną. " : "Do odblokowania kolejnej lekcji potrzebujesz 80% poprawnych odpowiedzi. ") + "Wynik: " + lessonCorrect + "/" + questions.length + "."
+          : "Poprawne odpowiedzi: "+lessonCorrect+" z "+questions.length+". Każdy błąd to okazja do nauki.";
+    document.getElementById("result-xp").textContent="+"+score+" XP";
+    document.getElementById("result-accuracy").textContent=
+        "Ukończone sesje: "+data.completed+" · Seria: "+data.streak+" 🔥";
+    const nextButton = document.getElementById("next-lesson-button");
+    const repeatButton = document.getElementById("repeat-lesson-button");
+    const passed = activePathIndex !== null && lessonCorrect >= Math.ceil(questions.length * 0.8);
+    const hasNext = passed && activePathIndex + 1 < lessonsA1.length;
+    nextButton.style.display = hasNext ? "block" : "none";
+    repeatButton.textContent = activePathIndex !== null && !passed ? "SPRÓBUJ PONOWNIE ↻" : "POWTÓRZ LEKCJĘ";
+    if (activePathIndex !== null && passed && !hasNext) {
+        document.getElementById("result-description").textContent =
+            "Gratulacje! Ukończono ścieżkę A1–B1! Wynik: " + lessonCorrect + "/" + questions.length + ".";
+    }
+}
+
+function updateUI() {
+    renderPath();
+    document.getElementById("xp").textContent=data.xp;
+    document.getElementById("streak").textContent=data.streak;
+    document.getElementById("percent").textContent=
+        Math.round(data.correct/Math.max(1,data.answered)*100)+"%";
+    document.getElementById("home-progress").style.width=
+        Math.round(data.correct/Math.max(1,data.answered)*100)+"%";
+    document.getElementById("progress-description").textContent=
+        data.answered===0?"Rozpocznij pierwszą lekcję!":
+        "Poprawne odpowiedzi: "+data.correct+" z "+data.answered+".";
+    document.getElementById("mistake-count").textContent=
+        Object.values(data.mistakes).filter(n=>n>0).length+" pytań do utrwalenia";
+    document.getElementById("stat-xp").textContent=data.xp;
+    document.getElementById("stat-answered").textContent=data.answered;
+    document.getElementById("stat-correct").textContent=data.correct;
+    document.getElementById("stat-streak").textContent=data.streak+" dni";
+
+    const topics=Object.keys(courses).map(key=>{
+        const title={work:"Praca",customer:"Klient",daily:"Codzienny niemiecki"}[key];
+        const qs=courses[key].questions;
+        const seen=qs.filter(q=>data.seen[q.de]).length;
+        return title+": "+seen+"/"+qs.length+" poznanych pytań";
+    });
+    document.getElementById("topic-progress").textContent=topics.join(" · ");
+}
+
+function showProgress() {
+    updateUI();
+    showScreen("progress-screen");
+}
+
+function unlockedPathCount() {
+    let n = 0;
+    while (n < lessonsA1.length && data.pathCompleted[lessonsA1[n].id]) n++;
+    return n;
+}
+function renderPath() {
+    const completed = lessonsA1.filter(l=>data.pathCompleted[l.id]).length;
+    document.getElementById("path-count").textContent = completed + "/" + lessonsA1.length;
+    document.getElementById("path-progress").style.width = (100*completed/lessonsA1.length) + "%";
+    const unlocked = unlockedPathCount();
+    const container = document.getElementById("path-lessons");
+    container.innerHTML = "";
+    lessonsA1.forEach((lesson,i)=>{
+        const done=!!data.pathCompleted[lesson.id], locked=i>unlocked;
+        const btn=document.createElement("button");
+        btn.className="lesson-row";
+        btn.style.cssText="width:100%;text-align:left;color:inherit;cursor:"+(locked?"not-allowed":"pointer")+";opacity:"+(locked?".52":"1")+";border:"+(!locked&&!done?"2px solid var(--purple)":"1px solid #edf0f6");
+        btn.disabled=locked;
+        const em=document.createElement("div"); em.className="lesson-emoji"; em.textContent=locked?"🔒":lesson.emoji;
+        const info=document.createElement("div"); info.className="lesson-info";
+        const strong=document.createElement("strong"); strong.textContent=(i+1)+". "+lesson.title;
+        const small=document.createElement("small"); small.textContent=lesson.description;
+        info.append(strong,small);
+        const state=document.createElement("div"); state.className="arrow"; state.textContent=done?"✅":locked?"🔒":"▶";
+        btn.append(em,info,state);
+        btn.onclick=()=>startPathLesson(i);
+        container.appendChild(btn);
+    });
+}
+function continuePath() {
+    const next=unlockedPathCount();
+    startPathLesson(Math.min(next,lessonsA1.length-1));
+}
+function startPathLesson(i) {
+    if(i>unlockedPathCount()) return;
+    activePathIndex=i;
+    currentCourse="work";
+    reviewMode=false;
+    questions=shuffle(lessonsA1[i].questions);
+    beginQuiz();
+}
+function goToNextLesson() {
+    if (activePathIndex === null || lessonCorrect < Math.ceil(questions.length * 0.8)) return;
+    const next = activePathIndex + 1;
+    if (next >= lessonsA1.length || next > unlockedPathCount()) return;
+    startPathLesson(next);
+}
+function repeatLesson() {
+    if(activePathIndex!==null) startPathLesson(activePathIndex);
+    else if(reviewMode) startReview();
+    else startLesson(currentCourse);
+}
+
+const allTrainingQuestions = [...new Map([...lessonsA1.flatMap(l=>l.questions),...Object.values(courses).flatMap(c=>c.questions)].map(q=>[q.de,q])).values()];
+let featureMode='', featureQuestion=null, featureStep=0, dialogueScore=0, currentDialogue=null;
+const dialogues=[
+ [{who:'Klient',de:'Guten Tag! Wann können Sie anfangen?',pl:'Dzień dobry! Kiedy mogą państwo zacząć?',answers:[['Wir können am Montag anfangen.','Możemy zacząć w poniedziałek.'],['Ich habe Hunger.','Jestem głodny.'],['Das ist mein Hund.','To mój pies.']]},
+ {who:'Klient',de:'Wie lange dauert die Montage?',pl:'Jak długo trwa montaż?',answers:[['Die Montage dauert zwei Tage.','Montaż trwa dwa dni.'],['Ich wohne in Polen.','Mieszkam w Polsce.'],['Es ist ein Hammer.','To jest młotek.']]},
+ {who:'Klient',de:'Brauchen Sie noch etwas?',pl:'Czy potrzebują państwo czegoś jeszcze?',answers:[['Wir brauchen noch die genauen Maße.','Potrzebujemy jeszcze dokładnych wymiarów.'],['Ich bin müde.','Jestem zmęczony.'],['Gute Nacht.','Dobranoc.']]}],
+ [{who:'Kolega',de:'Wo ist der Schraubenzieher?',pl:'Gdzie jest śrubokręt?',answers:[['Er liegt im Werkzeugkasten.','Leży w skrzynce narzędziowej.'],['Ich trinke Kaffee.','Piję kawę.'],['Es regnet.','Pada deszcz.']]},
+ {who:'Kolega',de:'Kannst du mir bitte helfen?',pl:'Możesz mi pomóc?',answers:[['Ja, ich komme sofort.','Tak, zaraz przyjdę.'],['Ich heiße Anna.','Nazywam się Anna.'],['Der Zug ist spät.','Pociąg jest spóźniony.']]},
+ {who:'Kolega',de:'Ist alles fertig?',pl:'Czy wszystko jest gotowe?',answers:[['Ja, wir sind fertig.','Tak, skończyliśmy.'],['Das kostet fünf Euro.','To kosztuje pięć euro.'],['Wo ist der Bahnhof?','Gdzie jest dworzec?']]}]
+];
+function featureEl(){return document.getElementById('feature-body')}
+function setFeature(title,html){document.getElementById('feature-title').textContent=title;featureEl().innerHTML=html;showScreen('feature-screen')}
+function esc(t){return String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function featureButton(text,fn){const b=document.createElement('button');b.className='button secondary';b.style.marginTop='10px';b.textContent=text;b.onclick=fn;featureEl().appendChild(b);return b}
+function openFeature(mode){featureMode=mode;featureStep=0;
+ if(mode==='dialog'){currentDialogue=dialogues[Math.floor(Math.random()*dialogues.length)];dialogueScore=0;drawDialogue();}
+ if(mode==='writing'||mode==='listening'){nextFeatureQuestion();}
+ if(mode==='review'){startSmartReview();}
+ if(mode==='dictionary'){drawDictionary();}
+ if(mode==='missions'){drawMissions();}
+ if(mode==='install'){setFeature('📱 Instalacja na telefonie','<p>Po umieszczeniu wszystkich plików aplikacji na serwerze HTTPS otwórz ją w Chrome na Androidzie, wybierz menu ⋮ i „Dodaj do ekranu głównego” lub „Zainstaluj aplikację”.</p><p>W przeglądarce na komputerze otwarty plik <b>index.html</b> nadal działa, ale instalacja PWA i offline wymagają hostingu HTTPS (lub localhost).</p><p>Postępy zapisują się lokalnie w danej przeglądarce. Nie synchronizują się automatycznie między urządzeniami.</p>');}
+}
+function drawDialogue(){if(featureStep>=currentDialogue.length){setFeature('💬 Rozmowa ukończona',`<h2>🎉 Wynik: ${dialogueScore}/${currentDialogue.length}</h2><p>Ćwicz kolejne rozmowy, aby utrwalić naturalne odpowiedzi.</p>`);featureButton('KOLEJNA ROZMOWA',()=>openFeature('dialog'));return;}
+ const d=currentDialogue[featureStep];setFeature('💬 Rozmowa · '+(featureStep+1)+'/'+currentDialogue.length,`<p><b>${esc(d.who)}:</b> ${esc(d.de)}</p><p class="muted">${esc(d.pl)}</p><p><b>Co odpowiesz?</b></p><div id="dialog-answers"></div><div id="dialog-feedback"></div>`);
+ shuffle(d.answers.map((a,i)=>({a,i}))).forEach(({a,i})=>{const b=document.createElement('button');b.className='option';b.style.marginTop='9px';b.textContent=a[0];b.onclick=()=>{document.querySelectorAll('#dialog-answers button').forEach(x=>x.disabled=true);const good=i===0;if(good){dialogueScore++;data.xp+=10;data.correct++;}else{data.mistakes[d.answers[0][0]]=(data.mistakes[d.answers[0][0]]||0)+1;}data.answered++;countDaily(good);data.seen[d.answers[0][0]]=true;playAnswerSound(good);saveData();updateUI();document.getElementById('dialog-feedback').innerHTML=`<p>${good?'✅ Poprawnie! +10 XP':'❌ Poprawna odpowiedź:'} <b>${esc(d.answers[0][0])}</b><br>${esc(d.answers[0][1])}</p>`;featureButton('🔊 POSŁUCHAJ ODPOWIEDZI',()=>speakGerman(d.answers[0][0]));featureButton('DALEJ →',()=>{featureStep++;drawDialogue()});};document.getElementById('dialog-answers').appendChild(b)})}
+function nextFeatureQuestion(){featureQuestion=shuffle(allTrainingQuestions)[0];const q=featureQuestion;
+ if(featureMode==='writing'){setFeature('✍️ Napisz po niemiecku',`<p><b>${esc(q.pl)}</b></p><p class="muted">Wpisz całe zdanie. Wielkość liter i znaki interpunkcyjne nie mają znaczenia.</p><input id="writing-input" autocomplete="off" style="box-sizing:border-box;width:100%;padding:15px;border:2px solid #ddd;border-radius:12px;font-size:17px" placeholder="Twoje zdanie po niemiecku"><div id="feature-feedback"></div>`);featureButton('SPRAWDŹ ZDANIE',checkWriting)}
+ else{const options=shuffle([q,...shuffle(allTrainingQuestions.filter(x=>x.pl!==q.pl)).slice(0,2)]);setFeature('🎧 Rozumienie ze słuchu',`<p>Posłuchaj zdania po niemiecku i wybierz jego znaczenie.</p><div id="listen-options"></div><div id="feature-feedback"></div>`);featureButton('🔊 ODTWÓRZ PONOWNIE',()=>speakGerman(q.de));options.forEach(opt=>{const b=document.createElement('button');b.className='option';b.style.marginTop='9px';b.textContent=opt.pl;b.onclick=()=>{document.querySelectorAll('#listen-options button').forEach(x=>x.disabled=true);const good=opt.de===q.de;recordFeatureAnswer(q,good);document.getElementById('feature-feedback').innerHTML=`<p>${good?'✅ Poprawnie!':'❌ Spróbuj zapamiętać:'} <b>${esc(q.de)}</b> — ${esc(q.pl)}</p>`;featureButton('NASTĘPNE NAGRANIE →',nextFeatureQuestion)};document.getElementById('listen-options').appendChild(b)});}
+}
+function normalizeGerman(s){return s.toLocaleLowerCase('de-DE').replace(/[.!?,;:]/g,'').replace(/\s+/g,' ').trim()}
+function checkWriting(){const q=featureQuestion;const typed=document.getElementById('writing-input').value; if(!typed.trim())return;const good=normalizeGerman(typed)===normalizeGerman(q.de);recordFeatureAnswer(q,good);document.getElementById('feature-feedback').innerHTML=`<p>${good?'✅ Świetnie! +10 XP':'❌ Poprawne zdanie:'}<br><b>${esc(q.de)}</b></p>`;document.querySelectorAll('#feature-body button').forEach(b=>b.disabled=true);featureButton('🔊 ODSŁUCHAJ',()=>speakGerman(q.de));featureButton('NASTĘPNE ZDANIE →',nextFeatureQuestion)}
+function recordFeatureAnswer(q,good){data.answered++;data.seen[q.de]=true;if(good){data.correct++;data.xp+=10;if(data.mistakes[q.de])data.mistakes[q.de]=Math.max(0,data.mistakes[q.de]-1)}else data.mistakes[q.de]=(data.mistakes[q.de]||0)+1;playAnswerSound(good);saveData();updateUI()}
+function startSmartReview(){const now=Date.now();const pool=allTrainingQuestions.filter(q=>data.seen[q.de]||data.mistakes[q.de]);const ranked=pool.map(q=>({q,priority:(data.mistakes[q.de]||0)*100+(now-(data.reviewDates?.[q.de]||0))/86400000})).sort((a,b)=>b.priority-a.priority);const selected=ranked.slice(0,15).map(x=>x.q);if(!selected.length){setFeature('🧠 Inteligentne powtórki','<p>Najpierw wykonaj kilka lekcji. Tutaj pojawią się poznane słowa, a błędne odpowiedzi będą miały pierwszeństwo.</p>');return;}questions=shuffle(selected);activePathIndex=null;reviewMode=true;currentCourse='work';beginQuiz();}
+function drawDictionary(){const known=allTrainingQuestions.filter(q=>data.seen[q.de]);setFeature('📖 Twój słownik',`<p>Poznane zwroty: <b>${known.length}</b>. Kliknij, aby odsłuchać wymowę.</p><input id="dict-search" placeholder="Szukaj po polsku lub niemiecku" style="width:100%;box-sizing:border-box;padding:13px;border-radius:10px;border:1px solid #ddd"><div id="dict-list" style="margin-top:12px"></div>`);const render=()=>{const query=document.getElementById('dict-search').value.toLowerCase();const list=document.getElementById('dict-list');list.innerHTML='';known.filter(q=>(q.de+' '+q.pl).toLowerCase().includes(query)).slice(0,100).forEach(q=>{const b=document.createElement('button');b.className='option';b.style.cssText='text-align:left;margin-bottom:8px;font-size:15px';b.textContent='🔊 '+q.de+' — '+q.pl;b.onclick=()=>speakGerman(q.de);list.appendChild(b)});if(!known.length)list.textContent='Ukończ pierwsze ćwiczenia, aby dodać słowa do słownika.'};document.getElementById('dict-search').oninput=render;render();}
+function drawMissions(){const today=new Date().toLocaleDateString('sv-SE');const stats=data.dailyStats?.[today]||{answered:0,correct:0,xp:0};const milestones=[['Odpowiedz na 10 pytań',stats.answered,10],['Odpowiedz 8 razy poprawnie',stats.correct,8],['Zdobądź 100 XP',stats.xp,100]];setFeature('🏆 Dzisiejsze misje',`<p>Postęp dzisiaj: <b>${today}</b></p>`+milestones.map(([label,value,target])=>`<p><b>${value>=target?'🏅':'🎯'} ${label}</b><br>${Math.min(value,target)}/${target}</p><div class="progress"><div class="progress-fill" style="width:${Math.min(100,value/target*100)}%"></div></div>`).join('')+`<p class="muted">Odznaki zdobywasz za realizację celów. Seria nauki: ${data.streak} dni 🔥</p>`)}
+// Licznik dzienny, także dla zwykłych lekcji.
+const originalCheckAnswer=checkAnswer;
+checkAnswer=function(answer,button){if(answeredThisQuestion)return;const good=answer===questions[index].de;countDaily(good);originalCheckAnswer(answer,button)};
+function countDaily(good){const day=new Date().toLocaleDateString('sv-SE');data.dailyStats=data.dailyStats||{};const d=data.dailyStats[day]||(data.dailyStats[day]={answered:0,correct:0,xp:0});d.answered++;if(good){d.correct++;d.xp+=10}saveData()}
+const originalRecordFeatureAnswer=recordFeatureAnswer;
+recordFeatureAnswer=function(q,good){countDaily(good);originalRecordFeatureAnswer(q,good)};
+const originalDrawDialogue=drawDialogue;
+// PWA cache uruchamia się wyłącznie przez HTTPS lub localhost.
+if('serviceWorker' in navigator && (location.protocol==='https:'||location.hostname==='localhost')){navigator.serviceWorker.register('./sw.js').catch(()=>{})}
+
+updateUI();
+updateSoundButton();
+</script>
+
+<!-- Ustawienia wymowy: dostępne z każdego ekranu aplikacji -->
+<button type="button" onclick="openVoiceSettings()" title="Ustawienia niemieckiego lektora" style="position:fixed;right:16px;bottom:18px;z-index:998;border:0;border-radius:30px;background:#183b78;color:white;padding:12px 17px;box-shadow:0 5px 18px #0003;cursor:pointer;font-weight:700">🎙️ Głos</button>
+<div id="voice-panel" role="dialog" aria-modal="true" aria-label="Ustawienia wymowy" onclick="if(event.target===this)this.style.display='none'" style="display:none;position:fixed;inset:0;z-index:999;background:#0009;align-items:center;justify-content:center;padding:16px">
+  <div style="width:min(430px,100%);box-sizing:border-box;background:white;color:#152a43;border-radius:18px;padding:24px;box-shadow:0 10px 40px #0004">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><h2 style="margin:0;font-size:22px">🎙️ Niemiecki lektor</h2><button type="button" onclick="document.getElementById('voice-panel').style.display='none'" aria-label="Zamknij" style="background:transparent;border:0;font-size:26px;cursor:pointer">×</button></div>
+    <p style="margin:12px 0;color:#526177;font-size:14px">Wybierz głos, który brzmi najbardziej naturalnie na Twoim urządzeniu.</p>
+    <label for="voice-choice" style="display:block;font-weight:700;margin:15px 0 7px">Głos niemiecki</label>
+    <select id="voice-choice" onchange="voiceSettings.voiceURI=this.value;saveVoiceSettings()" style="width:100%;padding:12px;border-radius:10px;border:1px solid #b9c5d5;background:white;color:#17263c;font-size:15px"></select>
+    <p id="voice-info" style="font-size:12px;color:#617084;line-height:1.5"></p>
+    <label for="voice-rate" style="display:block;font-weight:700;margin:16px 0 8px">Tempo: <span id="voice-rate-label">0.90×</span></label>
+    <input type="range" id="voice-rate" min="0.65" max="1.15" step="0.05" value="0.9" oninput="voiceSettings.rate=Number(this.value);document.getElementById('voice-rate-label').textContent=Number(this.value).toFixed(2)+'×';saveVoiceSettings()" style="width:100%">
+    <button type="button" onclick="speakGerman('Guten Morgen! Wie kann ich Ihnen helfen?')" style="margin-top:18px;width:100%;background:#2268d1;color:white;border:0;border-radius:12px;padding:14px;font-size:16px;font-weight:700;cursor:pointer">🔊 Odsłuchaj próbkę</button>
+    <button type="button" onclick="document.getElementById('voice-panel').style.display='none'" style="margin-top:9px;width:100%;background:#e9eff8;color:#183b78;border:0;border-radius:12px;padding:12px;font-weight:700;cursor:pointer">Gotowe</button>
+  </div>
+</div>
+</body>
+</html>
